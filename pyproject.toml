@@ -1,0 +1,18 @@
+[project]
+name = "chuk-virtual-experts"
+version = "0.1.0"
+description = "Mono-repo for virtual expert plugins compatible with Lazarus"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [
+    { name = "Christopher Hay" }
+]
+
+# Workspace root - not a buildable package
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.uv.sources]
+chuk-virtual-expert = { workspace = true }

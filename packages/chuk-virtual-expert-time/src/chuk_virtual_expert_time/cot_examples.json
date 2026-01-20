@@ -1,0 +1,222 @@
+{
+  "expert_name": "time",
+  "description": "CoT training examples mapping queries to VirtualExpertActions",
+  "examples": [
+    {
+      "query": "What time is it?",
+      "action": {
+        "expert": "time",
+        "operation": "get_time",
+        "parameters": {},
+        "confidence": 1.0,
+        "reasoning": "User asking for current time, no timezone specified, default to UTC"
+      }
+    },
+    {
+      "query": "What time is it in Tokyo?",
+      "action": {
+        "expert": "time",
+        "operation": "get_time",
+        "parameters": {"timezone": "Asia/Tokyo"},
+        "confidence": 1.0,
+        "reasoning": "User asking for current time in Tokyo"
+      }
+    },
+    {
+      "query": "Current time in New York",
+      "action": {
+        "expert": "time",
+        "operation": "get_time",
+        "parameters": {"timezone": "America/New_York"},
+        "confidence": 1.0,
+        "reasoning": "User wants current time in New York"
+      }
+    },
+    {
+      "query": "What's the time in London?",
+      "action": {
+        "expert": "time",
+        "operation": "get_time",
+        "parameters": {"timezone": "Europe/London"},
+        "confidence": 1.0,
+        "reasoning": "User asking for time in London"
+      }
+    },
+    {
+      "query": "Time in Sydney please",
+      "action": {
+        "expert": "time",
+        "operation": "get_time",
+        "parameters": {"timezone": "Australia/Sydney"},
+        "confidence": 1.0,
+        "reasoning": "User wants time in Sydney"
+      }
+    },
+    {
+      "query": "UTC time now",
+      "action": {
+        "expert": "time",
+        "operation": "get_time",
+        "parameters": {"timezone": "UTC"},
+        "confidence": 1.0,
+        "reasoning": "User explicitly asking for UTC time"
+      }
+    },
+    {
+      "query": "Convert 3pm EST to PST",
+      "action": {
+        "expert": "time",
+        "operation": "convert_time",
+        "parameters": {
+          "time": "3pm",
+          "from_timezone": "America/New_York",
+          "to_timezone": "America/Los_Angeles"
+        },
+        "confidence": 1.0,
+        "reasoning": "Time conversion from Eastern to Pacific timezone"
+      }
+    },
+    {
+      "query": "What is 9am Tokyo time in London?",
+      "action": {
+        "expert": "time",
+        "operation": "convert_time",
+        "parameters": {
+          "time": "9am",
+          "from_timezone": "Asia/Tokyo",
+          "to_timezone": "Europe/London"
+        },
+        "confidence": 1.0,
+        "reasoning": "Converting time from Tokyo to London"
+      }
+    },
+    {
+      "query": "When it's noon in Paris, what time is it in New York?",
+      "action": {
+        "expert": "time",
+        "operation": "convert_time",
+        "parameters": {
+          "time": "12pm",
+          "from_timezone": "Europe/Paris",
+          "to_timezone": "America/New_York"
+        },
+        "confidence": 1.0,
+        "reasoning": "Converting noon from Paris to New York"
+      }
+    },
+    {
+      "query": "5:30pm GMT to JST",
+      "action": {
+        "expert": "time",
+        "operation": "convert_time",
+        "parameters": {
+          "time": "5:30pm",
+          "from_timezone": "Europe/London",
+          "to_timezone": "Asia/Tokyo"
+        },
+        "confidence": 1.0,
+        "reasoning": "Converting from GMT to Japan Standard Time"
+      }
+    },
+    {
+      "query": "What timezone is Sydney in?",
+      "action": {
+        "expert": "time",
+        "operation": "get_timezone_info",
+        "parameters": {"location": "sydney"},
+        "confidence": 1.0,
+        "reasoning": "User asking about timezone for Sydney"
+      }
+    },
+    {
+      "query": "Timezone for Dubai",
+      "action": {
+        "expert": "time",
+        "operation": "get_timezone_info",
+        "parameters": {"location": "dubai"},
+        "confidence": 1.0,
+        "reasoning": "User wants timezone info for Dubai"
+      }
+    },
+    {
+      "query": "What timezone is Berlin in?",
+      "action": {
+        "expert": "time",
+        "operation": "get_timezone_info",
+        "parameters": {"location": "berlin"},
+        "confidence": 1.0,
+        "reasoning": "User asking about Berlin's timezone"
+      }
+    },
+    {
+      "query": "Tell me a joke",
+      "action": {
+        "expert": "none",
+        "operation": "passthrough",
+        "parameters": {},
+        "confidence": 1.0,
+        "reasoning": "Not a time-related query, pass to base model"
+      }
+    },
+    {
+      "query": "What is 2 + 2?",
+      "action": {
+        "expert": "none",
+        "operation": "passthrough",
+        "parameters": {},
+        "confidence": 1.0,
+        "reasoning": "Math query, not time-related"
+      }
+    },
+    {
+      "query": "Write me a poem about the ocean",
+      "action": {
+        "expert": "none",
+        "operation": "passthrough",
+        "parameters": {},
+        "confidence": 1.0,
+        "reasoning": "Creative writing request, not time-related"
+      }
+    },
+    {
+      "query": "What's the weather like today?",
+      "action": {
+        "expert": "none",
+        "operation": "passthrough",
+        "parameters": {},
+        "confidence": 1.0,
+        "reasoning": "Weather query, not time-related (different expert)"
+      }
+    },
+    {
+      "query": "How do I cook pasta?",
+      "action": {
+        "expert": "none",
+        "operation": "passthrough",
+        "parameters": {},
+        "confidence": 1.0,
+        "reasoning": "Cooking question, not time-related"
+      }
+    },
+    {
+      "query": "Explain quantum physics",
+      "action": {
+        "expert": "none",
+        "operation": "passthrough",
+        "parameters": {},
+        "confidence": 1.0,
+        "reasoning": "Science explanation, not time-related"
+      }
+    },
+    {
+      "query": "What's the capital of France?",
+      "action": {
+        "expert": "none",
+        "operation": "passthrough",
+        "parameters": {},
+        "confidence": 1.0,
+        "reasoning": "Geography question, not time-related"
+      }
+    }
+  ]
+}
