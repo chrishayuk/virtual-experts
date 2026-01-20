@@ -92,7 +92,7 @@ endif
 test:
 ifdef UV
 	@echo "Running tests with uv..."
-	uv run pytest
+	cd ../.. && uv run python -m pytest packages/chuk-virtual-expert/tests/
 else
 	@echo "Running tests..."
 	pytest
@@ -101,7 +101,7 @@ endif
 test-cov:
 ifdef UV
 	@echo "Running tests with coverage (using uv)..."
-	uv run pytest --cov=chuk_virtual_expert --cov-report=html --cov-report=term-missing
+	cd ../.. && uv run python -m pytest packages/chuk-virtual-expert/tests/ --cov=packages/chuk-virtual-expert/src/chuk_virtual_expert --cov-report=html --cov-report=term-missing
 else
 	@echo "Running tests with coverage..."
 	pytest --cov=chuk_virtual_expert --cov-report=html --cov-report=term-missing
