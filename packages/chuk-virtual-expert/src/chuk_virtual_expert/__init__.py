@@ -63,6 +63,14 @@ from chuk_virtual_expert.registry_v2 import (
     get_registry,
 )
 
+# Validation
+from chuk_virtual_expert.validation import (
+    FewShotValidator,
+    ValidationResult,
+    ValidationSummary,
+    validate_expert_few_shot,
+)
+
 __all__ = [
     # Core models
     "CommonOperation",
@@ -88,6 +96,11 @@ __all__ = [
     # Lazarus integration
     "LazarusAdapter",
     "adapt_expert",
+    # Validation
+    "FewShotValidator",
+    "ValidationResult",
+    "ValidationSummary",
+    "validate_expert_few_shot",
 ]
 
 __version__ = "2.0.0"

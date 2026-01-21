@@ -13,8 +13,8 @@ Usage:
 """
 
 import argparse
-from chuk_virtual_expert_time import TimeExpertPlugin
-from chuk_virtual_expert import adapt_for_lazarus
+from chuk_virtual_expert_time import TimeExpert
+from chuk_virtual_expert import adapt_expert
 
 
 def test_registry():
@@ -23,9 +23,9 @@ def test_registry():
 
     print("=== Registry Integration Test ===\n")
 
-    # Create and adapt the time plugin
-    time_plugin = TimeExpertPlugin(use_mcp=False)
-    lazarus_plugin = adapt_for_lazarus(time_plugin)
+    # Create and adapt the time expert
+    time_expert = TimeExpert()
+    lazarus_plugin = adapt_expert(time_expert)
 
     # Register with Lazarus
     registry = VirtualExpertRegistry()
@@ -75,10 +75,10 @@ def test_with_model(model_id: str):
         print("Try: pip install mlx-lm")
         return
 
-    # Create registry and register our plugin first
+    # Create registry and register our expert first
     registry = VirtualExpertRegistry()
-    time_plugin = TimeExpertPlugin(use_mcp=False)
-    lazarus_plugin = adapt_for_lazarus(time_plugin)
+    time_expert = TimeExpert()
+    lazarus_plugin = adapt_expert(time_expert)
     registry.register(lazarus_plugin)
 
     # Create wrapper - try MoE first, fall back to Dense

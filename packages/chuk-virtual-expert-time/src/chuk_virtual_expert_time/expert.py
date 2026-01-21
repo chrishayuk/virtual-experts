@@ -82,10 +82,25 @@ class TimeExpert(VirtualExpert):
     # File paths
     cot_examples_file: ClassVar[str] = "cot_examples.json"
     schema_file: ClassVar[str] = "schema.json"
+    calibration_file: ClassVar[str] = "calibration.json"
 
     # Instance configuration
     use_mcp: bool = Field(default=False, description="Whether to use MCP server")
     mcp_server: str = Field(default="chuk-mcp-time", description="MCP server name")
+
+    # Keywords for can_handle check
+    _TIME_KEYWORDS: ClassVar[list[str]] = [
+        "time", "timezone", "clock", "utc", "gmt", "est", "pst", "cst", "jst", "convert"
+    ]
+
+    def can_handle(self, prompt: str) -> bool:
+        """
+        Check if this expert can handle the given prompt.
+
+        Uses time-related keywords for fast pre-filtering.
+        """
+        prompt_lower = prompt.lower()
+        return any(kw in prompt_lower for kw in self._TIME_KEYWORDS)
 
     def get_operations(self) -> list[str]:
         """Return list of available operations."""

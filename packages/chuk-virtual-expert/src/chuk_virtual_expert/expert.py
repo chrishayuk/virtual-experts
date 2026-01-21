@@ -53,6 +53,7 @@ class VirtualExpert(ABC, BaseModel):
     # File paths relative to the expert's module
     cot_examples_file: ClassVar[str] = "cot_examples.json"
     schema_file: ClassVar[str] = "schema.json"
+    calibration_file: ClassVar[str] = "calibration.json"
 
     # Pydantic config
     model_config = {"arbitrary_types_allowed": True}
@@ -60,6 +61,22 @@ class VirtualExpert(ABC, BaseModel):
     # Cached data
     _cot_examples: CoTExamples | None = None
     _schema: ExpertSchema | None = None
+
+    @abstractmethod
+    def can_handle(self, prompt: str) -> bool:
+        """
+        Check if this expert can handle the given prompt.
+
+        This is used as a fast pre-filter before the router makes its decision.
+        Return True if the prompt might be handled by this expert.
+
+        Args:
+            prompt: The user's input prompt
+
+        Returns:
+            True if this expert can potentially handle the prompt
+        """
+        ...
 
     @abstractmethod
     def get_operations(self) -> list[str]:
@@ -133,17 +150,52 @@ class VirtualExpert(ABC, BaseModel):
 
     def get_calibration_data(self) -> tuple[list[str], list[str]]:
         """
-        Get calibration data for router training.
+        Get calibration data for router training (JSON actions).
 
         Returns actions formatted as JSON strings for calibration.
         The router learns to distinguish between actions that should
         route to this expert vs. other experts.
 
         Returns:
-            Tuple of (positive_actions, negative_actions)
+            Tuple of (positive_actions, negative_actions) as JSON strings
         """
         examples = self.get_cot_examples()
         return examples.positive_actions, examples.negative_actions
+
+    def get_calibration_actions(self) -> tuple[list[str], list[str]]:
+        """
+        Get calibration actions for CoT-based router training.
+
+        Alias for get_calibration_data() - returns JSON action strings.
+        Used by Lazarus dense wrapper for CoT-based calibration.
+
+        Returns:
+            Tuple of (positive_actions, negative_actions) as JSON strings
+        """
+        return self.get_calibration_data()
+
+    def get_calibration_prompts(self) -> tuple[list[str], list[str]]:
+        """
+        Get calibration prompts for router training (plain text).
+
+        Returns plain text prompts for activation-space routing.
+        Used by routers that learn to distinguish prompts in hidden state space.
+
+        Returns:
+            Tuple of (positive_prompts, negative_prompts) as plain text
+        """
+        # Try to load from calibration.json
+        calibration_path = self._get_package_dir() / self.calibration_file
+        if calibration_path.exists():
+            with open(calibration_path) as f:
+                data = json.load(f)
+            return data.get("positive", []), data.get("negative", [])
+
+        # Fallback: extract queries from cot_examples
+        examples = self.get_cot_examples()
+        positive = [ex.query for ex in examples.examples if ex.action.expert == self.name]
+        negative = [ex.query for ex in examples.examples if ex.action.expert != self.name]
+        return positive, negative
 
     def get_few_shot_prompt(self, max_examples: int = 5) -> str:
         """

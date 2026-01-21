@@ -1,8 +1,8 @@
 """
-Lazarus adapter for new VirtualExpert classes.
+Lazarus adapter for VirtualExpert classes.
 
-Bridges the clean Pydantic-based VirtualExpert API to Lazarus's
-expected VirtualExpertPlugin interface.
+Provides string-based execute interface for Lazarus integration.
+VirtualExpert now natively supports can_handle() and get_calibration_prompts().
 """
 
 from __future__ import annotations
@@ -19,13 +19,10 @@ class LazarusAdapter:
     """
     Adapts a VirtualExpert for use with Lazarus.
 
-    Lazarus expects:
-    - name, description, priority attributes
+    Provides the string-based execute(prompt) -> str interface
+    that Lazarus expects. VirtualExpert now natively provides:
     - can_handle(prompt) -> bool
-    - execute(prompt) -> str
     - get_calibration_prompts() -> tuple[list[str], list[str]]
-
-    This adapter provides those interfaces using the new clean API.
 
     Example:
         from chuk_virtual_expert.lazarus import LazarusAdapter
@@ -54,56 +51,24 @@ class LazarusAdapter:
         return self._expert.priority
 
     def can_handle(self, prompt: str) -> bool:
-        """
-        Check if expert can handle this prompt.
+        """Delegate to expert's can_handle method."""
+        return self._expert.can_handle(prompt)
 
-        Uses domain-specific keywords, not generic words.
-        """
-        # Domain-specific keywords for this expert
-        keywords = self._get_domain_keywords()
-        prompt_lower = prompt.lower()
-        return any(kw in prompt_lower for kw in keywords)
-
-    def _get_domain_keywords(self) -> list[str]:
-        """Get domain-specific keywords for this expert."""
-        if self._expert.name == "time":
-            return [
-                "time",
-                "timezone",
-                "clock",
-                "utc",
-                "gmt",
-                "est",
-                "pst",
-                "cst",
-                "jst",
-                "convert",
-            ]
-        # Default: extract from operations
-        return self._expert.get_operations()
+    def get_calibration_prompts(self) -> tuple[list[str], list[str]]:
+        """Delegate to expert's get_calibration_prompts method."""
+        return self._expert.get_calibration_prompts()
 
     def execute(self, prompt: str) -> str | None:
         """
         Execute and return formatted string for Lazarus.
 
-        Lazarus expects a string response, so we format the
-        structured data appropriately.
+        Parses prompt into a VirtualExpertAction and executes it,
+        then formats the structured result as a string.
         """
         from chuk_virtual_expert.models import VirtualExpertAction
 
-        # Create a simple action from the prompt
-        # In production, this would come from CoT extraction
-        action = VirtualExpertAction(
-            expert=self._expert.name,
-            operation=self._get_default_operation(),
-            parameters={"query": prompt},
-            reasoning="Executed via Lazarus adapter",
-        )
-
-        # Try to parse timezone from prompt for time expert
-        if self._expert.name == "time":
-            action = self._parse_time_action(prompt)
-
+        # Parse prompt into action
+        action = self._parse_prompt(prompt)
         result = self._expert.execute(action)
 
         if result.success and result.data:
@@ -112,15 +77,27 @@ class LazarusAdapter:
             return f"Error: {result.error}"
         return None
 
-    def _get_default_operation(self) -> str:
-        """Get the default operation for this expert."""
-        ops = self._expert.get_operations()
-        return ops[0] if ops else "execute"
+    def _parse_prompt(self, prompt: str) -> VirtualExpertAction:
+        """Parse a prompt into a VirtualExpertAction."""
+        import re
+        from chuk_virtual_expert.models import VirtualExpertAction
 
-    def _parse_time_action(self, prompt: str) -> VirtualExpertAction:
+        # Expert-specific parsing
+        if self._expert.name == "time":
+            return self._parse_time_prompt(prompt)
+
+        # Default: use first operation with prompt as parameter
+        ops = self._expert.get_operations()
+        return VirtualExpertAction(
+            expert=self._expert.name,
+            operation=ops[0] if ops else "execute",
+            parameters={"query": prompt},
+            reasoning="Parsed via LazarusAdapter",
+        )
+
+    def _parse_time_prompt(self, prompt: str) -> VirtualExpertAction:
         """Parse a time-related prompt into an action."""
         import re
-
         from chuk_virtual_expert.models import VirtualExpertAction
 
         prompt_lower = prompt.lower()
@@ -151,7 +128,7 @@ class LazarusAdapter:
                 )
 
         # Check for time in location
-        location_match = re.search(r"time\s+(?:in|at|for)\s+(\w+(?:\s+\w+)?)", prompt_lower)
+        location_match = re.search(r"time.*?\b(?:in|at|for)\s+(\w+(?:\s+\w+)?)", prompt_lower)
         if location_match:
             return VirtualExpertAction(
                 expert="time",
@@ -171,7 +148,6 @@ class LazarusAdapter:
         from enum import Enum
 
         query_type = data.get("query_type", "")
-        # Handle enum values
         if isinstance(query_type, Enum):
             query_type = query_type.value
         query_type = str(query_type)
@@ -199,62 +175,31 @@ class LazarusAdapter:
         # Fallback: JSON
         return json.dumps(data, default=str)
 
-    def get_calibration_prompts(self) -> tuple[list[str], list[str]]:
-        """
-        Get calibration prompts for Lazarus router training (legacy).
-
-        Returns the normalized action strings (not raw queries)
-        for calibration. This ensures the router learns on
-        the consistent action format.
-        """
-        positive, negative = self._expert.get_calibration_data()
-        return positive, negative
-
-    def get_calibration_actions(self) -> tuple[list[str], list[str]]:
-        """
-        Get calibration action JSONs for CoT-based router training.
-
-        This is the preferred interface when CoT rewriting is enabled.
-        Returns action JSONs that the router calibrates on.
-        """
-        return self._expert.get_calibration_data()
-
     def execute_action(self, action: Any) -> str | None:
         """
-        Execute with a VirtualExpertAction (CoT interface).
-
-        This method is called by Lazarus when CoT rewriting is enabled.
-        Accepts either a Lazarus VirtualExpertAction (dataclass) or
-        our Pydantic VirtualExpertAction.
+        Execute with a VirtualExpertAction.
 
         Args:
-            action: VirtualExpertAction from Lazarus CoT rewriter
+            action: VirtualExpertAction (Pydantic or dataclass)
 
         Returns:
-            Formatted string result for Lazarus
+            Formatted string result
         """
         from chuk_virtual_expert.models import VirtualExpertAction as PydanticAction
 
-        # Convert from Lazarus dataclass to our Pydantic model if needed
-        if hasattr(action, "to_json"):
-            # It's a Lazarus action dataclass - convert via JSON
-            action_data = {
-                "expert": action.expert,
-                "operation": action.operation,
-                "parameters": action.parameters,
-                "confidence": action.confidence,
-                "reasoning": action.reasoning,
-            }
-            pydantic_action = PydanticAction(**action_data)
-        elif isinstance(action, PydanticAction):
+        # Convert to Pydantic model if needed
+        if isinstance(action, PydanticAction):
             pydantic_action = action
-        else:
-            # Try to create from dict-like object
+        elif hasattr(action, "expert"):
             pydantic_action = PydanticAction(
-                expert=getattr(action, "expert", self._expert.name),
-                operation=getattr(action, "operation", "execute"),
+                expert=action.expert,
+                operation=action.operation,
                 parameters=getattr(action, "parameters", {}),
+                confidence=getattr(action, "confidence", 1.0),
+                reasoning=getattr(action, "reasoning", ""),
             )
+        else:
+            return None
 
         result = self._expert.execute(pydantic_action)
 
@@ -264,12 +209,12 @@ class LazarusAdapter:
             return f"Error: {result.error}"
         return None
 
-    def get_cot_examples(self) -> list[dict]:
-        """
-        Get CoT examples for few-shot prompting.
+    def get_calibration_actions(self) -> tuple[list[str], list[str]]:
+        """Get calibration action JSONs for CoT-based routing."""
+        return self._expert.get_calibration_data()
 
-        Used by FewShotCoTRewriter to build the prompt.
-        """
+    def get_cot_examples(self) -> list[dict]:
+        """Get CoT examples for few-shot prompting."""
         examples = self._expert.get_cot_examples()
         return [{"query": ex.query, "action": ex.action.model_dump()} for ex in examples.examples]
 
