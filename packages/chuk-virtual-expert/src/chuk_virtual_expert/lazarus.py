@@ -65,7 +65,6 @@ class LazarusAdapter:
         Parses prompt into a VirtualExpertAction and executes it,
         then formats the structured result as a string.
         """
-        from chuk_virtual_expert.models import VirtualExpertAction
 
         # Parse prompt into action
         action = self._parse_prompt(prompt)
@@ -79,7 +78,6 @@ class LazarusAdapter:
 
     def _parse_prompt(self, prompt: str) -> VirtualExpertAction:
         """Parse a prompt into a VirtualExpertAction."""
-        import re
         from chuk_virtual_expert.models import VirtualExpertAction
 
         # Expert-specific parsing
@@ -98,6 +96,7 @@ class LazarusAdapter:
     def _parse_time_prompt(self, prompt: str) -> VirtualExpertAction:
         """Parse a time-related prompt into an action."""
         import re
+
         from chuk_virtual_expert.models import VirtualExpertAction
 
         prompt_lower = prompt.lower()

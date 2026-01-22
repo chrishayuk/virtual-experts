@@ -15,6 +15,9 @@ class MockExpert(VirtualExpert):
     description: ClassVar[str] = "Mock expert"
     priority: ClassVar[int] = 5
 
+    def can_handle(self, prompt: str) -> bool:
+        return "mock" in prompt.lower()
+
     def get_operations(self) -> list[str]:
         return ["op1"]
 
@@ -29,6 +32,9 @@ class HighPriorityExpert(VirtualExpert):
     description: ClassVar[str] = "High priority"
     priority: ClassVar[int] = 10
 
+    def can_handle(self, prompt: str) -> bool:
+        return "high" in prompt.lower()
+
     def get_operations(self) -> list[str]:
         return []
 
@@ -42,6 +48,9 @@ class LowPriorityExpert(VirtualExpert):
     name: ClassVar[str] = "low"
     description: ClassVar[str] = "Low priority"
     priority: ClassVar[int] = 1
+
+    def can_handle(self, prompt: str) -> bool:
+        return "low" in prompt.lower()
 
     def get_operations(self) -> list[str]:
         return []

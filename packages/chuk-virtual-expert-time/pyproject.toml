@@ -1,6 +1,6 @@
 [project]
 name = "chuk-virtual-expert-time"
-version = "2.0.0"
+version = "3.0.0"
 description = "Time virtual expert - accurate time and timezone operations for LLM routing"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -26,13 +26,11 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = [
-    "chuk-virtual-expert>=2.0.0",
-    "python-dateutil>=2.8",
+    "chuk-virtual-expert[mcp]>=2.0.0",
 ]
 
 [project.optional-dependencies]
-mcp = ["chuk-mcp-time>=0.1.0"]
-standalone = ["httpx>=0.24.0", "tzdata"]
+standalone = ["python-dateutil>=2.8", "tzdata"]
 dev = [
     "pytest>=7.0",
     "pytest-asyncio>=0.21",

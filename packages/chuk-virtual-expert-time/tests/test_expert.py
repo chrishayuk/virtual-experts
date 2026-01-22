@@ -1,13 +1,13 @@
 """Tests for TimeExpert class."""
 
-from datetime import datetime
-
 import pytest
 from chuk_virtual_expert.models import VirtualExpertAction, VirtualExpertResult
 
 from chuk_virtual_expert_time.expert import (
     TIMEZONE_ALIASES,
+    AccuracyMode,
     TimeExpert,
+    TimeMCPTool,
     TimeOperation,
     TimeQueryType,
 )
@@ -25,6 +25,23 @@ class TestTimeOperation:
 
     def test_get_timezone_info_value(self):
         assert TimeOperation.GET_TIMEZONE_INFO == "get_timezone_info"
+
+
+class TestTimeMCPTool:
+    """Tests for TimeMCPTool enum."""
+
+    def test_tool_names(self):
+        assert TimeMCPTool.GET_LOCAL_TIME == "get_local_time"
+        assert TimeMCPTool.CONVERT_TIME == "convert_time"
+        assert TimeMCPTool.GET_TIMEZONE_INFO == "get_timezone_info"
+
+
+class TestAccuracyMode:
+    """Tests for AccuracyMode enum."""
+
+    def test_values(self):
+        assert AccuracyMode.FAST == "fast"
+        assert AccuracyMode.ACCURATE == "accurate"
 
 
 class TestTimeQueryType:
@@ -56,12 +73,11 @@ class TestTimeExpertCreation:
 
     def test_default_creation(self):
         expert = TimeExpert()
-        assert expert.use_mcp is False
-        assert expert.mcp_server == "chuk-mcp-time"
+        assert expert is not None
 
-    def test_with_mcp_enabled(self):
-        expert = TimeExpert(use_mcp=True)
-        assert expert.use_mcp is True
+    def test_mcp_server_url(self):
+        expert = TimeExpert()
+        assert expert.mcp_server_url == "https://time.chukai.io/mcp"
 
 
 class TestTimeExpertClassAttributes:
@@ -77,7 +93,7 @@ class TestTimeExpertClassAttributes:
 
     def test_version(self):
         expert = TimeExpert()
-        assert expert.version == "2.0.0"
+        assert expert.version == "3.0.0"
 
     def test_priority(self):
         expert = TimeExpert()
@@ -100,178 +116,74 @@ class TestGetOperations:
         assert "get_timezone_info" in ops
 
 
-class TestGetTime:
-    """Tests for get_time operation."""
+class TestGetMcpToolName:
+    """Tests for get_mcp_tool_name method."""
 
-    def test_get_utc_time(self):
+    def test_get_time_maps_to_get_local_time(self):
         expert = TimeExpert()
-        result = expert.get_time("UTC")
+        tool = expert.get_mcp_tool_name(TimeOperation.GET_TIME.value)
+        assert tool == TimeMCPTool.GET_LOCAL_TIME.value
 
-        assert result["query_type"] == TimeQueryType.CURRENT_TIME
-        assert result["timezone"] == "UTC"
-        assert "iso8601" in result
-        assert "formatted" in result
-        assert "epoch_ms" in result
-
-    def test_get_utc_time_default(self):
+    def test_convert_time_maps_to_convert_time(self):
         expert = TimeExpert()
-        result = expert.get_time()
+        tool = expert.get_mcp_tool_name(TimeOperation.CONVERT_TIME.value)
+        assert tool == TimeMCPTool.CONVERT_TIME.value
 
-        assert result["timezone"] == "UTC"
-
-    def test_get_time_tokyo(self):
+    def test_get_timezone_info_maps_correctly(self):
         expert = TimeExpert()
-        result = expert.get_time("Asia/Tokyo")
+        tool = expert.get_mcp_tool_name(TimeOperation.GET_TIMEZONE_INFO.value)
+        assert tool == TimeMCPTool.GET_TIMEZONE_INFO.value
 
-        assert result["query_type"] == TimeQueryType.CURRENT_TIME
-        assert result["timezone"] == "Asia/Tokyo"
-        assert "utc_offset" in result
-
-    def test_get_time_with_alias(self):
+    def test_unknown_operation_raises(self):
         expert = TimeExpert()
-        result = expert.get_time("tokyo")
-
-        assert result["timezone"] == "Asia/Tokyo"
-
-    def test_get_time_epoch_ms_is_int(self):
-        expert = TimeExpert()
-        result = expert.get_time()
-
-        assert isinstance(result["epoch_ms"], int)
-
-    def test_get_time_iso8601_format(self):
-        expert = TimeExpert()
-        result = expert.get_time()
-
-        iso_str = result["iso8601"]
-        # Should be parseable as ISO8601
-        datetime.fromisoformat(iso_str)
-
-
-class TestConvertTime:
-    """Tests for convert_time operation."""
-
-    def test_convert_basic(self):
-        expert = TimeExpert()
-        result = expert.convert_time(
-            time="3pm",
-            from_timezone="America/New_York",
-            to_timezone="America/Los_Angeles",
-        )
-
-        assert result["query_type"] == TimeQueryType.CONVERSION
-        assert result["from_timezone"] == "America/New_York"
-        assert result["to_timezone"] == "America/Los_Angeles"
-        assert "from_time" in result
-        assert "to_time" in result
-
-    def test_convert_with_aliases(self):
-        expert = TimeExpert()
-        result = expert.convert_time(
-            time="12pm",
-            from_timezone="est",
-            to_timezone="pst",
-        )
-
-        assert result["from_timezone"] == "America/New_York"
-        assert result["to_timezone"] == "America/Los_Angeles"
-
-    def test_convert_includes_iso8601(self):
-        expert = TimeExpert()
-        result = expert.convert_time(
-            time="15:00",
-            from_timezone="UTC",
-            to_timezone="Asia/Tokyo",
-        )
-
-        assert "from_iso8601" in result
-        assert "to_iso8601" in result
-
-
-class TestGetTimezoneInfo:
-    """Tests for get_timezone_info operation."""
-
-    def test_known_location(self):
-        expert = TimeExpert()
-        result = expert.get_timezone_info("sydney")
-
-        assert result["query_type"] == TimeQueryType.TIMEZONE_INFO
-        assert result["location"] == "Sydney"
-        assert result["iana_timezone"] == "Australia/Sydney"
-
-    def test_unknown_location(self):
-        expert = TimeExpert()
-        result = expert.get_timezone_info("narnia")
-
-        assert result["query_type"] == TimeQueryType.ERROR
-        assert "error" in result
-
-
-class TestExecuteOperation:
-    """Tests for execute_operation dispatch method."""
-
-    def test_dispatch_get_time(self):
-        expert = TimeExpert()
-        result = expert.execute_operation("get_time", {"timezone": "UTC"})
-
-        assert result["query_type"] == TimeQueryType.CURRENT_TIME
-
-    def test_dispatch_convert_time(self):
-        expert = TimeExpert()
-        result = expert.execute_operation(
-            "convert_time",
-            {
-                "time": "3pm",
-                "from_timezone": "EST",
-                "to_timezone": "PST",
-            },
-        )
-
-        assert result["query_type"] == TimeQueryType.CONVERSION
-
-    def test_dispatch_get_timezone_info(self):
-        expert = TimeExpert()
-        result = expert.execute_operation(
-            "get_timezone_info",
-            {"location": "tokyo"},
-        )
-
-        assert result["query_type"] == TimeQueryType.TIMEZONE_INFO
-
-    def test_dispatch_unknown_operation(self):
-        expert = TimeExpert()
-
         with pytest.raises(ValueError):
-            expert.execute_operation("unknown_op", {})
+            expert.get_mcp_tool_name("unknown_op")
 
 
-class TestExecute:
-    """Tests for execute method (action interface)."""
+class TestTransformParameters:
+    """Tests for transform_parameters method."""
 
-    def test_execute_success(self):
+    def test_get_time_resolves_alias(self):
         expert = TimeExpert()
-        action = VirtualExpertAction(
-            expert="time",
-            operation="get_time",
-            parameters={"timezone": "UTC"},
+        params = expert.transform_parameters(
+            TimeOperation.GET_TIME.value,
+            {"timezone": "tokyo"},
         )
-        result = expert.execute(action)
+        assert params["timezone"] == "Asia/Tokyo"
+        assert params["mode"] == AccuracyMode.FAST.value
 
-        assert isinstance(result, VirtualExpertResult)
-        assert result.success is True
-        assert result.data is not None
-        assert result.expert_name == "time"
-
-    def test_execute_failure(self):
+    def test_convert_time_maps_parameters(self):
         expert = TimeExpert()
-        action = VirtualExpertAction(
-            expert="time",
-            operation="invalid_op",
+        params = expert.transform_parameters(
+            TimeOperation.CONVERT_TIME.value,
+            {"time": "2024-01-15T09:00:00", "from_timezone": "est", "to_timezone": "pst"},
         )
-        result = expert.execute(action)
+        assert params["datetime_str"] == "2024-01-15T09:00:00"
+        assert params["from_timezone"] == "America/New_York"
+        assert params["to_timezone"] == "America/Los_Angeles"
 
-        assert result.success is False
-        assert result.error is not None
+    def test_get_timezone_info_resolves_location(self):
+        expert = TimeExpert()
+        params = expert.transform_parameters(
+            TimeOperation.GET_TIMEZONE_INFO.value,
+            {"location": "sydney"},
+        )
+        assert params["timezone"] == "Australia/Sydney"
+
+
+class TestCanHandle:
+    """Tests for can_handle method."""
+
+    def test_handles_time_keywords(self):
+        expert = TimeExpert()
+        assert expert.can_handle("What time is it?") is True
+        assert expert.can_handle("Convert timezone") is True
+        assert expert.can_handle("What's the UTC time?") is True
+
+    def test_rejects_non_time_queries(self):
+        expert = TimeExpert()
+        assert expert.can_handle("Tell me a joke") is False
+        assert expert.can_handle("What's the weather?") is False
 
 
 class TestResolveTimezone:
@@ -292,10 +204,15 @@ class TestResolveTimezone:
         tz = expert._resolve_timezone("UTC")
         assert tz == "UTC"
 
-    def test_resolve_unknown(self):
+    def test_resolve_unknown_returns_original(self):
         expert = TimeExpert()
         tz = expert._resolve_timezone("unknown_tz")
-        assert tz is None
+        assert tz == "unknown_tz"
+
+    def test_resolve_empty_returns_utc(self):
+        expert = TimeExpert()
+        tz = expert._resolve_timezone("")
+        assert tz == "UTC"
 
 
 class TestGetCotExamples:
@@ -354,3 +271,71 @@ class TestGetCalibrationData:
         for action_json in negative:
             action = json.loads(action_json)
             assert action["expert"] != "time"
+
+
+# Integration tests that require MCP server
+@pytest.mark.integration
+class TestMCPIntegration:
+    """Integration tests that call the actual MCP server."""
+
+    def test_execute_get_time(self):
+        expert = TimeExpert()
+        result = expert.execute_operation("get_time", {"timezone": "UTC"})
+
+        assert result["query_type"] == TimeQueryType.CURRENT_TIME.value
+        assert result["timezone"] == "UTC"
+        assert "iso8601" in result
+
+    def test_execute_get_time_with_alias(self):
+        expert = TimeExpert()
+        result = expert.execute_operation("get_time", {"timezone": "tokyo"})
+
+        assert result["timezone"] == "Asia/Tokyo"
+        assert result["abbreviation"] == "JST"
+
+    def test_execute_convert_time(self):
+        expert = TimeExpert()
+        result = expert.execute_operation(
+            "convert_time",
+            {
+                "time": "2024-01-15T09:00:00",
+                "from_timezone": "America/New_York",
+                "to_timezone": "Asia/Tokyo",
+            },
+        )
+
+        assert result["query_type"] == TimeQueryType.CONVERSION.value
+        assert result["from_timezone"] == "America/New_York"
+        assert result["to_timezone"] == "Asia/Tokyo"
+
+    def test_execute_get_timezone_info(self):
+        expert = TimeExpert()
+        result = expert.execute_operation("get_timezone_info", {"location": "tokyo"})
+
+        assert result["query_type"] == TimeQueryType.TIMEZONE_INFO.value
+        assert result["iana_timezone"] == "Asia/Tokyo"
+
+    def test_execute_action(self):
+        expert = TimeExpert()
+        action = VirtualExpertAction(
+            expert="time",
+            operation="get_time",
+            parameters={"timezone": "UTC"},
+        )
+        result = expert.execute(action)
+
+        assert isinstance(result, VirtualExpertResult)
+        assert result.success is True
+        assert result.data is not None
+        assert result.expert_name == "time"
+
+    def test_execute_failure(self):
+        expert = TimeExpert()
+        action = VirtualExpertAction(
+            expert="time",
+            operation="invalid_op",
+        )
+        result = expert.execute(action)
+
+        assert result.success is False
+        assert result.error is not None

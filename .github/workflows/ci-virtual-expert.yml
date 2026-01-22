@@ -1,0 +1,187 @@
+name: CI - Virtual Expert Base
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/chuk-virtual-expert/**'
+      - '.github/workflows/ci-virtual-expert.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/chuk-virtual-expert/**'
+      - '.github/workflows/ci-virtual-expert.yml'
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/chuk-virtual-expert
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          cd ../..
+          uv sync --all-packages
+
+      - name: Run ruff check
+        run: uv run ruff check src/ tests/
+
+      - name: Run ruff format check
+        run: uv run ruff format --check src/ tests/
+
+  typecheck:
+    name: Type Check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/chuk-virtual-expert
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          cd ../..
+          uv sync --all-packages
+
+      - name: Run mypy
+        run: uv run mypy src/
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/chuk-virtual-expert
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          cd ../..
+          uv sync --all-packages
+
+      - name: Run bandit
+        run: uv run bandit -r src/ -ll
+
+  test:
+    name: Test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    defaults:
+      run:
+        working-directory: packages/chuk-virtual-expert
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          cd ../..
+          uv sync --all-packages
+
+      - name: Run tests
+        run: |
+          cd ../..
+          uv run python -m pytest packages/chuk-virtual-expert/tests/ -v --tb=short
+
+      - name: Run tests with coverage
+        run: |
+          cd ../..
+          uv run python -m pytest packages/chuk-virtual-expert/tests/ --cov=packages/chuk-virtual-expert/src/chuk_virtual_expert --cov-report=xml --cov-report=term-missing
+
+      - name: Upload coverage to Codecov
+        if: matrix.python-version == '3.11'
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.xml
+          flags: virtual-expert
+          name: virtual-expert-coverage
+          fail_ci_if_error: false
+
+  build:
+    name: Build Package
+    runs-on: ubuntu-latest
+    needs: [lint, typecheck, security, test]
+    defaults:
+      run:
+        working-directory: packages/chuk-virtual-expert
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install build tools
+        run: uv pip install --system build twine
+
+      - name: Build package
+        run: python -m build
+
+      - name: Check package
+        run: twine check dist/*
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-virtual-expert
+          path: packages/chuk-virtual-expert/dist/

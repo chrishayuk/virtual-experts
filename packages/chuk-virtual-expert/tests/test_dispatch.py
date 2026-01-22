@@ -21,6 +21,9 @@ class MockExpert(VirtualExpert):
     description: ClassVar[str] = "Mock expert for testing"
     priority: ClassVar[int] = 5
 
+    def can_handle(self, prompt: str) -> bool:
+        return "mock" in prompt.lower() or "echo" in prompt.lower()
+
     def get_operations(self) -> list[str]:
         return ["echo"]
 

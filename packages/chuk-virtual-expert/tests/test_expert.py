@@ -18,6 +18,9 @@ class MockExpert(VirtualExpert):
     version: ClassVar[str] = "1.0.0"
     priority: ClassVar[int] = 10
 
+    def can_handle(self, prompt: str) -> bool:
+        return "mock" in prompt.lower() or "echo" in prompt.lower()
+
     def get_operations(self) -> list[str]:
         return ["echo", "reverse", "fail"]
 
@@ -144,6 +147,71 @@ class TestExecute:
         assert isinstance(result, VirtualExpertResult)
 
 
+class TestExecuteAsync:
+    """Tests for execute_async method (async entry point)."""
+
+    @pytest.mark.asyncio
+    async def test_successful_execution(self):
+        expert = MockExpert()
+        action = VirtualExpertAction(
+            expert="mock",
+            operation="echo",
+            parameters={"message": "hello async"},
+        )
+        result = await expert.execute_async(action)
+
+        assert result.success is True
+        assert result.data == {"result": "hello async"}
+        assert result.expert_name == "mock"
+        assert result.action == action
+        assert result.error is None
+
+    @pytest.mark.asyncio
+    async def test_failed_execution(self):
+        expert = MockExpert()
+        action = VirtualExpertAction(
+            expert="mock",
+            operation="fail",
+        )
+        result = await expert.execute_async(action)
+
+        assert result.success is False
+        assert result.data is None
+        assert result.error == "Intentional failure"
+        assert result.expert_name == "mock"
+
+    @pytest.mark.asyncio
+    async def test_returns_virtualexpertresult(self):
+        from chuk_virtual_expert.models import VirtualExpertResult
+
+        expert = MockExpert()
+        action = VirtualExpertAction(expert="mock", operation="echo")
+        result = await expert.execute_async(action)
+        assert isinstance(result, VirtualExpertResult)
+
+
+class TestExecuteOperationAsync:
+    """Tests for execute_operation_async method."""
+
+    @pytest.mark.asyncio
+    async def test_echo_operation(self):
+        expert = MockExpert()
+        result = await expert.execute_operation_async("echo", {"message": "test"})
+        assert result == {"result": "test"}
+
+    @pytest.mark.asyncio
+    async def test_reverse_operation(self):
+        expert = MockExpert()
+        result = await expert.execute_operation_async("reverse", {"message": "hello"})
+        assert result == {"result": "olleh"}
+
+    @pytest.mark.asyncio
+    async def test_unknown_operation_raises(self):
+        expert = MockExpert()
+        with pytest.raises(ValueError, match="Unknown operation"):
+            await expert.execute_operation_async("invalid", {})
+
+
 class TestGetCotExamples:
     """Tests for get_cot_examples method."""
 
@@ -251,6 +319,9 @@ class TestLoadCotExamplesFromFile:
             def _get_package_dir(self) -> Path:
                 return tmp_path
 
+            def can_handle(self, prompt: str) -> bool:
+                return "test" in prompt.lower()
+
             def get_operations(self) -> list[str]:
                 return ["test_op"]
 
@@ -297,6 +368,9 @@ class TestLoadSchemaFromFile:
 
             def _get_package_dir(self) -> Path:
                 return tmp_path
+
+            def can_handle(self, prompt: str) -> bool:
+                return "test" in prompt.lower()
 
             def get_operations(self) -> list[str]:
                 return ["test_op"]

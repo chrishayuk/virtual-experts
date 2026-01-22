@@ -29,6 +29,7 @@ classifiers = [
 dependencies = ["pydantic>=2.0"]
 
 [project.optional-dependencies]
+mcp = ["chuk-mcp>=0.1.0"]
 lazarus = ["chuk-lazarus>=0.1.0"]
 dev = [
     "pytest>=7.0",

@@ -39,6 +39,14 @@ from chuk_virtual_expert.dispatch import (
 # Base class for experts
 from chuk_virtual_expert.expert import VirtualExpert
 
+# MCP-backed expert base class
+try:
+    from chuk_virtual_expert.mcp_expert import MCPExpert, MCPTransportType
+except ImportError:
+    # chuk-mcp not installed
+    MCPExpert = None  # type: ignore[assignment, misc]
+    MCPTransportType = None  # type: ignore[assignment, misc]
+
 # Lazarus integration
 from chuk_virtual_expert.lazarus import (
     LazarusAdapter,
@@ -83,8 +91,10 @@ __all__ = [
     "ExpertSchema",
     "OperationSchema",
     "ParameterSchema",
-    # Expert base
+    # Expert base classes
     "VirtualExpert",
+    "MCPExpert",
+    "MCPTransportType",
     # Registry
     "ExpertRegistry",
     "get_registry",

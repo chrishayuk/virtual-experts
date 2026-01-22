@@ -15,11 +15,9 @@ Usage:
 from __future__ import annotations
 
 import json
-from collections import Counter
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable, Protocol
-
-from pydantic import BaseModel
+from typing import Any, Protocol
 
 from .expert import VirtualExpert
 from .models import VirtualExpertAction
@@ -111,14 +109,14 @@ class ValidationSummary:
     def accuracy(self) -> float:
         return self.correct / self.total if self.total > 0 else 0
 
-    def print_summary(self):
+    def print_summary(self) -> None:
         """Print validation summary."""
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print("FEW-SHOT VALIDATION SUMMARY")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         print(f"Total queries: {self.total}")
         print()
-        print(f"Pipeline metrics:")
+        print("Pipeline metrics:")
         print(f"  Parsed:   {self.parsed:3d}/{self.total} ({self.parse_rate:5.1%})")
         print(f"  Routed:   {self.routed:3d}/{self.total} ({self.route_rate:5.1%})")
         print(f"  Executed: {self.executed:3d}/{self.total} ({self.exec_rate:5.1%})")
@@ -126,14 +124,14 @@ class ValidationSummary:
         print(f"  Correct:  {self.correct:3d}/{self.total} ({self.accuracy:5.1%})")
 
         if self.errors:
-            print(f"\nError breakdown:")
+            print("\nError breakdown:")
             for error, count in sorted(self.errors.items(), key=lambda x: -x[1]):
                 print(f"  {error}: {count}")
 
         # Decision guidance
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print("DECISION GUIDANCE")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
 
         if self.parse_rate < 0.5:
             print("⚠️  Parse rate <50%: Redesign trace format or simplify schema")
@@ -181,14 +179,14 @@ class FewShotValidator:
         # Build prompt template from expert's CoT examples
         self._build_prompt_template()
 
-    def _build_prompt_template(self):
+    def _build_prompt_template(self) -> None:
         """Build few-shot prompt template from expert's examples."""
         cot_examples = self.expert.get_cot_examples()
 
         examples_text = ""
-        for ex in cot_examples.examples[:self.max_examples]:
+        for ex in cot_examples.examples[: self.max_examples]:
             examples_text += f'Query: "{ex.query}"\n'
-            examples_text += f'Action: {ex.action.model_dump_json(indent=2)}\n\n'
+            examples_text += f"Action: {ex.action.model_dump_json(indent=2)}\n\n"
 
         schema = self.expert.get_schema()
         ops_summary = schema.get_operations_summary() if schema.operations else ""
@@ -313,7 +311,7 @@ Action:"""
         """
         summary = ValidationSummary()
 
-        for query, expected in zip(queries, expected_answers):
+        for query, expected in zip(queries, expected_answers, strict=True):
             result = self.validate_single(query, expected, answer_checker)
             summary.results.append(result)
 
@@ -370,7 +368,7 @@ Action:"""
             data = json.loads(json_str)
             return VirtualExpertAction(**data)
 
-        except (json.JSONDecodeError, KeyError, TypeError):
+        except (json.JSONDecodeError, KeyError, TypeError, ValueError):
             return None
 
     def _default_answer_check(self, answer: Any, expected: Any) -> bool:
@@ -388,6 +386,7 @@ Action:"""
 # =============================================================================
 # CONVENIENCE FUNCTIONS
 # =============================================================================
+
 
 def validate_expert_few_shot(
     expert: VirtualExpert,

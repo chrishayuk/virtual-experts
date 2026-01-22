@@ -1,6 +1,6 @@
 # chuk-virtual-expert-time
 
-Time virtual expert - accurate time and timezone operations for LLM routing.
+Time virtual expert backed by MCP server - accurate time and timezone operations for LLM routing.
 
 [![PyPI version](https://badge.fury.io/py/chuk-virtual-expert-time.svg)](https://badge.fury.io/py/chuk-virtual-expert-time)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
@@ -8,25 +8,22 @@ Time virtual expert - accurate time and timezone operations for LLM routing.
 
 ## Overview
 
-A virtual expert plugin that provides accurate time and timezone operations for LLM routing systems. Works with Lazarus MoE models or as a standalone expert.
+A virtual expert plugin that provides NTP-accurate time and timezone operations via the hosted MCP server at `https://time.chukai.io/mcp`. Works with Lazarus MoE models or as a standalone expert.
 
 **Features:**
+- **NTP-accurate time** - Uses MCP server with NTP consensus
 - **Current time** - Get UTC or local time for any timezone
 - **Timezone conversion** - Convert times between IANA timezones
-- **Timezone info** - Look up timezone details for locations
+- **Timezone info** - Look up timezone details with DST transitions
 - **20+ timezone aliases** - Common cities and abbreviations
+- **Async-native** - Built for async/await patterns
 - **Pydantic-native** - Type-safe with structured responses
-- **CoT training data** - Ready for few-shot prompting and calibration
+- **No magic strings** - Uses enums throughout
 
 ## Installation
 
 ```bash
 pip install chuk-virtual-expert-time
-```
-
-With MCP server support (NTP consensus accuracy):
-```bash
-pip install chuk-virtual-expert-time[mcp]
 ```
 
 For development:
@@ -36,46 +33,75 @@ pip install chuk-virtual-expert-time[dev]
 
 ## Quick Start
 
-### Direct Usage
+### Using execute_operation
 
 ```python
-from chuk_virtual_expert_time import TimeExpert
-from chuk_virtual_expert import VirtualExpertAction
+from chuk_virtual_expert_time import TimeExpert, TimeOperation
 
-# Create expert
 expert = TimeExpert()
 
 # Get current UTC time
-action = VirtualExpertAction(
-    expert="time",
-    operation="get_time",
-    parameters={},
+result = expert.execute_operation(
+    TimeOperation.GET_TIME.value,
+    {"timezone": "UTC"}
 )
-result = expert.execute(action)
-print(result.data)
+print(result)
 # {'query_type': 'current_time', 'timezone': 'UTC', 'iso8601': '2024-01-15T12:00:00+00:00', ...}
 
-# Get time in Tokyo
+# Get time in Tokyo (using alias)
+result = expert.execute_operation(
+    TimeOperation.GET_TIME.value,
+    {"timezone": "tokyo"}
+)
+print(result["iso8601"])  # "2024-01-15T21:00:00+09:00"
+
+# Convert time between zones
+result = expert.execute_operation(
+    TimeOperation.CONVERT_TIME.value,
+    {
+        "time": "2024-01-15T15:00:00",
+        "from_timezone": "est",
+        "to_timezone": "pst",
+    }
+)
+print(f"{result['from_time']} -> {result['to_time']}")
+```
+
+### Using VirtualExpertAction
+
+```python
+from chuk_virtual_expert_time import TimeExpert, TimeOperation
+from chuk_virtual_expert.models import VirtualExpertAction
+
+expert = TimeExpert()
+
 action = VirtualExpertAction(
     expert="time",
-    operation="get_time",
+    operation=TimeOperation.GET_TIME.value,
     parameters={"timezone": "Asia/Tokyo"},
 )
 result = expert.execute(action)
-print(result.data["formatted"])  # "2024-01-15 21:00:00 JST"
 
-# Convert time between zones
-action = VirtualExpertAction(
-    expert="time",
-    operation="convert_time",
-    parameters={
-        "time": "3pm",
-        "from_timezone": "EST",
-        "to_timezone": "PST",
-    },
-)
-result = expert.execute(action)
-print(f"{result.data['from_time']} EST = {result.data['to_time']} PST")
+print(result.success)  # True
+print(result.data)     # {'query_type': 'current_time', ...}
+```
+
+### Async Usage
+
+```python
+import asyncio
+from chuk_virtual_expert_time import TimeExpert, TimeOperation
+
+async def main():
+    expert = TimeExpert()
+
+    result = await expert.execute_operation_async(
+        TimeOperation.GET_TIME.value,
+        {"timezone": "Europe/London"}
+    )
+    print(result)
+
+asyncio.run(main())
 ```
 
 ### With Lazarus
@@ -115,7 +141,7 @@ wrapper.calibrate(use_cot=True)
 
 # Use it
 result = wrapper.solve("What time is it in Tokyo?")
-print(result.answer)  # "2024-01-15 21:00:00 JST (Asia/Tokyo)"
+print(result.answer)
 ```
 
 ## Operations
@@ -134,9 +160,12 @@ Get current time in a timezone.
     "timezone": "Asia/Tokyo",
     "iana_timezone": "Asia/Tokyo",
     "iso8601": "2024-01-15T21:00:00+09:00",
-    "formatted": "2024-01-15 21:00:00 JST",
-    "epoch_ms": 1705320000000,
-    "utc_offset": "+0900",
+    "formatted": "2024-01-15T21:00:00+09:00",
+    "utc_offset": "+09:00",
+    "is_dst": False,
+    "abbreviation": "JST",
+    "source_utc": "2024-01-15T12:00:00+00:00",
+    "estimated_error_ms": 50.0,
 }
 ```
 
@@ -145,9 +174,9 @@ Get current time in a timezone.
 Convert time between timezones.
 
 **Parameters:**
-- `time`: Time string (e.g., "3pm", "15:00", "3:30 PM")
-- `from_timezone`: Source timezone
-- `to_timezone`: Target timezone
+- `time`: ISO 8601 datetime string
+- `from_timezone`: Source timezone (IANA or alias)
+- `to_timezone`: Target timezone (IANA or alias)
 
 **Returns:**
 ```python
@@ -155,10 +184,11 @@ Convert time between timezones.
     "query_type": "conversion",
     "from_timezone": "America/New_York",
     "to_timezone": "America/Los_Angeles",
-    "from_time": "03:00 PM",
-    "to_time": "12:00 PM",
+    "from_time": "2024-01-15T15:00:00-05:00",
+    "to_time": "2024-01-15T12:00:00-08:00",
     "from_iso8601": "2024-01-15T15:00:00-05:00",
     "to_iso8601": "2024-01-15T12:00:00-08:00",
+    "explanation": "America/Los_Angeles is 3.0 hours behind America/New_York",
 }
 ```
 
@@ -167,15 +197,66 @@ Convert time between timezones.
 Get timezone information for a location.
 
 **Parameters:**
-- `location`: Location name
+- `location`: Location name or IANA timezone
 
 **Returns:**
 ```python
 {
     "query_type": "timezone_info",
-    "location": "Tokyo",
+    "location": "Asia/Tokyo",
     "iana_timezone": "Asia/Tokyo",
+    "utc_offset": "+09:00",
+    "is_dst": False,
+    "abbreviation": "JST",
+    "transitions": [...]  # Upcoming DST transitions
 }
+```
+
+## Enums
+
+### TimeOperation
+
+```python
+from chuk_virtual_expert_time import TimeOperation
+
+TimeOperation.GET_TIME           # "get_time"
+TimeOperation.CONVERT_TIME       # "convert_time"
+TimeOperation.GET_TIMEZONE_INFO  # "get_timezone_info"
+```
+
+### TimeMCPTool
+
+MCP tool names on the server:
+
+```python
+from chuk_virtual_expert_time import TimeMCPTool
+
+TimeMCPTool.GET_LOCAL_TIME       # "get_local_time"
+TimeMCPTool.CONVERT_TIME         # "convert_time"
+TimeMCPTool.GET_TIMEZONE_INFO    # "get_timezone_info"
+TimeMCPTool.GET_TIME_UTC         # "get_time_utc"
+TimeMCPTool.LIST_TIMEZONES       # "list_timezones"
+TimeMCPTool.COMPARE_SYSTEM_CLOCK # "compare_system_clock"
+```
+
+### TimeQueryType
+
+```python
+from chuk_virtual_expert_time import TimeQueryType
+
+TimeQueryType.CURRENT_TIME   # "current_time"
+TimeQueryType.CONVERSION     # "conversion"
+TimeQueryType.TIMEZONE_INFO  # "timezone_info"
+TimeQueryType.ERROR          # "error"
+```
+
+### AccuracyMode
+
+```python
+from chuk_virtual_expert_time import AccuracyMode
+
+AccuracyMode.FAST      # "fast" - 4 NTP servers
+AccuracyMode.ACCURATE  # "accurate" - 7 NTP servers
 ```
 
 ## Timezone Aliases
@@ -205,50 +286,27 @@ Common location names and abbreviations are automatically resolved:
 | JST | Asia/Tokyo |
 | UTC | UTC |
 
-## CoT Training Examples
+## API Reference
 
-The package includes `cot_examples.json` with 20 training examples:
+### TimeExpert
 
-```json
-{
-  "expert_name": "time",
-  "examples": [
-    {
-      "query": "What time is it in Tokyo?",
-      "action": {
-        "expert": "time",
-        "operation": "get_time",
-        "parameters": {"timezone": "Asia/Tokyo"},
-        "confidence": 1.0,
-        "reasoning": "User asking for current time in Tokyo"
-      }
-    },
-    {
-      "query": "Convert 3pm EST to PST",
-      "action": {
-        "expert": "time",
-        "operation": "convert_time",
-        "parameters": {
-          "time": "3pm",
-          "from_timezone": "America/New_York",
-          "to_timezone": "America/Los_Angeles"
-        },
-        "confidence": 1.0,
-        "reasoning": "Time conversion from Eastern to Pacific"
-      }
-    }
-  ]
-}
-```
+Main expert class for time operations.
 
-## Configuration
+**Class Attributes:**
+- `name = "time"` - Expert identifier
+- `description` - Human-readable description
+- `version = "3.0.0"` - Expert version
+- `priority = 5` - Routing priority
+- `mcp_server_url = "https://time.chukai.io/mcp"` - MCP server endpoint
+- `mcp_timeout = 30.0` - Request timeout in seconds
 
-```python
-expert = TimeExpert(
-    use_mcp=True,                    # Use MCP server for NTP accuracy
-    mcp_server="chuk-mcp-time",      # MCP server name
-)
-```
+**Methods:**
+- `get_operations() -> list[str]` - Returns available operations
+- `execute_operation(operation, parameters) -> dict` - Execute synchronously
+- `execute_operation_async(operation, parameters) -> dict` - Execute asynchronously
+- `execute(action) -> VirtualExpertResult` - Execute a VirtualExpertAction
+- `execute_async(action) -> VirtualExpertResult` - Execute action asynchronously
+- `list_mcp_tools() -> list[dict]` - List available MCP tools
 
 ## Development
 
@@ -264,7 +322,7 @@ make test
 # Run tests with coverage
 make test-cov
 
-# Run all checks
+# Run all checks (lint, format, mypy, bandit, tests)
 make check
 
 # Format code
@@ -274,57 +332,10 @@ make format
 make build
 ```
 
-## API Reference
-
-### TimeExpert
-
-Main expert class for time operations.
-
-**Class Attributes:**
-- `name = "time"` - Expert identifier
-- `description` - Human-readable description
-- `version = "2.0.0"` - Expert version
-- `priority = 5` - Routing priority
-
-**Instance Attributes:**
-- `use_mcp: bool` - Whether to use MCP server
-- `mcp_server: str` - MCP server name
-
-**Methods:**
-- `get_operations() -> list[str]` - Returns ["get_time", "convert_time", "get_timezone_info"]
-- `execute_operation(operation, parameters) -> dict` - Execute an operation
-- `execute(action) -> VirtualExpertResult` - Execute a VirtualExpertAction
-- `get_time(timezone="UTC") -> dict` - Get current time
-- `convert_time(time, from_timezone, to_timezone) -> dict` - Convert time
-- `get_timezone_info(location) -> dict` - Get timezone info
-
-### TimeOperation
-
-Enum of available operations.
-
-```python
-class TimeOperation(str, Enum):
-    GET_TIME = "get_time"
-    CONVERT_TIME = "convert_time"
-    GET_TIMEZONE_INFO = "get_timezone_info"
-```
-
-### TimeQueryType
-
-Enum of result query types.
-
-```python
-class TimeQueryType(str, Enum):
-    CURRENT_TIME = "current_time"
-    CONVERSION = "conversion"
-    TIMEZONE_INFO = "timezone_info"
-    ERROR = "error"
-```
-
 ## Dependencies
 
-- **chuk-virtual-expert** - Base virtual expert specification
-- **python-dateutil** - Date/time parsing and manipulation
+- **chuk-virtual-expert[mcp]** - Base virtual expert with MCP support
+- **chuk-mcp** - MCP client library
 
 ## License
 
