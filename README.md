@@ -21,6 +21,10 @@ Virtual experts are specialized plugins that language models can route to for do
 | `chuk-virtual-expert-celestial` | Astronomy calculations (planned) | 🔜 |
 | `chuk-virtual-expert-solver` | Math/equation solving (planned) | 🔜 |
 
+## Documentation
+
+- **[Creating Virtual Experts Guide](docs/CREATING_VIRTUAL_EXPERTS.md)** - Complete guide to creating production-ready virtual experts with MCP, testing, CI/CD, and publishing
+
 ## Routing Architecture
 
 ### The Problem with Direct Routing

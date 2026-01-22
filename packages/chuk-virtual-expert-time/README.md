@@ -2,8 +2,10 @@
 
 Time virtual expert backed by MCP server - accurate time and timezone operations for LLM routing.
 
+[![CI](https://github.com/chrishayuk/virtual-experts/actions/workflows/ci-time-expert.yml/badge.svg)](https://github.com/chrishayuk/virtual-experts/actions/workflows/ci-time-expert.yml)
 [![PyPI version](https://badge.fury.io/py/chuk-virtual-expert-time.svg)](https://badge.fury.io/py/chuk-virtual-expert-time)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/chrishayuk/virtual-experts)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
