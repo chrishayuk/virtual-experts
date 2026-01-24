@@ -2,10 +2,24 @@
 
 from __future__ import annotations
 
+import asyncio
 import copy
 from typing import Any
 
-from chuk_virtual_expert_mcts import MctsExpert, register_environment, MctsOperation
+from chuk_virtual_expert.trace_models import QueryStep
+
+from chuk_virtual_expert_mcts import (
+    MctsExpert,
+    register_environment,
+    search_async,
+    SearchConfig,
+)
+from chuk_virtual_expert_mcts.models import (
+    ApplyStep,
+    EvaluateStep,
+    InitSearchStep,
+    SearchStep,
+)
 
 
 # Define a simple environment
@@ -33,7 +47,7 @@ class CountingEnv:
         return {"value": 0, "target": int(target), "moves_left": int(moves)}
 
 
-def main():
+async def main() -> None:
     # Register environment
     register_environment("counting", CountingEnv())
 
@@ -41,54 +55,58 @@ def main():
 
     # Simple search
     print("=== Search for best action ===")
-    result = expert.execute_trace([
-        {MctsOperation.INIT_SEARCH.value: {"env": "counting", "target": 6, "moves": 3}},
-        {MctsOperation.SEARCH.value: {"iterations": 1000, "var": "best", "seed": 42}},
-        {"query": "best"},
-    ])
+    result = await expert.execute_trace(
+        [
+            InitSearchStep(env="counting", params={"target": 6, "moves": 3}),
+            SearchStep(iterations=1000, var="best", seed=42),
+            QueryStep(var="best"),
+        ]
+    )
     print(f"  Best action: {result.answer}")
     print(f"  Stats: {result.state.get('_search_stats', {})}")
 
     # Multi-step search
     print("\n=== Multi-step search and apply ===")
-    result = expert.execute_trace([
-        {MctsOperation.INIT_SEARCH.value: {"env": "counting", "target": 9, "moves": 4}},
-        {MctsOperation.SEARCH.value: {"iterations": 500, "var": "a1", "seed": 1}},
-        {MctsOperation.APPLY.value: {"action_var": "a1"}},
-        {MctsOperation.SEARCH.value: {"iterations": 500, "var": "a2", "seed": 2}},
-        {MctsOperation.APPLY.value: {"action_var": "a2"}},
-        {MctsOperation.SEARCH.value: {"iterations": 500, "var": "a3", "seed": 3}},
-        {MctsOperation.APPLY.value: {"action_var": "a3"}},
-        {MctsOperation.EVALUATE.value: {"var": "final_value"}},
-        {"query": "final_value"},
-    ])
-    print(f"  Actions: a1={result.state['a1']}, a2={result.state['a2']}, a3={result.state['a3']}")
+    result = await expert.execute_trace(
+        [
+            InitSearchStep(env="counting", params={"target": 9, "moves": 4}),
+            SearchStep(iterations=500, var="a1", seed=1),
+            ApplyStep(action_var="a1"),
+            SearchStep(iterations=500, var="a2", seed=2),
+            ApplyStep(action_var="a2"),
+            SearchStep(iterations=500, var="a3", seed=3),
+            ApplyStep(action_var="a3"),
+            EvaluateStep(var="final_value"),
+            QueryStep(var="final_value"),
+        ]
+    )
+    print(
+        f"  Actions: a1={result.state['a1']}, a2={result.state['a2']}, a3={result.state['a3']}"
+    )
     print(f"  Final value: {result.state['_state']['value']}")
     print(f"  Reward: {result.answer}")
 
     # Evaluate a position
     print("\n=== Evaluate position ===")
-    result = expert.execute_trace([
-        {MctsOperation.INIT_SEARCH.value: {"env": "counting", "target": 6, "moves": 2}},
-        {MctsOperation.EVALUATE.value: {"iterations": 1000, "var": "value"}},
-        {"query": "value"},
-    ])
+    result = await expert.execute_trace(
+        [
+            InitSearchStep(env="counting", params={"target": 6, "moves": 2}),
+            EvaluateStep(iterations=1000, var="value"),
+            QueryStep(var="value"),
+        ]
+    )
     print(f"  Value estimate: {result.answer:.3f}")
 
-    # Using async
-    print("\n=== Async search ===")
-    import asyncio
-    from chuk_virtual_expert_mcts import search_async, SearchConfig
-
-    async def async_demo():
-        env = CountingEnv()
-        state = env.initial(target=6, moves=3)
-        result = await search_async(env, state, SearchConfig(iterations=500, seed=42))
-        print(f"  Best action: {result.best_action}")
-        print(f"  Value: {result.value:.3f}")
-
-    asyncio.run(async_demo())
+    # Using async search directly
+    print("\n=== Async search (direct) ===")
+    env = CountingEnv()
+    state = env.initial(target=6, moves=3)
+    search_result = await search_async(
+        env, state, SearchConfig(iterations=500, seed=42)
+    )
+    print(f"  Best action: {search_result.best_action}")
+    print(f"  Value: {search_result.value:.3f}")
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

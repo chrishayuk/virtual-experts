@@ -6,7 +6,6 @@ from chuk_virtual_expert.trace_example import TraceExample
 from chuk_virtual_expert.trace_models import (
     ComputeOp,
     ComputeStep,
-    FormulaStep,
     InitStep,
     QueryStep,
 )
@@ -58,7 +57,6 @@ def generate_sum_and_difference() -> TraceExample:
     question = f"{name1} and {name2} have {total} {item} together. {name1} has {diff} more than {name2}. How many does {name1} have?"
 
     var1 = f"{name1.lower()}.{item}"
-    var2 = f"{name2.lower()}.{item}"
 
     return TraceExample(
         expert="comparison",
@@ -66,11 +64,8 @@ def generate_sum_and_difference() -> TraceExample:
         trace=[
             InitStep(var="total", value=total),
             InitStep(var="difference", value=diff),
-            FormulaStep(expression=f"{name1.lower()} + {name2.lower()} = total"),
-            FormulaStep(expression=f"{name1.lower()} = {name2.lower()} + difference"),
-            ComputeStep(compute_op=ComputeOp.SUB, args=["total", "difference"], var="twice_b"),
-            ComputeStep(compute_op=ComputeOp.DIV, args=["twice_b", 2], var=var2),
-            ComputeStep(compute_op=ComputeOp.ADD, args=[var2, "difference"], var=var1),
+            ComputeStep(compute_op=ComputeOp.ADD, args=["total", "difference"], var="sum_vars"),
+            ComputeStep(compute_op=ComputeOp.DIV, args=["sum_vars", 2], var=var1),
             QueryStep(var=var1),
         ],
         answer=a,

@@ -28,7 +28,7 @@ async def demo_get_time() -> None:
 
     for tz in timezones:
         print(f"\n--- Time in {tz} ---")
-        result = await expert.execute_operation_async(
+        result = await expert.execute_operation(
             TimeOperation.GET_TIME.value,
             {"timezone": tz},
         )
@@ -50,7 +50,7 @@ async def demo_convert_time() -> None:
 
     for conv in conversions:
         print(f"\n--- {conv['time']} from {conv['from_timezone']} to {conv['to_timezone']} ---")
-        result = await expert.execute_operation_async(
+        result = await expert.execute_operation(
             TimeOperation.CONVERT_TIME.value,
             conv,
         )
@@ -69,7 +69,7 @@ async def demo_timezone_info() -> None:
 
     for loc in locations:
         print(f"\n--- Timezone info for {loc} ---")
-        result = await expert.execute_operation_async(
+        result = await expert.execute_operation(
             TimeOperation.GET_TIMEZONE_INFO.value,
             {"location": loc},
         )
@@ -94,7 +94,7 @@ async def demo_with_action() -> None:
 
     print(f"\nAction: {action.model_dump_json(indent=2)}")
 
-    result = await expert.execute_async(action)
+    result = await expert.execute(action)
 
     print(f"\nResult success: {result.success}")
     print(f"Result data: {json.dumps(result.data, indent=2)}")

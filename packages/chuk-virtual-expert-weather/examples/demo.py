@@ -39,7 +39,7 @@ async def demo_get_forecast() -> None:
 
     # Forecast with location alias
     print("\n=== Get Forecast: Tokyo ===")
-    result = await expert.execute_operation_async(
+    result = await expert.execute_operation(
         WeatherOperation.GET_FORECAST.value,
         {"location": "tokyo", "forecast_days": 1},
     )
@@ -47,7 +47,7 @@ async def demo_get_forecast() -> None:
 
     # Forecast with unit alias
     print("\n=== Get Forecast: NYC in Fahrenheit ===")
-    result = await expert.execute_operation_async(
+    result = await expert.execute_operation(
         WeatherOperation.GET_FORECAST.value,
         {"location": "nyc", "unit": "f", "forecast_days": 1},
     )
@@ -58,7 +58,7 @@ async def demo_geocode() -> None:
     """Geocode a location name."""
     expert = WeatherExpert()
     print("\n=== Geocode: Zurich ===")
-    result = await expert.execute_operation_async(
+    result = await expert.execute_operation(
         WeatherOperation.GEOCODE.value,
         {"name": "Zurich, Switzerland"},
     )
@@ -69,7 +69,7 @@ async def demo_air_quality() -> None:
     """Get air quality data."""
     expert = WeatherExpert()
     print("\n=== Air Quality: Beijing ===")
-    result = await expert.execute_operation_async(
+    result = await expert.execute_operation(
         WeatherOperation.GET_AIR_QUALITY.value,
         {"location": "beijing"},
     )
@@ -80,7 +80,7 @@ async def demo_marine() -> None:
     """Get marine forecast."""
     expert = WeatherExpert()
     print("\n=== Marine Forecast: Sydney ===")
-    result = await expert.execute_operation_async(
+    result = await expert.execute_operation(
         WeatherOperation.GET_MARINE.value,
         {"location": "sydney", "forecast_days": 1},
     )
@@ -92,7 +92,7 @@ async def demo_interpret_code() -> None:
     expert = WeatherExpert()
     print("\n=== Interpret Weather Code ===")
     for code in [0, 3, 61, 95]:
-        result = await expert.execute_operation_async(
+        result = await expert.execute_operation(
             WeatherOperation.INTERPRET_CODE.value,
             {"weather_code": code},
         )
@@ -105,13 +105,13 @@ async def demo_multi_step_trace() -> None:
     """Demonstrate multi-step trace: geocode then forecast."""
     expert = WeatherExpert()
     print("\n=== Multi-Step Trace: Geocode + Forecast ===")
-    result = await expert.execute_operation_async(
+    result = await expert.execute_operation(
         "execute_trace",
         {
             "trace": [
-                {"geocode": {"name": "Helsinki, Finland", "var": "loc"}},
-                {"get_forecast": {"location_var": "loc", "forecast_days": 1, "var": "weather"}},
-                {"query": "weather"},
+                {"op": "geocode", "name": "Helsinki, Finland", "var": "loc"},
+                {"op": "get_forecast", "location_var": "loc", "forecast_days": 1, "var": "weather"},
+                {"op": "query", "var": "weather"},
             ],
         },
     )

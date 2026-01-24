@@ -24,20 +24,10 @@ class TraceGenerator(ABC):
     @abstractmethod
     def supported_types(self) -> list[ProblemType]:
         """Return list of problem types this generator handles."""
-        pass
 
     @abstractmethod
     def generate(self, spec: ProblemSpec) -> Trace:
-        """
-        Generate a verifiable trace from a problem specification.
-
-        Args:
-            spec: The structured problem specification
-
-        Returns:
-            A Trace that can be verified by replay
-        """
-        pass
+        """Generate a verifiable trace from a problem specification."""
 
     def can_handle(self, spec: ProblemSpec) -> bool:
         """Check if this generator can handle the given spec."""

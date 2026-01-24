@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any
+from typing import Any, Literal
 
+from chuk_virtual_expert.trace_models import BaseTraceStep
 from pydantic import BaseModel, Field
 
 
@@ -15,6 +16,53 @@ class MctsOperation(str, Enum):
     SEARCH = "search"
     APPLY = "apply"
     EVALUATE = "evaluate"
+
+
+# --- MCTS-specific typed trace steps ---
+
+
+class InitSearchStep(BaseTraceStep):
+    """Initialize MCTS search environment and state."""
+
+    op: Literal["init_search"] = "init_search"
+    env: str
+    params: dict[str, Any] = Field(default_factory=dict)
+
+
+class SearchStep(BaseTraceStep):
+    """Run MCTS search iterations."""
+
+    op: Literal["search"] = "search"
+    iterations: int = 1000
+    exploration: float = 1.41
+    seed: int | None = None
+    var: str = "best_action"
+
+
+class ApplyStep(BaseTraceStep):
+    """Apply an action to current state."""
+
+    op: Literal["apply"] = "apply"
+    action_var: str | None = None
+    action: Any | None = None
+
+
+class EvaluateStep(BaseTraceStep):
+    """Evaluate current state via rollouts."""
+
+    op: Literal["evaluate"] = "evaluate"
+    iterations: int = 500
+    seed: int | None = None
+    var: str = "value"
+
+
+# Map of MCTS op names to step types (for parsing raw dicts)
+MCTS_STEP_TYPES: dict[str, type[BaseTraceStep]] = {
+    "init_search": InitSearchStep,
+    "search": SearchStep,
+    "apply": ApplyStep,
+    "evaluate": EvaluateStep,
+}
 
 
 class ActionStat(BaseModel):

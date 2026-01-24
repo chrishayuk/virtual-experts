@@ -9,6 +9,7 @@ from chuk_virtual_expert.trace_models import (
     InitStep,
     PercentIncreaseStep,
     PercentOffStep,
+    PercentOfStep,
     QueryStep,
 )
 
@@ -80,8 +81,7 @@ def generate_tip_calculation() -> TraceExample:
         trace=[
             InitStep(var="bill", value=bill),
             InitStep(var="tip_rate", value=tip_percent),
-            ComputeStep(compute_op=ComputeOp.MUL, args=["bill", "tip_rate"], var="tip_times_100"),
-            ComputeStep(compute_op=ComputeOp.DIV, args=["tip_times_100", 100], var="tip"),
+            PercentOfStep(base="bill", rate="tip_rate", var="tip"),
             ComputeStep(compute_op=ComputeOp.ADD, args=["bill", "tip"], var="total"),
             QueryStep(var="total"),
         ],
@@ -104,8 +104,7 @@ def generate_simple_percent() -> TraceExample:
         trace=[
             InitStep(var="whole", value=whole),
             InitStep(var="percent", value=percent),
-            ComputeStep(compute_op=ComputeOp.MUL, args=["whole", "percent"], var="times_100"),
-            ComputeStep(compute_op=ComputeOp.DIV, args=["times_100", 100], var="result"),
+            PercentOfStep(base="whole", rate="percent", var="result"),
             QueryStep(var="result"),
         ],
         answer=part,
@@ -121,7 +120,7 @@ GENERATORS = [
 ]
 
 
-def generate(n: int = 15) -> list[TraceExample]:
+def generate(n: int = 30) -> list[TraceExample]:
     """Generate n percentage examples."""
     examples = []
     for _ in range(n):

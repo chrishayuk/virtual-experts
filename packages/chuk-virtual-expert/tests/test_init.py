@@ -206,3 +206,42 @@ class TestMCPImportFallback:
         if MCPTransportType is not None:
             assert hasattr(MCPTransportType, "HTTP")
         # else: MCPTransportType is None which is also valid
+
+    def test_mcp_import_error_fallback(self):
+        """Test the ImportError fallback branch (lines 45-48)."""
+        import importlib
+        import sys
+        from unittest.mock import patch
+
+        # Save original module
+        original_module = sys.modules.get("chuk_virtual_expert")
+        original_mcp = sys.modules.get("chuk_virtual_expert.mcp_expert")
+
+        try:
+            # Remove cached modules
+            sys.modules.pop("chuk_virtual_expert", None)
+            sys.modules.pop("chuk_virtual_expert.mcp_expert", None)
+
+            # Patch the import to raise ImportError for mcp_expert
+            original_import = (
+                __builtins__.__import__ if hasattr(__builtins__, "__import__") else __import__
+            )
+
+            def mock_import(name, *args, **kwargs):
+                if name == "chuk_virtual_expert.mcp_expert":
+                    raise ImportError("Simulated: chuk-mcp not installed")
+                return original_import(name, *args, **kwargs)
+
+            with patch("builtins.__import__", side_effect=mock_import):
+                import chuk_virtual_expert as pkg
+
+                importlib.reload(pkg)
+                assert pkg.MCPExpert is None
+                assert pkg.MCPTransportType is None
+        finally:
+            # Restore original modules
+            sys.modules.pop("chuk_virtual_expert", None)
+            if original_module:
+                sys.modules["chuk_virtual_expert"] = original_module
+            if original_mcp:
+                sys.modules["chuk_virtual_expert.mcp_expert"] = original_mcp

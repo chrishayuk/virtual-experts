@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import copy
-
 import pytest
 
 from chuk_virtual_expert_mcts import (
@@ -41,6 +39,7 @@ class TestEnvironmentProtocol:
         class Bad:
             def get_actions(self, state):
                 return []
+
         assert not isinstance(Bad(), Environment)
 
 

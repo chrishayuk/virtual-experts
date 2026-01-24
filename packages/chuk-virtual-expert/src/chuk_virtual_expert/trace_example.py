@@ -9,9 +9,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, SerializeAsAny
 
-from chuk_virtual_expert.trace_models import TraceStep
+from chuk_virtual_expert.trace_models import BaseTraceStep
 
 
 class TraceExample(BaseModel):
@@ -24,7 +24,9 @@ class TraceExample(BaseModel):
 
     expert: str = Field(description="Name of the expert that handles this trace")
     query: str = Field(description="Natural language query this trace solves")
-    trace: list[TraceStep] = Field(default_factory=list, description="Ordered typed trace steps")
+    trace: list[SerializeAsAny[BaseTraceStep]] = Field(
+        default_factory=list, description="Ordered typed trace steps"
+    )
     answer: float | str | None = Field(
         default=None, description="Expected answer from executing the trace"
     )

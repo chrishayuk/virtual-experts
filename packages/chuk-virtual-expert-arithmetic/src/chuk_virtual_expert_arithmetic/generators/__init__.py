@@ -72,21 +72,21 @@ class TraceGenerator:
         self._shuffle(examples)
         return examples
 
-    def generate_balanced(self, n: int = 235) -> list[TraceExample]:
+    def generate_balanced(self, n: int = 250) -> list[TraceExample]:
         """Generate examples with balanced distribution weighted by complexity.
 
-        Distribution (matches GSM-8K training proportions):
-            entity_track: 42%
-            arithmetic:   17%
-            rate_equation: 17%
-            comparison:   17%
-            percentage:    7%
+        Distribution (ensures enough examples per pattern):
+            entity_track: 38% (5 patterns)
+            arithmetic:   17% (4 patterns)
+            rate_equation: 17% (4 patterns)
+            comparison:   16% (4 patterns)
+            percentage:   12% (4 patterns)
         """
-        n_entity = max(1, int(n * 0.42))
+        n_entity = max(1, int(n * 0.38))
         n_arith = max(1, int(n * 0.17))
         n_rate = max(1, int(n * 0.17))
-        n_comp = max(1, int(n * 0.17))
-        n_pct = max(1, int(n * 0.07))
+        n_comp = max(1, int(n * 0.16))
+        n_pct = max(1, int(n * 0.12))
 
         examples: list[TraceExample] = []
         examples.extend(self.generate_entity_track(n_entity))

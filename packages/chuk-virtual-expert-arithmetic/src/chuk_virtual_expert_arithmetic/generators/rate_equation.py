@@ -6,7 +6,6 @@ from chuk_virtual_expert.trace_example import TraceExample
 from chuk_virtual_expert.trace_models import (
     ComputeOp,
     ComputeStep,
-    FormulaStep,
     InitStep,
     QueryStep,
 )
@@ -33,7 +32,6 @@ def generate_rate_time_quantity() -> TraceExample:
         trace=[
             InitStep(var="rate", value=rate),
             InitStep(var="time", value=time),
-            FormulaStep(expression="quantity = rate * time"),
             ComputeStep(compute_op=ComputeOp.MUL, args=["rate", "time"], var="quantity"),
             QueryStep(var="quantity"),
         ],
@@ -56,7 +54,6 @@ def generate_distance_speed_time() -> TraceExample:
         trace=[
             InitStep(var="speed", value=speed),
             InitStep(var="time", value=time),
-            FormulaStep(expression="distance = speed * time"),
             ComputeStep(compute_op=ComputeOp.MUL, args=["speed", "time"], var="distance"),
             QueryStep(var="distance"),
         ],

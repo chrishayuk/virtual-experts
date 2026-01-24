@@ -32,6 +32,7 @@ class Node:
     def ucb1(self, exploration: float) -> float:
         if self.visits == 0:
             return float("inf")
+        assert self.parent is not None
         return (self.value / self.visits) + exploration * math.sqrt(
             math.log(self.parent.visits) / self.visits
         )
@@ -95,10 +96,11 @@ def search(env: Environment, state: Any, config: SearchConfig | None = None) -> 
 
         # BACKPROPAGATE
         r = env.reward(rollout_state)
-        while node is not None:
-            node.visits += 1
-            node.value += r
-            node = node.parent
+        current: Node | None = node
+        while current is not None:
+            current.visits += 1
+            current.value += r
+            current = current.parent
 
     best = root.most_visited_child()
     action_stats = sorted(
@@ -122,7 +124,9 @@ def search(env: Environment, state: Any, config: SearchConfig | None = None) -> 
     )
 
 
-async def search_async(env: Environment, state: Any, config: SearchConfig | None = None) -> SearchResult:
+async def search_async(
+    env: Environment, state: Any, config: SearchConfig | None = None
+) -> SearchResult:
     """Async version — runs search in thread pool to avoid blocking."""
     loop = asyncio.get_running_loop()
     return await loop.run_in_executor(_EXECUTOR, search, env, state, config)

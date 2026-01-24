@@ -9,7 +9,15 @@ keywords = ["virtual-expert", "mcts", "monte-carlo-tree-search", "trace-solver"]
 dependencies = ["chuk-virtual-expert>=3.0.0"]
 
 [project.optional-dependencies]
-dev = ["pytest>=7.0", "pytest-cov>=4.0", "pytest-asyncio>=0.21"]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "pytest-asyncio>=0.21",
+    "coverage[toml]>=7.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0",
+    "bandit>=1.7",
+]
 
 [project.entry-points."chuk_virtual_expert.plugins"]
 mcts = "chuk_virtual_expert_mcts:MctsExpert"
@@ -27,3 +35,27 @@ chuk-virtual-expert = { workspace = true }
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+
+[tool.coverage.run]
+source = ["src/chuk_virtual_expert_mcts"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "C4", "UP"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true

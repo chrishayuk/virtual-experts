@@ -322,7 +322,7 @@ class TimeExpert(MCPExpert):
                     if step.time_var and step.time_var in state:
                         stored = state[step.time_var]
                         if isinstance(stored, dict):
-                            time_str = stored.get("iso8601", stored.get("formatted", ""))
+                            time_str = str(stored.get("iso8601", stored.get("formatted", "")))
                         else:
                             time_str = str(stored)
                     result = await super().execute_operation(
