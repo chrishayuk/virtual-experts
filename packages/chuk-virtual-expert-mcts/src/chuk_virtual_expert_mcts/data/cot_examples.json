@@ -1,0 +1,64 @@
+{
+  "examples": [
+    {
+      "query": "Use MCTS to find the best action from this state",
+      "action": {
+        "expert": "mcts",
+        "operation": "execute_trace",
+        "parameters": {
+          "trace": [
+            {"init_search": {"env": "example"}},
+            {"search": {"iterations": 1000, "var": "best_action"}},
+            {"query": "best_action"}
+          ]
+        },
+        "confidence": 0.95,
+        "reasoning": "Search for optimal action using MCTS"
+      }
+    },
+    {
+      "query": "Evaluate this position using Monte Carlo tree search",
+      "action": {
+        "expert": "mcts",
+        "operation": "execute_trace",
+        "parameters": {
+          "trace": [
+            {"init_search": {"env": "example"}},
+            {"evaluate": {"iterations": 500, "var": "value"}},
+            {"query": "value"}
+          ]
+        },
+        "confidence": 0.95,
+        "reasoning": "Evaluate state value via MCTS rollouts"
+      }
+    },
+    {
+      "query": "Search and apply the best action, then evaluate",
+      "action": {
+        "expert": "mcts",
+        "operation": "execute_trace",
+        "parameters": {
+          "trace": [
+            {"init_search": {"env": "example"}},
+            {"search": {"iterations": 1000, "var": "action"}},
+            {"apply": {"action_var": "action"}},
+            {"evaluate": {"var": "value"}},
+            {"query": "value"}
+          ]
+        },
+        "confidence": 0.95,
+        "reasoning": "Search, apply best action, then evaluate resulting state"
+      }
+    },
+    {
+      "query": "What is the weather today?",
+      "action": {
+        "expert": "none",
+        "operation": "passthrough",
+        "parameters": {},
+        "confidence": 1.0,
+        "reasoning": "Not a search problem"
+      }
+    }
+  ]
+}

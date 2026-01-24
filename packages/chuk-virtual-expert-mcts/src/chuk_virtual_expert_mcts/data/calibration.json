@@ -1,0 +1,14 @@
+{
+  "mcts": {
+    "positive": [
+      "Use MCTS to find the best action",
+      "Search the decision tree for the optimal choice",
+      "Run Monte Carlo tree search on this problem",
+      "What is the best action from this state?",
+      "Evaluate this position using tree search",
+      "Find the optimal sequence of actions",
+      "Use tree search to explore the possibilities",
+      "What does Monte Carlo simulation suggest here?"
+    ]
+  }
+}

@@ -23,27 +23,5 @@
     "What is the local time?",
     "Time in Moscow",
     "Convert 8am PST to EST"
-  ],
-  "negative": [
-    "What is 2 + 2?",
-    "Hello, how are you?",
-    "Tell me a story",
-    "What is the capital of France?",
-    "How do I cook pasta?",
-    "What's the weather like?",
-    "Write a poem",
-    "Explain quantum physics",
-    "List prime numbers",
-    "Who won the game?",
-    "Calculate 15% of 200",
-    "What is machine learning?",
-    "How do computers work?",
-    "Translate hello to Spanish",
-    "What is the meaning of life?",
-    "Write a function to sort an array",
-    "What is the population of China?",
-    "How far is the moon?",
-    "What is DNA?",
-    "Summarize this document"
   ]
 }

@@ -1,4 +1,7 @@
 {
+  "name": "arithmetic",
+  "version": "1.0.0",
+  "description": "Calibration prompts for arithmetic virtual expert router training",
   "entity_track": {
     "positive": [
       "Alice has 16 eggs. She gives 3 to Bob and eats 4. How many eggs are left?",
@@ -6,13 +9,6 @@
       "Tom has 100 dollars. He gives 30 to Jane and spends 20 on food. How much does he have?",
       "A tank has 200 liters. 45 liters leak out and 30 are used. How many liters remain?",
       "Sarah has 24 cookies. She gives 6 to Mike, eats 3, and bakes 10 more. How many does she have?"
-    ],
-    "negative": [
-      "What is 15% off $200?",
-      "A car travels at 60 km/h for 2.5 hours. What distance does it cover?",
-      "How much is 45 * 67?",
-      "If a shirt costs $40 and tax is 8%, what is the total?",
-      "Tom has 3 times as many books as Jerry. Jerry has 12 books. How many more does Tom have?"
     ]
   },
   "arithmetic": {
@@ -22,13 +18,6 @@
       "What is 127 * 89?",
       "A meal costs $24 plus $4 tax and $5 tip. What is the total?",
       "3 apples at $2 each plus 2 oranges at $3 each. Total cost?"
-    ],
-    "negative": [
-      "Alice has 16 eggs. She gives 3 to Bob. How many are left?",
-      "What is 20% off $150?",
-      "A train travels at 80 mph for 3 hours. How far does it go?",
-      "Tom has twice as many as Jerry. How many more does Tom have?",
-      "A tank loses 5 liters per hour. How much is left after 4 hours?"
     ]
   },
   "percentage": {
@@ -38,13 +27,6 @@
       "What is 15% of 340?",
       "A $80 item has a 20% discount then 8% tax. Final price?",
       "If a stock goes up 12% from $50, what is the new price?"
-    ],
-    "negative": [
-      "What is 45 + 67?",
-      "Alice has 10 apples and gives 3 away. How many left?",
-      "A car goes 60 km/h for 2 hours. Distance?",
-      "How many more apples does Tom have than Jerry?",
-      "Buy 3 items at $5 each. Total?"
     ]
   },
   "rate_equation": {
@@ -54,13 +36,6 @@
       "Running at 8 mph, how far in 45 minutes?",
       "A machine produces 120 widgets per hour. How many in 7.5 hours?",
       "Water flows at 3 gallons per minute. How much in 2 hours?"
-    ],
-    "negative": [
-      "What is 25% off $100?",
-      "A book costs $15 and tax is $2. Total?",
-      "Alice has 20 eggs and gives 5 away. How many left?",
-      "How many more does Tom have than Jerry?",
-      "What is 234 * 56?"
     ]
   },
   "comparison": {
@@ -70,13 +45,6 @@
       "Store A charges $45 and Store B charges $38. How much cheaper is Store B?",
       "Team A has 156 points and Team B has 89. How many more does Team A have?",
       "If Mary has twice as many as John, and John has 15, what is the ratio?"
-    ],
-    "negative": [
-      "What is 20% off $200?",
-      "A car goes 50 mph for 3 hours. Distance?",
-      "Buy 4 items at $7 each. Total?",
-      "Alice has 30 eggs and eats 5. How many left?",
-      "What is the sum of 45, 67, and 89?"
     ]
   }
 }

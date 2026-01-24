@@ -1,0 +1,27 @@
+{
+  "name": "weather",
+  "version": "1.0.0",
+  "description": "Calibration prompts for weather virtual expert router training",
+  "positive": [
+    "What's the weather like in Tokyo?",
+    "Will it rain tomorrow in London?",
+    "Temperature forecast for New York",
+    "Air quality in Beijing",
+    "Ocean conditions near Miami",
+    "Historical weather data for Paris last month",
+    "What does weather code 61 mean?",
+    "Is it going to snow in Denver?",
+    "Humidity levels in Singapore",
+    "Wind speed forecast for Chicago",
+    "Weather in San Francisco this week",
+    "Marine forecast for Sydney harbor",
+    "Current temperature in Berlin",
+    "Precipitation chances in Seattle",
+    "What's the forecast for the weekend?",
+    "Weather conditions in Dubai",
+    "Storm forecast for Tokyo",
+    "Sunny or cloudy in LA today?",
+    "What's the UV index in Miami?",
+    "Pollution levels in Mumbai"
+  ]
+}

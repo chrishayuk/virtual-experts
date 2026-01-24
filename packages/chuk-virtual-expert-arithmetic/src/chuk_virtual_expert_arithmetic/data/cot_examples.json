@@ -1,4 +1,6 @@
 {
+  "expert_name": "arithmetic",
+  "description": "CoT training examples mapping queries to VirtualExpertActions",
   "examples": [
     {
       "query": "Alice has 16 eggs. She gives 3 to Bob and eats 4. She sells the rest at $2 each. How much revenue?",
@@ -120,16 +122,6 @@
         },
         "confidence": 0.95,
         "reasoning": "Comparison: compute Tom's count then find difference"
-      }
-    },
-    {
-      "query": "What is the weather like today?",
-      "action": {
-        "expert": "none",
-        "operation": "passthrough",
-        "parameters": {},
-        "confidence": 1.0,
-        "reasoning": "Not a math problem"
       }
     }
   ]

@@ -1,0 +1,144 @@
+{
+  "name": "arithmetic",
+  "description": "Arithmetic trace-solving virtual experts for math word problems",
+  "experts": {
+    "entity_track": {
+      "description": "Track entity quantities through consumption, addition, and transfer operations",
+      "operation": "execute_trace",
+      "trace_steps": {
+        "init": {
+          "description": "Initialize an entity with a numeric value",
+          "parameters": {"entity_name": "string", "value": "number"}
+        },
+        "consume": {
+          "description": "Reduce an entity's quantity",
+          "parameters": {"entity": "string", "amount": "number"}
+        },
+        "add": {
+          "description": "Increase an entity's quantity",
+          "parameters": {"entity": "string", "amount": "number"}
+        },
+        "transfer": {
+          "description": "Move quantity from one entity to another",
+          "parameters": {"from": "string", "to": "string", "amount": "number"}
+        },
+        "compute": {
+          "description": "Perform arithmetic on variables",
+          "parameters": {"op": "string", "args": "array", "var": "string"}
+        },
+        "query": {
+          "description": "Return the value of a variable",
+          "parameters": {"variable_name": "string"}
+        }
+      },
+      "examples": [
+        {"query": "Alice has 16 eggs. She gives 3 to Bob and eats 4. How many remain?", "trace": [{"init": "eggs", "value": 16}, {"consume": {"entity": "eggs", "amount": 3}}, {"consume": {"entity": "eggs", "amount": 4}}, {"query": "eggs"}]},
+        {"query": "A store has 50 apples. 12 are sold and 5 thrown away. How many remain?", "trace": [{"init": "apples", "value": 50}, {"consume": {"entity": "apples", "amount": 12}}, {"consume": {"entity": "apples", "amount": 5}}, {"query": "apples"}]}
+      ]
+    },
+    "arithmetic": {
+      "description": "Pure arithmetic computation chains (add, subtract, multiply, divide)",
+      "operation": "execute_trace",
+      "trace_steps": {
+        "init": {
+          "description": "Initialize a variable with a numeric value",
+          "parameters": {"variable_name": "string", "value": "number"}
+        },
+        "compute": {
+          "description": "Perform arithmetic (add, sub, mul, div) on variables or literals",
+          "parameters": {"op": "string", "args": "array", "var": "string"}
+        },
+        "query": {
+          "description": "Return the value of a variable",
+          "parameters": {"variable_name": "string"}
+        }
+      },
+      "examples": [
+        {"query": "A book costs $15 and a pen costs $3. Total?", "trace": [{"init": "book", "value": 15}, {"init": "pen", "value": 3}, {"compute": {"op": "add", "args": ["book", "pen"], "var": "total"}}, {"query": "total"}]},
+        {"query": "5 items at $12 each plus $8 shipping. Total cost?", "trace": [{"init": "price", "value": 12}, {"init": "qty", "value": 5}, {"compute": {"op": "mul", "args": ["price", "qty"], "var": "subtotal"}}, {"init": "shipping", "value": 8}, {"compute": {"op": "add", "args": ["subtotal", "shipping"], "var": "total"}}, {"query": "total"}]}
+      ]
+    },
+    "percentage": {
+      "description": "Percentage calculations: discounts, increases, and proportions",
+      "operation": "execute_trace",
+      "trace_steps": {
+        "init": {
+          "description": "Initialize a variable with a numeric value",
+          "parameters": {"variable_name": "string", "value": "number"}
+        },
+        "percent_off": {
+          "description": "Apply a percentage discount",
+          "parameters": {"base": "string", "rate": "string|number", "var": "string"}
+        },
+        "percent_increase": {
+          "description": "Apply a percentage increase",
+          "parameters": {"base": "string", "rate": "string|number", "var": "string"}
+        },
+        "percent_of": {
+          "description": "Calculate a percentage of a value",
+          "parameters": {"base": "string", "rate": "string|number", "var": "string"}
+        },
+        "query": {
+          "description": "Return the value of a variable",
+          "parameters": {"variable_name": "string"}
+        }
+      },
+      "examples": [
+        {"query": "A $200 jacket is 25% off. Sale price?", "trace": [{"init": "price", "value": 200}, {"percent_off": {"base": "price", "rate": 25, "var": "sale_price"}}, {"query": "sale_price"}]},
+        {"query": "Rent of $1500 increases by 10%. New rent?", "trace": [{"init": "rent", "value": 1500}, {"percent_increase": {"base": "rent", "rate": 10, "var": "new_rent"}}, {"query": "new_rent"}]}
+      ]
+    },
+    "rate_equation": {
+      "description": "Rate-based calculations (distance, speed, time, work rates)",
+      "operation": "execute_trace",
+      "trace_steps": {
+        "given": {
+          "description": "Declare known quantities",
+          "parameters": {"key_value_pairs": "object"}
+        },
+        "formula": {
+          "description": "State the relationship formula",
+          "parameters": {"equation": "string"}
+        },
+        "compute": {
+          "description": "Perform arithmetic on variables",
+          "parameters": {"op": "string", "args": "array", "var": "string"}
+        },
+        "query": {
+          "description": "Return the value of a variable",
+          "parameters": {"variable_name": "string"}
+        }
+      },
+      "examples": [
+        {"query": "A car travels at 60 km/h for 2.5 hours. Distance?", "trace": [{"given": {"speed": 60, "time": 2.5}}, {"formula": "distance = speed * time"}, {"compute": {"op": "mul", "args": ["speed", "time"], "var": "distance"}}, {"query": "distance"}]},
+        {"query": "A machine produces 120 widgets/hour. How many in 7.5 hours?", "trace": [{"given": {"rate": 120, "hours": 7.5}}, {"formula": "widgets = rate * hours"}, {"compute": {"op": "mul", "args": ["rate", "hours"], "var": "widgets"}}, {"query": "widgets"}]}
+      ]
+    },
+    "comparison": {
+      "description": "Compare quantities and compute differences or ratios",
+      "operation": "execute_trace",
+      "trace_steps": {
+        "init": {
+          "description": "Initialize a variable with a numeric value",
+          "parameters": {"variable_name": "string", "value": "number"}
+        },
+        "compute": {
+          "description": "Perform arithmetic on variables",
+          "parameters": {"op": "string", "args": "array", "var": "string"}
+        },
+        "compare": {
+          "description": "Compare two values (sub for difference, div for ratio)",
+          "parameters": {"op": "string", "args": "array", "var": "string"}
+        },
+        "query": {
+          "description": "Return the value of a variable",
+          "parameters": {"variable_name": "string"}
+        }
+      },
+      "examples": [
+        {"query": "Tom has 3x Jerry's books. Jerry has 12. How many more does Tom have?", "trace": [{"init": "jerry", "value": 12}, {"compute": {"op": "mul", "args": ["jerry", 3], "var": "tom"}}, {"compare": {"op": "sub", "args": ["tom", "jerry"], "var": "diff"}}, {"query": "diff"}]},
+        {"query": "Alice scored 85, Bob scored 72. Difference?", "trace": [{"init": "alice", "value": 85}, {"init": "bob", "value": 72}, {"compare": {"op": "sub", "args": ["alice", "bob"], "var": "diff"}}, {"query": "diff"}]}
+      ]
+    }
+  }
+}

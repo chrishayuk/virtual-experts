@@ -1,0 +1,170 @@
+{
+  "name": "weather",
+  "description": "Get weather forecasts, air quality, marine conditions, and historical weather data",
+  "operations": {
+    "get_forecast": {
+      "description": "Get current weather conditions and forecast for a location",
+      "parameters": {
+        "location": {
+          "type": "string",
+          "description": "City name or 'latitude,longitude' string",
+          "required": false
+        },
+        "latitude": {
+          "type": "number",
+          "description": "Latitude coordinate (-90 to 90)",
+          "required": false
+        },
+        "longitude": {
+          "type": "number",
+          "description": "Longitude coordinate (-180 to 180)",
+          "required": false
+        },
+        "unit": {
+          "type": "string",
+          "description": "Temperature unit: celsius, fahrenheit, c, or f",
+          "required": false,
+          "default": "celsius"
+        },
+        "forecast_days": {
+          "type": "integer",
+          "description": "Number of forecast days (1-16)",
+          "required": false,
+          "default": 3
+        }
+      },
+      "examples": [
+        {
+          "query": "What's the weather in Tokyo?",
+          "parameters": {"location": "tokyo"}
+        },
+        {
+          "query": "Weather forecast for New York in fahrenheit",
+          "parameters": {"location": "new york", "unit": "fahrenheit"}
+        },
+        {
+          "query": "7-day forecast for coordinates 48.85, 2.35",
+          "parameters": {"latitude": 48.85, "longitude": 2.35, "forecast_days": 7}
+        }
+      ]
+    },
+    "geocode": {
+      "description": "Convert a location name to geographic coordinates",
+      "parameters": {
+        "name": {
+          "type": "string",
+          "description": "Location name to geocode",
+          "required": true
+        },
+        "count": {
+          "type": "integer",
+          "description": "Maximum number of results (1-100)",
+          "required": false,
+          "default": 1
+        }
+      },
+      "examples": [
+        {
+          "query": "Where is Paris, France?",
+          "parameters": {"name": "Paris, France"}
+        },
+        {
+          "query": "Find coordinates for Springfield",
+          "parameters": {"name": "Springfield", "count": 5}
+        }
+      ]
+    },
+    "get_historical": {
+      "description": "Get historical weather data from 1940 onwards",
+      "parameters": {
+        "location": {
+          "type": "string",
+          "description": "City name or coordinates",
+          "required": false
+        },
+        "start_date": {
+          "type": "string",
+          "description": "Start date in YYYY-MM-DD format",
+          "required": true
+        },
+        "end_date": {
+          "type": "string",
+          "description": "End date in YYYY-MM-DD format",
+          "required": true
+        }
+      },
+      "examples": [
+        {
+          "query": "What was the weather in London last week?",
+          "parameters": {"location": "london", "start_date": "2025-01-13", "end_date": "2025-01-19"}
+        }
+      ]
+    },
+    "get_air_quality": {
+      "description": "Get air quality and pollutant forecast data",
+      "parameters": {
+        "location": {
+          "type": "string",
+          "description": "City name or coordinates",
+          "required": false
+        }
+      },
+      "examples": [
+        {
+          "query": "Air quality in Beijing",
+          "parameters": {"location": "beijing"}
+        },
+        {
+          "query": "Pollution levels in Mumbai",
+          "parameters": {"location": "mumbai"}
+        }
+      ]
+    },
+    "get_marine": {
+      "description": "Get marine and ocean weather forecast (waves, swell, currents)",
+      "parameters": {
+        "location": {
+          "type": "string",
+          "description": "Coastal location name or coordinates",
+          "required": false
+        },
+        "forecast_days": {
+          "type": "integer",
+          "description": "Number of forecast days (1-16)",
+          "required": false,
+          "default": 3
+        }
+      },
+      "examples": [
+        {
+          "query": "Ocean conditions near Miami",
+          "parameters": {"location": "miami"}
+        },
+        {
+          "query": "Wave forecast for Sydney",
+          "parameters": {"location": "sydney", "forecast_days": 5}
+        }
+      ]
+    },
+    "interpret_code": {
+      "description": "Interpret a WMO weather condition code to human-readable description",
+      "parameters": {
+        "weather_code": {
+          "type": "integer",
+          "description": "WMO weather condition code (0-99)",
+          "required": true
+        }
+      },
+      "examples": [
+        {
+          "query": "What does weather code 61 mean?",
+          "parameters": {"weather_code": 61}
+        },
+        {
+          "query": "Interpret weather code 95",
+          "parameters": {"weather_code": 95}
+        }
+      ]
+    }
+  }
+}

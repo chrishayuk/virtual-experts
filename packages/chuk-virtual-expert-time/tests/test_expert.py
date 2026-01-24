@@ -262,15 +262,10 @@ class TestGetCalibrationData:
             action = json.loads(action_json)
             assert action["expert"] == "time"
 
-    def test_negative_actions_dont_target_time(self):
+    def test_no_negative_actions_in_expert(self):
         expert = TimeExpert()
         _, negative = expert.get_calibration_data()
-
-        import json
-
-        for action_json in negative:
-            action = json.loads(action_json)
-            assert action["expert"] != "time"
+        assert negative == []
 
 
 # Integration tests that require MCP server
