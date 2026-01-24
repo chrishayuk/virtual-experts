@@ -45,6 +45,7 @@ from chuk_virtual_expert_time.expert import (
     TimeOperation,
     TimeQueryType,
 )
+from chuk_virtual_expert_time.generators import TimeTraceGenerator
 
 __all__ = [
     "TimeExpert",
@@ -53,6 +54,7 @@ __all__ = [
     "TimeQueryType",
     "AccuracyMode",
     "TIMEZONE_ALIASES",
+    "TimeTraceGenerator",
 ]
 
 __version__ = "3.0.0"

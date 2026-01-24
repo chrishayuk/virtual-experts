@@ -11,6 +11,7 @@ from enum import Enum
 from typing import Any, ClassVar
 
 from chuk_virtual_expert.mcp_expert import MCPExpert
+from chuk_virtual_expert.models import TraceResult
 
 
 class TimeOperation(str, Enum):
@@ -100,10 +101,10 @@ class TimeExpert(MCPExpert):
     mcp_server_url: ClassVar[str] = "https://time.chukai.io/mcp"
     mcp_timeout: ClassVar[float] = 30.0
 
-    # File paths for CoT examples and schema
-    cot_examples_file: ClassVar[str] = "cot_examples.json"
-    schema_file: ClassVar[str] = "schema.json"
-    calibration_file: ClassVar[str] = "calibration.json"
+    # File paths for CoT examples and schema (in data/ subdirectory)
+    cot_examples_file: ClassVar[str] = "data/cot_examples.json"
+    schema_file: ClassVar[str] = "data/schema.json"
+    calibration_file: ClassVar[str] = "data/calibration.json"
 
     # Keywords for can_handle check
     _TIME_KEYWORDS: ClassVar[list[str]] = [
@@ -130,7 +131,7 @@ class TimeExpert(MCPExpert):
 
     def get_operations(self) -> list[str]:
         """Return list of available operations."""
-        return [op.value for op in TimeOperation]
+        return [op.value for op in TimeOperation] + ["execute_trace"]
 
     def get_mcp_tool_name(self, operation: str) -> str:
         """Map virtual expert operation to MCP tool name."""
@@ -249,6 +250,144 @@ class TimeExpert(MCPExpert):
             "abbreviation": result.get("current_abbreviation", ""),
             "transitions": result.get("transitions", []),
         }
+
+    def execute_operation(
+        self,
+        operation: str,
+        parameters: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Execute an operation, intercepting execute_trace locally."""
+        if operation == "execute_trace":
+            import asyncio
+
+            trace_steps = parameters.get("trace", [])
+            result = asyncio.run(self._execute_trace_async(trace_steps))
+            return {
+                "success": result.success,
+                "answer": result.answer,
+                "state": result.state,
+                "error": result.error,
+                "steps_executed": result.steps_executed,
+                "formatted": str(result.answer) if result.answer is not None else "",
+            }
+        return super().execute_operation(operation, parameters)
+
+    async def execute_operation_async(
+        self,
+        operation: str,
+        parameters: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Execute an operation async, intercepting execute_trace locally."""
+        if operation == "execute_trace":
+            trace_steps = parameters.get("trace", [])
+            result = await self._execute_trace_async(trace_steps)
+            return {
+                "success": result.success,
+                "answer": result.answer,
+                "state": result.state,
+                "error": result.error,
+                "steps_executed": result.steps_executed,
+                "formatted": str(result.answer) if result.answer is not None else "",
+            }
+        return await super().execute_operation_async(operation, parameters)
+
+    async def _execute_trace_async(self, steps: list[dict[str, Any]]) -> TraceResult:
+        """
+        Execute a sequence of time trace steps.
+
+        Handles:
+        - init: Set a variable to a literal value
+        - get_time: Call MCP get_time, store result in variable
+        - convert_time: Call MCP convert_time, store result in variable
+        - get_timezone_info: Call MCP get_timezone_info, store result in variable
+        - query: Specify which variable to return
+        """
+        state: dict[str, Any] = {}
+        query_var: str | None = None
+        steps_executed = 0
+
+        for i, step in enumerate(steps):
+            try:
+                op = next(iter(step))
+
+                if op == "init":
+                    var = step["init"]
+                    state[var] = step.get("value")
+
+                elif op == "get_time":
+                    params = step["get_time"]
+                    timezone = params.get("timezone", "UTC")
+                    var = params.get("var", "result")
+                    result = await super().execute_operation_async(
+                        TimeOperation.GET_TIME.value,
+                        {"timezone": timezone},
+                    )
+                    state[var] = result
+
+                elif op == "convert_time":
+                    params = step["convert_time"]
+                    # Support referencing a time_var from state
+                    time_str = params.get("time", "")
+                    if "time_var" in params and params["time_var"] in state:
+                        stored = state[params["time_var"]]
+                        if isinstance(stored, dict):
+                            time_str = stored.get("iso8601", stored.get("formatted", ""))
+                        else:
+                            time_str = str(stored)
+                    var = params.get("var", "result")
+                    result = await super().execute_operation_async(
+                        TimeOperation.CONVERT_TIME.value,
+                        {
+                            "time": time_str,
+                            "from_timezone": params.get("from_timezone", "UTC"),
+                            "to_timezone": params.get("to_timezone", "UTC"),
+                        },
+                    )
+                    state[var] = result
+
+                elif op == "get_timezone_info":
+                    params = step["get_timezone_info"]
+                    location = params.get("location", "")
+                    var = params.get("var", "result")
+                    result = await super().execute_operation_async(
+                        TimeOperation.GET_TIMEZONE_INFO.value,
+                        {"location": location},
+                    )
+                    state[var] = result
+
+                elif op == "query":
+                    query_var = step["query"]
+
+                else:
+                    return TraceResult(
+                        success=False,
+                        error=f"Step {i}: Unknown time operation: {op}",
+                        state=state,
+                        expert=self.name,
+                        steps_executed=steps_executed,
+                    )
+
+                steps_executed += 1
+
+            except Exception as e:
+                return TraceResult(
+                    success=False,
+                    error=f"Step {i}: {e}",
+                    state=state,
+                    expert=self.name,
+                    steps_executed=steps_executed,
+                )
+
+        # Resolve answer
+        answer = state.get(query_var) if query_var else None
+
+        return TraceResult(
+            success=True,
+            answer=answer,
+            state=state,
+            expert=self.name,
+            steps_executed=steps_executed,
+        )
 
     def _resolve_timezone(self, name: str) -> str:
         """Resolve a timezone name or alias to IANA format."""

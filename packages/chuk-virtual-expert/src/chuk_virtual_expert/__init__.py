@@ -61,6 +61,10 @@ from chuk_virtual_expert.models import (
     ExpertSchema,
     OperationSchema,
     ParameterSchema,
+    Trace,
+    TraceResult,
+    TraceStep,
+    VerificationResult,
     VirtualExpertAction,
     VirtualExpertResult,
 )
@@ -70,6 +74,10 @@ from chuk_virtual_expert.registry_v2 import (
     ExpertRegistry,
     get_registry,
 )
+
+# Trace execution
+from chuk_virtual_expert.trace_solver import TraceSolverExpert
+from chuk_virtual_expert.trace_verifier import TraceVerifier
 
 # Validation
 from chuk_virtual_expert.validation import (
@@ -91,10 +99,18 @@ __all__ = [
     "ExpertSchema",
     "OperationSchema",
     "ParameterSchema",
+    # Trace models
+    "Trace",
+    "TraceStep",
+    "TraceResult",
+    "VerificationResult",
     # Expert base classes
     "VirtualExpert",
+    "TraceSolverExpert",
     "MCPExpert",
     "MCPTransportType",
+    # Trace verification
+    "TraceVerifier",
     # Registry
     "ExpertRegistry",
     "get_registry",
@@ -113,4 +129,4 @@ __all__ = [
     "validate_expert_few_shot",
 ]
 
-__version__ = "2.0.0"
+__version__ = "3.0.0"

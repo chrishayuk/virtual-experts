@@ -9,6 +9,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any
 
+import yaml
 from pydantic import BaseModel, Field
 
 
@@ -202,3 +203,81 @@ class ExpertSchema(BaseModel):
             )
             lines.append(f"  - {op_name}({params}): {op.description}")
         return "\n".join(lines)
+
+
+# --- Trace Execution Models ---
+
+
+class TraceStep(BaseModel):
+    """Wraps a raw trace step dict."""
+
+    raw: dict[str, Any] = Field(description="Raw step dictionary from trace")
+
+    @property
+    def operation(self) -> str:
+        """Get the operation type (first key in the step dict)."""
+        for key in self.raw:
+            return key
+        return "unknown"
+
+    @property
+    def payload(self) -> Any:
+        """Get the payload (value of the first key)."""
+        for key in self.raw:
+            return self.raw[key]
+        return None
+
+
+class Trace(BaseModel):
+    """A complete trace with expert name and steps."""
+
+    expert: str = Field(description="Name of the expert that handles this trace")
+    steps: list[TraceStep] = Field(default_factory=list, description="Ordered trace steps")
+
+    @property
+    def query_var(self) -> str | None:
+        """Extract the query variable from the trace steps."""
+        for step in self.steps:
+            if step.operation == "query":
+                return step.payload
+        return None
+
+    @classmethod
+    def from_yaml(cls, yaml_str: str) -> Trace:
+        """Parse a Trace from YAML string."""
+        data = yaml.safe_load(yaml_str)
+        if not isinstance(data, dict):
+            raise ValueError("YAML output is not a dict")
+        expert = data.get("expert", "unknown")
+        raw_steps = data.get("trace", [])
+        if not isinstance(raw_steps, list):
+            raise ValueError("Trace is not a list")
+        steps = [TraceStep(raw=s) for s in raw_steps]
+        return cls(expert=expert, steps=steps)
+
+
+class TraceResult(BaseModel):
+    """Result from executing a trace."""
+
+    success: bool = Field(default=False, description="Whether trace executed without errors")
+    answer: Any = Field(default=None, description="Computed answer from trace")
+    state: dict[str, Any] = Field(default_factory=dict, description="Final state after execution")
+    error: str | None = Field(default=None, description="Error message if execution failed")
+    expert: str = Field(default="", description="Expert that executed the trace")
+    steps_executed: int = Field(default=0, description="Number of steps successfully executed")
+
+
+class VerificationResult(BaseModel):
+    """Result from verifying a trace against expected answer."""
+
+    parsed: bool = Field(default=False, description="Whether YAML was parsed successfully")
+    expert: str | None = Field(default=None, description="Expert name from trace")
+    trace_valid: bool = Field(default=False, description="Whether trace executed without errors")
+    trace_error: str | None = Field(default=None, description="Error if trace failed")
+    computed_answer: Any = Field(default=None, description="Answer computed by executing trace")
+    expected_answer: Any = Field(default=None, description="Expected answer for comparison")
+    answer_correct: bool = Field(default=False, description="Whether computed matches expected")
+    final_state: dict[str, Any] = Field(default_factory=dict, description="Final variable state")
+    reward: float = Field(
+        default=0.0, ge=0.0, le=1.0, description="Graduated reward score (0.0-1.0)"
+    )

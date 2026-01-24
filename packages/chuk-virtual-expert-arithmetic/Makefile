@@ -1,10 +1,10 @@
-.PHONY: help clean clean-pyc clean-build clean-test clean-all install dev-install test test-cov coverage-report lint format typecheck security check demo build version bump-patch bump-minor bump-major publish publish-test publish-manual release
+.PHONY: help clean clean-pyc clean-build clean-test clean-all install dev-install test test-cov coverage-report lint format typecheck security check build version bump-patch bump-minor bump-major publish publish-test publish-manual release demo
 
 # Detect if 'uv' is available for faster operations
 UV := $(shell command -v uv 2> /dev/null)
 
 help:
-	@echo "chuk-virtual-expert-time - Time virtual expert for LLM routing"
+	@echo "chuk-virtual-expert-arithmetic - Arithmetic trace-solving virtual experts"
 	@echo ""
 	@echo "Available targets:"
 	@echo "  help              Show this help message"
@@ -27,7 +27,7 @@ help:
 	@echo "  typecheck         Run mypy type checking"
 	@echo "  security          Run bandit security checks"
 	@echo "  check             Run all checks (lint, typecheck, security, test)"
-	@echo "  demo              Run the TimeExpert demo"
+	@echo "  demo              Run example demos"
 	@echo ""
 	@echo "Build & Release targets:"
 	@echo "  build             Build the project (creates dist/ artifacts)"
@@ -93,7 +93,7 @@ endif
 test:
 ifdef UV
 	@echo "Running tests with uv..."
-	cd ../.. && uv run python -m pytest packages/chuk-virtual-expert-time/tests/
+	cd ../.. && uv run python -m pytest packages/chuk-virtual-expert-arithmetic/tests/
 else
 	@echo "Running tests..."
 	pytest
@@ -102,10 +102,10 @@ endif
 test-cov:
 ifdef UV
 	@echo "Running tests with coverage (using uv)..."
-	cd ../.. && uv run python -m pytest packages/chuk-virtual-expert-time/tests/ --cov=packages/chuk-virtual-expert-time/src/chuk_virtual_expert_time --cov-report=html --cov-report=term-missing
+	cd ../.. && uv run python -m pytest packages/chuk-virtual-expert-arithmetic/tests/ --cov=packages/chuk-virtual-expert-arithmetic/src/chuk_virtual_expert_arithmetic --cov-report=html --cov-report=term-missing
 else
 	@echo "Running tests with coverage..."
-	pytest --cov=chuk_virtual_expert_time --cov-report=html --cov-report=term-missing
+	pytest --cov=chuk_virtual_expert_arithmetic --cov-report=html --cov-report=term-missing
 endif
 
 coverage-report:
@@ -147,11 +147,10 @@ endif
 check: lint typecheck security test
 	@echo "All checks passed!"
 
-# Demo target
 demo:
-	@echo "Running TimeExpert demo..."
+	@echo "Running demos..."
 ifdef UV
-	cd ../.. && uv run python packages/chuk-virtual-expert-time/examples/demo.py
+	cd ../.. && uv run python packages/chuk-virtual-expert-arithmetic/examples/demo.py
 else
 	python examples/demo.py
 endif
@@ -223,7 +222,7 @@ endif
 	echo "Uploaded to TestPyPI!"; \
 	echo ""; \
 	echo "Install with:"; \
-	echo "  pip install --index-url https://test.pypi.org/simple/ chuk-virtual-expert-time==$$version"
+	echo "  pip install --index-url https://test.pypi.org/simple/ chuk-virtual-expert-arithmetic==$$version"
 
 publish-manual: build
 	@echo "Manual PyPI Publishing"
@@ -246,6 +245,6 @@ publish-manual: build
 	fi; \
 	echo ""; \
 	echo "Published to PyPI!"; \
-	echo "Install with: pip install chuk-virtual-expert-time==$$version"
+	echo "Install with: pip install chuk-virtual-expert-arithmetic==$$version"
 
 release: publish

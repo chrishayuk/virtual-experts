@@ -1,0 +1,55 @@
+[project]
+name = "chuk-virtual-expert-arithmetic"
+version = "1.0.0"
+description = "Arithmetic trace-solving virtual experts for chuk-virtual-expert"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [
+    { name = "Christopher Hay" }
+]
+keywords = [
+    "virtual-expert",
+    "arithmetic",
+    "trace-solver",
+    "math",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = ["chuk-virtual-expert>=3.0.0"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+
+[project.entry-points."chuk_virtual_expert.plugins"]
+arithmetic = "chuk_virtual_expert_arithmetic:ArithmeticExpert"
+entity_track = "chuk_virtual_expert_arithmetic:EntityTrackExpert"
+percentage = "chuk_virtual_expert_arithmetic:PercentageExpert"
+rate_equation = "chuk_virtual_expert_arithmetic:RateEquationExpert"
+comparison = "chuk_virtual_expert_arithmetic:ComparisonExpert"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/chuk_virtual_expert_arithmetic"]
+
+[tool.uv.sources]
+chuk-virtual-expert = { workspace = true }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"

@@ -1,6 +1,6 @@
 [project]
 name = "chuk-virtual-expert"
-version = "2.0.0"
+version = "3.0.0"
 description = "Base specification for virtual expert plugins - Pydantic-native with CoT dispatch"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -26,7 +26,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
-dependencies = ["pydantic>=2.0"]
+dependencies = ["pydantic>=2.0", "pyyaml>=6.0"]
 
 [project.optional-dependencies]
 mcp = ["chuk-mcp>=0.1.0"]

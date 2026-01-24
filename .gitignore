@@ -144,3 +144,6 @@ cython_debug/
 # Project specific
 *.bak
 .ruff_cache/
+
+# claude
+.claude
