@@ -18,7 +18,7 @@ A virtual expert plugin that provides NTP-accurate time and timezone operations 
 - **Timezone conversion** - Convert times between IANA timezones
 - **Timezone info** - Look up timezone details with DST transitions
 - **20+ timezone aliases** - Common cities and abbreviations
-- **Async-native** - Built for async/await patterns
+- **Async-only** - All execution is async (`await expert.execute_operation(...)`)
 - **Pydantic-native** - Type-safe with structured responses
 - **No magic strings** - Uses enums throughout
 
@@ -35,61 +35,6 @@ pip install chuk-virtual-expert-time[dev]
 
 ## Quick Start
 
-### Using execute_operation
-
-```python
-from chuk_virtual_expert_time import TimeExpert, TimeOperation
-
-expert = TimeExpert()
-
-# Get current UTC time
-result = expert.execute_operation(
-    TimeOperation.GET_TIME.value,
-    {"timezone": "UTC"}
-)
-print(result)
-# {'query_type': 'current_time', 'timezone': 'UTC', 'iso8601': '2024-01-15T12:00:00+00:00', ...}
-
-# Get time in Tokyo (using alias)
-result = expert.execute_operation(
-    TimeOperation.GET_TIME.value,
-    {"timezone": "tokyo"}
-)
-print(result["iso8601"])  # "2024-01-15T21:00:00+09:00"
-
-# Convert time between zones
-result = expert.execute_operation(
-    TimeOperation.CONVERT_TIME.value,
-    {
-        "time": "2024-01-15T15:00:00",
-        "from_timezone": "est",
-        "to_timezone": "pst",
-    }
-)
-print(f"{result['from_time']} -> {result['to_time']}")
-```
-
-### Using VirtualExpertAction
-
-```python
-from chuk_virtual_expert_time import TimeExpert, TimeOperation
-from chuk_virtual_expert.models import VirtualExpertAction
-
-expert = TimeExpert()
-
-action = VirtualExpertAction(
-    expert="time",
-    operation=TimeOperation.GET_TIME.value,
-    parameters={"timezone": "Asia/Tokyo"},
-)
-result = expert.execute(action)
-
-print(result.success)  # True
-print(result.data)     # {'query_type': 'current_time', ...}
-```
-
-### Async Usage
-
 ```python
 import asyncio
 from chuk_virtual_expert_time import TimeExpert, TimeOperation
@@ -97,11 +42,54 @@ from chuk_virtual_expert_time import TimeExpert, TimeOperation
 async def main():
     expert = TimeExpert()
 
-    result = await expert.execute_operation_async(
+    # Get current UTC time
+    result = await expert.execute_operation(
         TimeOperation.GET_TIME.value,
-        {"timezone": "Europe/London"}
+        {"timezone": "UTC"}
     )
     print(result)
+    # {'query_type': 'current_time', 'timezone': 'UTC', 'iso8601': '2024-01-15T12:00:00+00:00', ...}
+
+    # Get time in Tokyo (using alias)
+    result = await expert.execute_operation(
+        TimeOperation.GET_TIME.value,
+        {"timezone": "tokyo"}
+    )
+    print(result["iso8601"])  # "2024-01-15T21:00:00+09:00"
+
+    # Convert time between zones
+    result = await expert.execute_operation(
+        TimeOperation.CONVERT_TIME.value,
+        {
+            "time": "2024-01-15T15:00:00",
+            "from_timezone": "est",
+            "to_timezone": "pst",
+        }
+    )
+    print(f"{result['from_time']} -> {result['to_time']}")
+
+asyncio.run(main())
+```
+
+### Using VirtualExpertAction
+
+```python
+import asyncio
+from chuk_virtual_expert_time import TimeExpert, TimeOperation
+from chuk_virtual_expert.models import VirtualExpertAction
+
+async def main():
+    expert = TimeExpert()
+
+    action = VirtualExpertAction(
+        expert="time",
+        operation=TimeOperation.GET_TIME.value,
+        parameters={"timezone": "Asia/Tokyo"},
+    )
+    result = await expert.execute(action)
+
+    print(result.success)  # True
+    print(result.data)     # {'query_type': 'current_time', ...}
 
 asyncio.run(main())
 ```
@@ -304,11 +292,9 @@ Main expert class for time operations.
 
 **Methods:**
 - `get_operations() -> list[str]` - Returns available operations
-- `execute_operation(operation, parameters) -> dict` - Execute synchronously
-- `execute_operation_async(operation, parameters) -> dict` - Execute asynchronously
-- `execute(action) -> VirtualExpertResult` - Execute a VirtualExpertAction
-- `execute_async(action) -> VirtualExpertResult` - Execute action asynchronously
-- `list_mcp_tools() -> list[dict]` - List available MCP tools
+- `await execute_operation(operation, parameters) -> dict` - Execute an operation (async)
+- `await execute(action) -> VirtualExpertResult` - Execute a VirtualExpertAction (async)
+- `await list_mcp_tools() -> list[dict]` - List available MCP tools
 
 ## Development
 

@@ -26,9 +26,10 @@ This guide walks through creating a production-ready virtual expert from scratch
 Virtual experts are specialized plugins that language models can route to for domain-specific tasks. Each expert:
 
 - **Returns structured data** - `dict[str, Any]` for model chain-of-thought reasoning
-- **Is async-native** - Supports both sync and async execution
+- **Is async-only** - All execution is `async def` (no sync wrappers)
 - **Is Pydantic-native** - Type-safe with validation throughout
 - **Has no magic strings** - Uses enums for operations, query types, and constants
+- **Has typed traces** - Uses discriminated union step models for trace execution
 - **Has 90%+ test coverage** - Comprehensive tests for reliability
 - **Has CI/CD** - Automated testing, linting, and publishing
 
@@ -225,12 +226,12 @@ class MyExpert(VirtualExpert):
         """Return list of available operations."""
         return [op.value for op in MyOperation]
 
-    def execute_operation(
+    async def execute_operation(
         self,
         operation: str,
         parameters: dict[str, Any],
     ) -> dict[str, Any]:
-        """Execute operation by name."""
+        """Execute operation by name (async-only)."""
         op = MyOperation(operation)
 
         if op == MyOperation.DO_THING:
@@ -583,86 +584,68 @@ class TestGetOperations:
 
 
 class TestExecuteOperation:
-    """Tests for execute_operation method."""
+    """Tests for execute_operation method (async-only)."""
 
-    def test_do_thing(self, expert):
-        result = expert.execute_operation(
+    @pytest.mark.asyncio
+    async def test_do_thing(self, expert):
+        result = await expert.execute_operation(
             MyOperation.DO_THING.value,
             {"param1": "test"}
         )
         assert result["query_type"] == MyQueryType.THING_RESULT.value
         assert "test" in result["result"]
 
-    def test_do_thing_with_param2(self, expert):
-        result = expert.execute_operation(
+    @pytest.mark.asyncio
+    async def test_do_thing_with_param2(self, expert):
+        result = await expert.execute_operation(
             MyOperation.DO_THING.value,
             {"param1": "test", "param2": 20}
         )
         assert result["count"] == 20
 
-    def test_get_info(self, expert):
-        result = expert.execute_operation(
+    @pytest.mark.asyncio
+    async def test_get_info(self, expert):
+        result = await expert.execute_operation(
             MyOperation.GET_INFO.value,
             {"item": "something"}
         )
         assert result["query_type"] == MyQueryType.INFO_RESULT.value
         assert result["item"] == "something"
 
-    def test_unknown_operation_returns_error(self, expert):
+    @pytest.mark.asyncio
+    async def test_unknown_operation_returns_error(self, expert):
         with pytest.raises(ValueError):
-            expert.execute_operation("invalid_op", {})
+            await expert.execute_operation("invalid_op", {})
 
 
 class TestExecute:
-    """Tests for execute method with VirtualExpertAction."""
+    """Tests for execute method with VirtualExpertAction (async-only)."""
 
-    def test_execute_success(self, expert):
+    @pytest.mark.asyncio
+    async def test_execute_success(self, expert):
         action = VirtualExpertAction(
             expert="myexpert",
             operation=MyOperation.DO_THING.value,
             parameters={"param1": "test"},
         )
-        result = expert.execute(action)
+        result = await expert.execute(action)
 
         assert result.success is True
         assert result.expert_name == "myexpert"
         assert result.data is not None
         assert result.data["query_type"] == MyQueryType.THING_RESULT.value
 
-    def test_execute_failure(self, expert):
+    @pytest.mark.asyncio
+    async def test_execute_failure(self, expert):
         action = VirtualExpertAction(
             expert="myexpert",
             operation="invalid",
             parameters={},
         )
-        result = expert.execute(action)
+        result = await expert.execute(action)
 
         assert result.success is False
         assert result.error is not None
-
-
-class TestExecuteAsync:
-    """Tests for async execution."""
-
-    @pytest.mark.asyncio
-    async def test_execute_operation_async(self, expert):
-        result = await expert.execute_operation_async(
-            MyOperation.DO_THING.value,
-            {"param1": "async_test"}
-        )
-        assert result["query_type"] == MyQueryType.THING_RESULT.value
-
-    @pytest.mark.asyncio
-    async def test_execute_async(self, expert):
-        action = VirtualExpertAction(
-            expert="myexpert",
-            operation=MyOperation.GET_INFO.value,
-            parameters={"item": "async_item"},
-        )
-        result = await expert.execute_async(action)
-
-        assert result.success is True
-        assert result.data["item"] == "async_item"
 ```
 
 ### tests/test_init.py
@@ -744,7 +727,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = [
-    "chuk-virtual-expert>=2.0.0",
+    "chuk-virtual-expert>=3.0.0",
 ]
 
 # For MCP-backed experts, use:
@@ -1101,21 +1084,20 @@ pip install chuk-virtual-expert-myexpert
 ## Quick Start
 
 \```python
+import asyncio
 from chuk_virtual_expert_myexpert import MyExpert, MyOperation
 
-expert = MyExpert()
+async def main():
+    expert = MyExpert()
 
-# Sync execution
-result = expert.execute_operation(
-    MyOperation.DO_THING.value,
-    {"param1": "test"}
-)
+    # Execute an operation
+    result = await expert.execute_operation(
+        MyOperation.DO_THING.value,
+        {"param1": "test"}
+    )
+    print(result)
 
-# Async execution
-result = await expert.execute_operation_async(
-    MyOperation.DO_THING.value,
-    {"param1": "test"}
-)
+asyncio.run(main())
 \```
 
 ## Development
@@ -1476,8 +1458,16 @@ The Time Expert (`chuk-virtual-expert-time`) is the reference implementation:
 
 - **Location:** `packages/chuk-virtual-expert-time/`
 - **Type:** MCPExpert (delegates to MCP server)
-- **Coverage:** 100%
-- **Tests:** 42 passing
-- **Features:** Async-native, Pydantic-native, no magic strings
+- **Coverage:** 98%+
+- **Tests:** 67 passing
+- **Features:** Async-only, Pydantic-native, typed traces, no magic strings
 
 Study its structure as a template for new experts.
+
+### Other Reference Experts
+
+| Package | Type | Tests | Description |
+|---------|------|-------|-------------|
+| `chuk-virtual-expert-weather` | MCPExpert | 113 | Weather forecasts, geocoding, air quality, marine data |
+| `chuk-virtual-expert-arithmetic` | TraceSolverExpert | 229 | Math word problems with verified trace execution |
+| `chuk-virtual-expert-mcts` | VirtualExpert | 56 | Monte Carlo Tree Search for game/planning domains |

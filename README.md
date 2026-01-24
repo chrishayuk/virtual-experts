@@ -7,19 +7,21 @@ Lightweight, standalone virtual expert plugins for language models. Supports bot
 Virtual experts are specialized plugins that language models can route to for domain-specific tasks. Each expert:
 
 - **Returns Structured Data**: Outputs `dict[str, Any]` for model chain-of-thought reasoning
+- **Async-Only**: All execution via `async def execute_operation()` and `async def execute()`
+- **Pydantic-Native**: Type-safe with typed trace models and discriminated unions
+- **No Magic Strings**: Enum-based operations and constants
 - **Standalone**: Can be deployed and used independently
-- **Lightweight**: Minimal dependencies
 - **Pluggable**: Works with Lazarus or CoT dispatcher
 
 ## Packages
 
-| Package | Description | Status |
-|---------|-------------|--------|
-| `chuk-virtual-expert` | Base specification, registry, and CoT dispatcher | ✅ |
-| `chuk-virtual-expert-time` | Time and timezone operations | ✅ |
-| `chuk-virtual-expert-weather` | Weather forecasts (planned) | 🔜 |
-| `chuk-virtual-expert-celestial` | Astronomy calculations (planned) | 🔜 |
-| `chuk-virtual-expert-solver` | Math/equation solving (planned) | 🔜 |
+| Package | Description | Tests | Status |
+|---------|-------------|-------|--------|
+| `chuk-virtual-expert` | Base specification, registry, CoT dispatcher, trace solver | 293 | ✅ |
+| `chuk-virtual-expert-time` | Time and timezone operations (MCP-backed) | 67 | ✅ |
+| `chuk-virtual-expert-weather` | Weather forecasts, geocoding, air quality, marine (MCP-backed) | 113 | ✅ |
+| `chuk-virtual-expert-arithmetic` | Math word problems with verified trace execution | 229 | ✅ |
+| `chuk-virtual-expert-mcts` | Monte Carlo Tree Search for game/planning domains | 56 | ✅ |
 
 ## Documentation
 
@@ -110,36 +112,45 @@ The calibration space is now **deterministic** - same action format always route
 pip install chuk-virtual-expert-time
 ```
 
-### Using the Clean API (Pydantic-native)
+### Using the Clean API (Pydantic-native, async-only)
 
 ```python
+import asyncio
 from chuk_virtual_expert_time import TimeExpert, TimeOperation
 from chuk_virtual_expert import VirtualExpertAction
 
-# Create expert
-expert = TimeExpert()
+async def main():
+    expert = TimeExpert()
 
-# Direct method calls
-result = expert.get_time(timezone="Asia/Tokyo")
-print(result)
-# {'query_type': 'current_time', 'timezone': 'Asia/Tokyo',
-#  'iso8601': '2026-01-20T08:46:09+09:00', 'formatted': '2026-01-20 08:46:09 JST', ...}
+    # Execute operations directly (async-only)
+    result = await expert.execute_operation(
+        TimeOperation.GET_TIME.value,
+        {"timezone": "Asia/Tokyo"},
+    )
+    print(result)
+    # {'query_type': 'current_time', 'timezone': 'Asia/Tokyo',
+    #  'iso8601': '2026-01-20T08:46:09+09:00', ...}
 
-result = expert.convert_time(time="3pm", from_timezone="EST", to_timezone="PST")
-print(result)
-# {'query_type': 'conversion', 'from_time': '03:00 PM', 'to_time': '12:00 PM', ...}
+    result = await expert.execute_operation(
+        TimeOperation.CONVERT_TIME.value,
+        {"time": "3pm", "from_timezone": "EST", "to_timezone": "PST"},
+    )
+    print(result)
+    # {'query_type': 'conversion', 'from_time': '03:00 PM', 'to_time': '12:00 PM', ...}
 
-# Via VirtualExpertAction (what CoT produces)
-action = VirtualExpertAction(
-    expert="time",
-    operation="get_time",
-    parameters={"timezone": "Asia/Tokyo"},
-    confidence=0.95,
-    reasoning="User asking for time in Tokyo"
-)
-result = expert.execute(action)
-print(result.data)  # Structured result
-print(result.success)  # True
+    # Via VirtualExpertAction (what CoT produces)
+    action = VirtualExpertAction(
+        expert="time",
+        operation="get_time",
+        parameters={"timezone": "Asia/Tokyo"},
+        confidence=0.95,
+        reasoning="User asking for time in Tokyo",
+    )
+    result = await expert.execute(action)
+    print(result.data)  # Structured result
+    print(result.success)  # True
+
+asyncio.run(main())
 ```
 
 ## CoT Dispatch
@@ -169,8 +180,7 @@ dispatcher = VirtualExpertDispatcher(registry)
 ### VirtualExpertAction Format
 
 ```python
-@dataclass
-class VirtualExpertAction:
+class VirtualExpertAction(BaseModel):
     expert: str           # "time", "weather", or "none"
     operation: str        # "get_time", "convert_time", etc.
     parameters: dict      # {"timezone": "Asia/Tokyo"}
@@ -281,12 +291,12 @@ class MyExpert(VirtualExpert):
         """List available operations."""
         return [op.value for op in MyOperation]
 
-    def execute_operation(
+    async def execute_operation(
         self,
         operation: str,
         parameters: dict[str, Any],
     ) -> dict[str, Any]:
-        """Execute operation by name."""
+        """Execute operation by name (async-only)."""
         op = MyOperation(operation)
 
         if op == MyOperation.DO_THING:
@@ -294,12 +304,12 @@ class MyExpert(VirtualExpert):
         elif op == MyOperation.DO_OTHER:
             return self.do_other(**parameters)
         else:
-            return {"query_type": MyQueryType.ERROR, "error": f"Unknown: {operation}"}
+            return {"query_type": MyQueryType.ERROR.value, "error": f"Unknown: {operation}"}
 
     def do_thing(self, param1: str, param2: int = 10) -> dict[str, Any]:
         """Actual operation implementation."""
         return {
-            "query_type": MyQueryType.THING_RESULT,
+            "query_type": MyQueryType.THING_RESULT.value,
             "result": f"Did thing with {param1}",
             "count": param2,
         }
@@ -370,7 +380,7 @@ my-virtual-expert/
 ```toml
 [project]
 name = "my-virtual-expert"
-dependencies = ["chuk-virtual-expert>=2.0"]
+dependencies = ["chuk-virtual-expert>=3.0.0"]
 
 [project.entry-points."chuk_virtual_expert.experts"]
 my_expert = "my_virtual_expert:MyExpert"
@@ -435,8 +445,8 @@ my_expert = "my_virtual_expert:MyExpert"
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `get_operations()` | list[str] | Available operation names |
-| `execute_operation(op, params)` | dict | Execute named operation |
-| `execute(action)` | VirtualExpertResult | Execute VirtualExpertAction |
+| `await execute_operation(op, params)` | dict | Execute named operation (async) |
+| `await execute(action)` | VirtualExpertResult | Execute VirtualExpertAction (async) |
 | `get_cot_examples()` | CoTExamples | Load CoT training examples |
 | `get_calibration_data()` | tuple[list, list] | (positive, negative) for training |
 | `get_few_shot_prompt(n)` | str | Few-shot examples for prompt |

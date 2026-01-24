@@ -22,9 +22,10 @@ Virtual experts are specialized plugins that language models can route to for do
 
 ## Features
 
-- **Async-native** - All experts support `execute_async()` and `execute_operation_async()`
+- **Async-only** - All experts use `async def execute_operation()` and `async def execute()`
 - **Pydantic-native** - Type-safe models with validation throughout
 - **No magic strings** - Enum-based operations and constants
+- **Typed traces** - Discriminated union step models for trace execution
 - **MCP support** - Optional base class for Model Context Protocol backends
 - **Validation framework** - Test few-shot prompts before fine-tuning
 
@@ -39,7 +40,7 @@ VirtualExpertAction JSON
     ↓
 Calibration Router (trained on action JSONs)
     ↓
-Expert.execute(action) or Expert.execute_async(action)
+await expert.execute(action)
     ↓
 VirtualExpertResult (structured data)
 ```
@@ -88,11 +89,12 @@ class WeatherExpert(VirtualExpert):
     def get_operations(self) -> list[str]:
         return ["get_weather", "get_forecast"]
 
-    def execute_operation(
+    async def execute_operation(
         self,
         operation: str,
         parameters: dict[str, Any],
     ) -> dict[str, Any]:
+        """Execute operation (async-only)."""
         if operation == "get_weather":
             location = parameters.get("location", "Unknown")
             return {
@@ -106,7 +108,7 @@ class WeatherExpert(VirtualExpert):
             raise ValueError(f"Unknown operation: {operation}")
 ```
 
-### Async Execution
+### Execution
 
 ```python
 import asyncio
@@ -115,20 +117,20 @@ from chuk_virtual_expert import VirtualExpertAction
 async def main():
     expert = WeatherExpert()
 
-    # Async operation execution
-    result = await expert.execute_operation_async(
+    # Operation execution (async-only)
+    result = await expert.execute_operation(
         "get_weather",
         {"location": "Tokyo"}
     )
     print(result)  # {"location": "Tokyo", "temperature": 72, ...}
 
-    # Async action execution
+    # Action execution (async-only)
     action = VirtualExpertAction(
         expert="weather",
         operation="get_weather",
         parameters={"location": "Paris"},
     )
-    result = await expert.execute_async(action)
+    result = await expert.execute(action)
     print(result.data)  # {"location": "Paris", ...}
 
 asyncio.run(main())
@@ -167,15 +169,12 @@ action = VirtualExpertAction(
     reasoning="User asking for weather in Tokyo",
 )
 
-# Execute on expert (sync)
+# Execute on expert (async-only)
 expert = registry.get("weather")
-result = expert.execute(action)
+result = await expert.execute(action)
 
 print(result.data)  # {"location": "Tokyo", "temperature": 72, ...}
 print(result.success)  # True
-
-# Or execute async
-result = await expert.execute_async(action)
 ```
 
 ### Creating an MCP-Backed Expert
@@ -299,7 +298,7 @@ adapter = adapt_expert(expert)
 # The adapter provides Lazarus-compatible interface
 adapter.name  # "weather"
 adapter.can_handle("What's the weather?")  # True
-adapter.execute("What's the weather in Tokyo?")  # String result
+await adapter.execute("What's the weather in Tokyo?")  # String result
 adapter.get_calibration_actions()  # For router training
 ```
 
@@ -350,12 +349,10 @@ Abstract base class for all virtual experts.
 **Abstract Methods:**
 - `can_handle(prompt) -> bool` - Check if expert can handle prompt
 - `get_operations() -> list[str]` - Available operation names
-- `execute_operation(operation, parameters) -> dict` - Execute an operation
+- `async execute_operation(operation, parameters) -> dict` - Execute an operation
 
 **Provided Methods:**
-- `execute(action) -> VirtualExpertResult` - Execute a VirtualExpertAction (sync)
-- `execute_async(action) -> VirtualExpertResult` - Execute a VirtualExpertAction (async)
-- `execute_operation_async(operation, parameters) -> dict` - Execute operation (async)
+- `async execute(action) -> VirtualExpertResult` - Execute a VirtualExpertAction
 - `get_cot_examples() -> CoTExamples` - Load training examples
 - `get_calibration_data() -> tuple[list[str], list[str]]` - Get calibration data
 - `get_schema() -> ExpertSchema` - Get expert schema for prompts

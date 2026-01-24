@@ -1,6 +1,6 @@
 # chuk-virtual-expert-mcts
 
-Pure MCTS (Monte Carlo Tree Search) virtual expert. Domain-agnostic, async-native, pydantic-native.
+Pure MCTS (Monte Carlo Tree Search) virtual expert. Domain-agnostic, async-only, pydantic-native.
 
 ## Architecture
 

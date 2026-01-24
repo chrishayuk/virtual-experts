@@ -17,7 +17,7 @@ A virtual expert plugin that provides weather data via the hosted MCP server at 
 - **Geocoding** - Convert location names to coordinates
 - **WMO code interpretation** - Decode weather condition codes
 - **30+ location aliases** - Common cities resolved automatically
-- **Async-native** - Built for async/await patterns
+- **Async-only** - All execution is async (`await expert.execute_operation(...)`)
 - **Pydantic-native** - Type-safe with structured responses
 - **No magic strings** - Uses enums throughout
 
@@ -34,17 +34,15 @@ pip install chuk-virtual-expert-weather[dev]
 
 ## Quick Start
 
-### Using execute_operation_async
-
 ```python
 import asyncio
 from chuk_virtual_expert_weather import WeatherExpert, WeatherOperation
 
-expert = WeatherExpert()
-
 async def main():
+    expert = WeatherExpert()
+
     # Get forecast for Tokyo
-    result = await expert.execute_operation_async(
+    result = await expert.execute_operation(
         WeatherOperation.GET_FORECAST.value,
         {"location": "tokyo", "forecast_days": 3}
     )
@@ -52,14 +50,14 @@ async def main():
     # {'query_type': 'forecast', 'location': 'tokyo', 'latitude': 35.6762, ...}
 
     # Get air quality in Beijing
-    result = await expert.execute_operation_async(
+    result = await expert.execute_operation(
         WeatherOperation.GET_AIR_QUALITY.value,
         {"location": "beijing"}
     )
     print(result)
 
     # Get marine forecast for Sydney
-    result = await expert.execute_operation_async(
+    result = await expert.execute_operation(
         WeatherOperation.GET_MARINE.value,
         {"location": "sydney", "forecast_days": 5}
     )
@@ -75,17 +73,20 @@ import asyncio
 from chuk_virtual_expert_weather import WeatherExpert, WeatherOperation
 from chuk_virtual_expert.models import VirtualExpertAction
 
-expert = WeatherExpert()
+async def main():
+    expert = WeatherExpert()
 
-action = VirtualExpertAction(
-    expert="weather",
-    operation=WeatherOperation.GET_FORECAST.value,
-    parameters={"location": "london", "unit": "celsius"},
-)
-result = asyncio.run(expert.execute_async(action))
+    action = VirtualExpertAction(
+        expert="weather",
+        operation=WeatherOperation.GET_FORECAST.value,
+        parameters={"location": "london", "unit": "celsius"},
+    )
+    result = await expert.execute(action)
 
-print(result.success)  # True
-print(result.data)     # {'query_type': 'forecast', ...}
+    print(result.success)  # True
+    print(result.data)     # {'query_type': 'forecast', ...}
+
+asyncio.run(main())
 ```
 
 ### Multi-step Trace (Geocode + Forecast)
@@ -94,16 +95,16 @@ print(result.data)     # {'query_type': 'forecast', ...}
 import asyncio
 from chuk_virtual_expert_weather import WeatherExpert
 
-expert = WeatherExpert()
-
 async def main():
-    # Chain geocode -> forecast for unknown locations
-    result = await expert.execute_operation_async(
+    expert = WeatherExpert()
+
+    # Chain geocode -> forecast using typed trace steps
+    result = await expert.execute_operation(
         "execute_trace",
         {"trace": [
-            {"geocode": {"name": "Springfield, IL", "result_var": "loc"}},
-            {"get_forecast": {"location_var": "loc", "forecast_days": 3, "result_var": "weather"}},
-            {"query": "weather"}
+            {"op": "geocode", "name": "Springfield, IL", "var": "loc"},
+            {"op": "get_forecast", "location_var": "loc", "forecast_days": 3, "var": "weather"},
+            {"op": "query", "var": "weather"},
         ]}
     )
     print(result)
@@ -263,10 +264,10 @@ Main expert class for weather operations.
 
 **Methods:**
 - `get_operations() -> list[str]` - Returns available operations
-- `execute_operation_async(operation, parameters) -> dict` - Execute asynchronously
-- `execute_async(action) -> VirtualExpertResult` - Execute action asynchronously
+- `await execute_operation(operation, parameters) -> dict` - Execute an operation (async)
+- `await execute(action) -> VirtualExpertResult` - Execute a VirtualExpertAction (async)
 - `can_handle(prompt) -> bool` - Check if prompt is weather-related
-- `list_mcp_tools() -> list[dict]` - List available MCP tools
+- `await list_mcp_tools() -> list[dict]` - List available MCP tools
 
 ## Development
 

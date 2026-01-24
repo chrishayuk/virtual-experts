@@ -17,7 +17,7 @@ A virtual expert plugin providing 5 specialized trace-solving experts for differ
 - **Comparisons** - Differences and ratios between quantities
 - **Trace verification** - Every step is auditable and verifiable
 - **Data generators** - Seed-based generation for training data
-- **Async-native** - Built for async/await patterns
+- **Async-only** - All execution is async (`await expert.execute_operation(...)`)
 - **Pydantic-native** - Type-safe with structured responses
 
 ## Installation
@@ -194,8 +194,8 @@ Differences and ratios between quantities.
 All experts inherit from `TraceSolverExpert` and share:
 
 **Methods:**
-- `execute_trace(steps) -> TraceResult` - Execute a trace synchronously
-- `execute(action) -> VirtualExpertResult` - Execute a VirtualExpertAction
+- `await execute_operation(operation, parameters) -> dict` - Execute an operation (async)
+- `await execute(action) -> VirtualExpertResult` - Execute a VirtualExpertAction (async)
 - `can_handle(prompt) -> bool` - Check if prompt matches this expert
 - `get_operations() -> list[str]` - Returns `["execute_trace"]`
 
