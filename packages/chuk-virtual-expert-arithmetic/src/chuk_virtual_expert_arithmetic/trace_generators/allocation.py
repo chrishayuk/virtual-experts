@@ -12,9 +12,9 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from chuk_virtual_expert_arithmetic.trace_generators.base import TraceGenerator
-from chuk_virtual_expert_arithmetic.schema.trace import Trace, TraceBuilder
 from chuk_virtual_expert_arithmetic.schema.problem import ProblemSpec, ProblemType
+from chuk_virtual_expert_arithmetic.schema.trace import Trace, TraceBuilder
+from chuk_virtual_expert_arithmetic.trace_generators.base import TraceGenerator
 
 
 class AllocationTraceGenerator(TraceGenerator):

@@ -8,35 +8,35 @@ No regex - the LLM does semantic parsing into this structure.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from decimal import Decimal
 from enum import Enum
 from typing import Any
-from decimal import Decimal
 
 
 class ProblemType(Enum):
     """Types of GSM-8K problems."""
 
-    ENTITY_TRACKING = "entity_tracking"    # Alice has X, gives Y to Bob
+    ENTITY_TRACKING = "entity_tracking"  # Alice has X, gives Y to Bob
     ARITHMETIC_CHAIN = "arithmetic_chain"  # Sequential operations on one value
-    RATE_EQUATION = "rate_equation"        # Workers/time, speed/distance
-    ALLOCATION = "allocation"              # Split X where A = 2*B
-    COMPARISON = "comparison"              # How many more does X have than Y
-    PERCENTAGE = "percentage"              # X% of Y, discount, tax
-    TIME_CALC = "time_calc"                # Start at X, add Y hours
-    GEOMETRY = "geometry"                  # Area, perimeter, volume
+    RATE_EQUATION = "rate_equation"  # Workers/time, speed/distance
+    ALLOCATION = "allocation"  # Split X where A = 2*B
+    COMPARISON = "comparison"  # How many more does X have than Y
+    PERCENTAGE = "percentage"  # X% of Y, discount, tax
+    TIME_CALC = "time_calc"  # Start at X, add Y hours
+    GEOMETRY = "geometry"  # Area, perimeter, volume
     UNKNOWN = "unknown"
 
 
 class OperationType(Enum):
     """Types of operations in a problem."""
 
-    INIT = "init"           # Entity starts with value
-    ADD = "add"             # Add to entity
-    SUBTRACT = "subtract"   # Subtract from entity
-    MULTIPLY = "multiply"   # Multiply entity value
-    DIVIDE = "divide"       # Divide entity value
-    TRANSFER = "transfer"   # Move from one entity to another
-    SET = "set"             # Set entity to specific value
+    INIT = "init"  # Entity starts with value
+    ADD = "add"  # Add to entity
+    SUBTRACT = "subtract"  # Subtract from entity
+    MULTIPLY = "multiply"  # Multiply entity value
+    DIVIDE = "divide"  # Divide entity value
+    TRANSFER = "transfer"  # Move from one entity to another
+    SET = "set"  # Set entity to specific value
 
 
 @dataclass
@@ -55,7 +55,7 @@ class Entity:
     initial_value: Decimal | None = None
     unit: str | None = None  # "apples", "$", "hours"
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "attribute": self.attribute,
@@ -64,11 +64,13 @@ class Entity:
         }
 
     @classmethod
-    def from_dict(cls, d: dict) -> "Entity":
+    def from_dict(cls, d: dict[str, Any]) -> Entity:
         return cls(
             name=d["name"],
             attribute=d.get("attribute"),
-            initial_value=Decimal(str(d["initial_value"])) if d.get("initial_value") is not None else None,
+            initial_value=Decimal(str(d["initial_value"]))
+            if d.get("initial_value") is not None
+            else None,
             unit=d.get("unit"),
         )
 
@@ -91,7 +93,7 @@ class Operation:
     factor: Decimal | None = None  # For multiply/divide
     condition: str | None = None  # "each", "per day", etc.
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "type": self.type.value,
             "target": self.target,
@@ -102,7 +104,7 @@ class Operation:
         }
 
     @classmethod
-    def from_dict(cls, d: dict) -> "Operation":
+    def from_dict(cls, d: dict[str, Any]) -> Operation:
         return cls(
             type=OperationType(d["type"]),
             target=d["target"],
@@ -129,7 +131,7 @@ class Query:
     compare_a: str | None = None  # For comparison queries
     compare_b: str | None = None
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "target": self.target,
             "question": self.question,
@@ -138,7 +140,7 @@ class Query:
         }
 
     @classmethod
-    def from_dict(cls, d: dict) -> "Query":
+    def from_dict(cls, d: dict[str, Any]) -> Query:
         return cls(
             target=d["target"],
             question=d.get("question", "value"),
@@ -165,7 +167,7 @@ class Constraint:
     factor: Decimal | None = None
     value: Decimal | None = None
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "type": self.type,
             "entities": self.entities,
@@ -174,7 +176,7 @@ class Constraint:
         }
 
     @classmethod
-    def from_dict(cls, d: dict) -> "Constraint":
+    def from_dict(cls, d: dict[str, Any]) -> Constraint:
         return cls(
             type=d["type"],
             entities=d.get("entities", []),
@@ -205,7 +207,7 @@ class ProblemSpec:
         has_query = self.query is not None
         return has_entities and has_query
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "problem_type": self.problem_type.value,
             "entities": [e.to_dict() for e in self.entities],
@@ -216,7 +218,7 @@ class ProblemSpec:
         }
 
     @classmethod
-    def from_dict(cls, d: dict) -> "ProblemSpec":
+    def from_dict(cls, d: dict[str, Any]) -> ProblemSpec:
         return cls(
             problem_type=ProblemType(d.get("problem_type", "unknown")),
             entities=[Entity.from_dict(e) for e in d.get("entities", [])],
@@ -229,6 +231,7 @@ class ProblemSpec:
     def to_json_str(self) -> str:
         """Format as JSON string for LLM prompting."""
         import json
+
         return json.dumps(self.to_dict(), indent=2)
 
 
@@ -245,7 +248,6 @@ EXAMPLE_SPECS = {
         query=Query(target="jenny", question="how_many"),
         raw_text="Jenny has 5 apples. She gives 2 to Bob. How many does Jenny have?",
     ),
-
     "arithmetic_chain": ProblemSpec(
         problem_type=ProblemType.ARITHMETIC_CHAIN,
         entities=[
@@ -258,7 +260,6 @@ EXAMPLE_SPECS = {
         query=Query(target="sam", question="how_many"),
         raw_text="Sam had 10 marbles. He lost 3, then found 5. How many does he have now?",
     ),
-
     "comparison": ProblemSpec(
         problem_type=ProblemType.COMPARISON,
         entities=[
@@ -269,7 +270,6 @@ EXAMPLE_SPECS = {
         query=Query(target="difference", question="compare", compare_a="tom", compare_b="jane"),
         raw_text="Tom has 15 marbles. Jane has 5 marbles. How many more does Tom have than Jane?",
     ),
-
     "allocation": ProblemSpec(
         problem_type=ProblemType.ALLOCATION,
         entities=[
@@ -283,7 +283,6 @@ EXAMPLE_SPECS = {
         query=Query(target="alice", question="value"),
         raw_text="Split $100 between Alice and Bob. Alice gets twice what Bob gets. How much does Alice get?",
     ),
-
     "percentage": ProblemSpec(
         problem_type=ProblemType.PERCENTAGE,
         entities=[

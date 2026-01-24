@@ -1,9 +1,10 @@
 """Rate/equation problem generator - symbolic traces."""
 
 import random
+from typing import Any
 
 
-def generate_rate_time_quantity():
+def generate_rate_time_quantity() -> dict[str, Any]:
     """Rate x time = quantity."""
     rate = random.randint(5, 50)
     time = random.randint(2, 12)
@@ -27,14 +28,14 @@ def generate_rate_time_quantity():
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "rate_equation",
         "trace": trace,
         "answer": result,
     }
 
 
-def generate_distance_speed_time():
+def generate_distance_speed_time() -> dict[str, Any]:
     """Distance = speed x time."""
     speed = random.randint(30, 80)
     time = random.randint(2, 8)
@@ -51,14 +52,14 @@ def generate_distance_speed_time():
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "rate_equation",
         "trace": trace,
         "answer": distance,
     }
 
 
-def generate_work_rate():
+def generate_work_rate() -> dict[str, Any]:
     """Work = rate x time, then divide."""
     workers = random.randint(2, 5)
     time = random.randint(2, 6)
@@ -79,14 +80,14 @@ def generate_work_rate():
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "rate_equation",
         "trace": trace,
         "answer": per_worker,
     }
 
 
-def generate_combined_rate():
+def generate_combined_rate() -> dict[str, Any]:
     """Two rates combined."""
     rate1 = random.randint(5, 20)
     rate2 = random.randint(5, 20)
@@ -106,7 +107,7 @@ def generate_combined_rate():
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "rate_equation",
         "trace": trace,
         "answer": total,
@@ -121,7 +122,7 @@ GENERATORS = [
 ]
 
 
-def generate(n: int = 40) -> list[dict]:
+def generate(n: int = 40) -> list[dict[str, Any]]:
     """Generate n rate equation examples."""
     examples = []
     for _ in range(n):

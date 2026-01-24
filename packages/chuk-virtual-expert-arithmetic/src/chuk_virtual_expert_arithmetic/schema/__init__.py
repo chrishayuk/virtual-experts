@@ -1,13 +1,13 @@
 """Problem and trace schema for arithmetic virtual experts."""
 
 from chuk_virtual_expert_arithmetic.schema.problem import (
-    ProblemType,
-    OperationType,
+    Constraint,
     Entity,
     Operation,
-    Query,
-    Constraint,
+    OperationType,
     ProblemSpec,
+    ProblemType,
+    Query,
 )
 from chuk_virtual_expert_arithmetic.schema.trace import (
     Action,
@@ -18,10 +18,10 @@ from chuk_virtual_expert_arithmetic.schema.trace import (
     apply_action,
 )
 from chuk_virtual_expert_arithmetic.schema.verifier import (
-    VerificationStatus,
     StepError,
-    VerificationResult,
     TraceVerifier,
+    VerificationResult,
+    VerificationStatus,
     verify_trace,
     verify_traces,
 )

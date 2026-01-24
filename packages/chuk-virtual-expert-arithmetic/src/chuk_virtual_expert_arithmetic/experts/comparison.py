@@ -16,9 +16,7 @@ class ComparisonExpert(TraceSolverExpert):
     """Expert for comparison and difference problems."""
 
     name: ClassVar[str] = "comparison"
-    description: ClassVar[str] = (
-        "Computes differences, ratios, and comparisons between quantities"
-    )
+    description: ClassVar[str] = "Computes differences, ratios, and comparisons between quantities"
     version: ClassVar[str] = "1.0.0"
     priority: ClassVar[int] = 11
 
@@ -39,9 +37,7 @@ class ComparisonExpert(TraceSolverExpert):
         prompt_lower = prompt.lower()
         return any(re.search(p, prompt_lower) for p in patterns)
 
-    def execute_step(
-        self, step: dict[str, Any], state: dict[str, Any]
-    ) -> dict[str, Any]:
+    def execute_step(self, step: dict[str, Any], state: dict[str, Any]) -> dict[str, Any]:
         """Execute comparison-specific operations."""
         op = next(iter(step))
 

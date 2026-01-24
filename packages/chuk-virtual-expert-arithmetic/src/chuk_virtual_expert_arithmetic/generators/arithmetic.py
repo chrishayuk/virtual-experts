@@ -1,9 +1,10 @@
 """Arithmetic chain problem generator - symbolic traces."""
 
 import random
+from typing import Any
 
 
-def generate_price_chain():
+def generate_price_chain() -> dict[str, Any]:
     """Price + tax + shipping pattern."""
     base = random.randint(10, 100)
     tax = round(random.uniform(1, 10), 2)
@@ -12,7 +13,9 @@ def generate_price_chain():
     total = round(base + tax + shipping, 2)
     item = random.choice(["toy", "book", "shirt", "gadget", "tool"])
 
-    question = f"A {item} costs ${base}. Tax adds ${tax}. Shipping is ${shipping}. What's the total?"
+    question = (
+        f"A {item} costs ${base}. Tax adds ${tax}. Shipping is ${shipping}. What's the total?"
+    )
 
     trace = [
         {"init": "price", "value": base},
@@ -24,14 +27,14 @@ def generate_price_chain():
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "arithmetic",
         "trace": trace,
         "answer": total,
     }
 
 
-def generate_subtract_chain():
+def generate_subtract_chain() -> dict[str, Any]:
     """Start with amount, subtract multiple times."""
     start = random.randint(50, 200)
     sub1 = random.randint(5, 30)
@@ -54,14 +57,14 @@ def generate_subtract_chain():
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "arithmetic",
         "trace": trace,
         "answer": final,
     }
 
 
-def generate_multiply_add():
+def generate_multiply_add() -> dict[str, Any]:
     """Multiply then add."""
     count = random.randint(3, 10)
     price = random.randint(5, 20)
@@ -82,14 +85,14 @@ def generate_multiply_add():
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "arithmetic",
         "trace": trace,
         "answer": total,
     }
 
 
-def generate_divide_multiply():
+def generate_divide_multiply() -> dict[str, Any]:
     """Divide then multiply."""
     divisor = random.choice([2, 4, 5, 10])
     per_item = random.randint(5, 25)
@@ -117,7 +120,7 @@ def generate_divide_multiply():
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "arithmetic",
         "trace": trace,
         "answer": final,
@@ -132,7 +135,7 @@ GENERATORS = [
 ]
 
 
-def generate(n: int = 40) -> list[dict]:
+def generate(n: int = 40) -> list[dict[str, Any]]:
     """Generate n arithmetic examples."""
     examples = []
     for _ in range(n):

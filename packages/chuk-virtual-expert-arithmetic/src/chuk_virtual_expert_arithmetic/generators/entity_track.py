@@ -1,6 +1,7 @@
 """Entity tracking problem generator - symbolic traces."""
 
 import random
+from typing import Any
 
 NAMES = ["Alice", "Bob", "Carol", "Dan", "Emma", "Frank", "Grace", "Henry"]
 ITEMS = ["apples", "marbles", "books", "coins", "cards", "stickers", "pencils", "cookies"]
@@ -10,7 +11,7 @@ FIND_VERBS = ["finds", "discovers", "picks up"]
 EAT_VERBS = ["eats", "consumes", "uses"]
 
 
-def generate_simple_transfer():
+def generate_simple_transfer() -> dict[str, Any]:
     """A gives B some items."""
     name1, name2 = random.sample(NAMES, 2)
     item = random.choice(ITEMS)
@@ -22,19 +23,25 @@ def generate_simple_transfer():
 
     trace = [
         {"init": f"{name1.lower()}.{item}", "value": initial},
-        {"transfer": {"from": f"{name1.lower()}.{item}", "to": f"{name2.lower()}.{item}", "amount": transfer}},
+        {
+            "transfer": {
+                "from": f"{name1.lower()}.{item}",
+                "to": f"{name2.lower()}.{item}",
+                "amount": transfer,
+            }
+        },
         {"query": f"{name1.lower()}.{item}"},
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "entity_track",
         "trace": trace,
         "answer": initial - transfer,
     }
 
 
-def generate_consume_sequence():
+def generate_consume_sequence() -> dict[str, Any]:
     """Entity consumes items multiple times."""
     name = random.choice(NAMES)
     item = random.choice(ITEMS)
@@ -56,14 +63,14 @@ def generate_consume_sequence():
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "entity_track",
         "trace": trace,
         "answer": remaining,
     }
 
 
-def generate_consume_then_multiply():
+def generate_consume_then_multiply() -> dict[str, Any]:
     """Classic GSM-8K pattern: consume then multiply remaining."""
     name = random.choice(NAMES)
     item = random.choice(ITEMS)
@@ -89,14 +96,14 @@ def generate_consume_then_multiply():
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "entity_track",
         "trace": trace,
         "answer": final,
     }
 
 
-def generate_bidirectional_transfer():
+def generate_bidirectional_transfer() -> dict[str, Any]:
     """A gives to B, B gives back some."""
     name1, name2 = random.sample(NAMES, 2)
     item = random.choice(ITEMS)
@@ -112,20 +119,32 @@ def generate_bidirectional_transfer():
     trace = [
         {"init": f"{name1.lower()}.{item}", "value": initial1},
         {"init": f"{name2.lower()}.{item}", "value": initial2},
-        {"transfer": {"from": f"{name1.lower()}.{item}", "to": f"{name2.lower()}.{item}", "amount": transfer1}},
-        {"transfer": {"from": f"{name2.lower()}.{item}", "to": f"{name1.lower()}.{item}", "amount": transfer2}},
+        {
+            "transfer": {
+                "from": f"{name1.lower()}.{item}",
+                "to": f"{name2.lower()}.{item}",
+                "amount": transfer1,
+            }
+        },
+        {
+            "transfer": {
+                "from": f"{name2.lower()}.{item}",
+                "to": f"{name1.lower()}.{item}",
+                "amount": transfer2,
+            }
+        },
         {"query": f"{name1.lower()}.{item}"},
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "entity_track",
         "trace": trace,
         "answer": final1,
     }
 
 
-def generate_find_and_lose():
+def generate_find_and_lose() -> dict[str, Any]:
     """Entity finds and loses items."""
     name = random.choice(NAMES)
     item = random.choice(ITEMS)
@@ -145,7 +164,7 @@ def generate_find_and_lose():
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "entity_track",
         "trace": trace,
         "answer": final,
@@ -161,7 +180,7 @@ GENERATORS = [
 ]
 
 
-def generate(n: int = 100) -> list[dict]:
+def generate(n: int = 100) -> list[dict[str, Any]]:
     """Generate n entity tracking examples."""
     examples = []
     for _ in range(n):

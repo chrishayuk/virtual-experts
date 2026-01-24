@@ -19,6 +19,7 @@ from chuk_virtual_expert_arithmetic.experts.comparison import ComparisonExpert
 from chuk_virtual_expert_arithmetic.experts.entity_track import EntityTrackExpert
 from chuk_virtual_expert_arithmetic.experts.percentage import PercentageExpert
 from chuk_virtual_expert_arithmetic.experts.rate_equation import RateEquationExpert
+from chuk_virtual_expert_arithmetic.generators import TraceGenerator
 
 __all__ = [
     "ArithmeticExpert",
@@ -26,6 +27,7 @@ __all__ = [
     "PercentageExpert",
     "RateEquationExpert",
     "ComparisonExpert",
+    "TraceGenerator",
 ]
 
 __version__ = "1.0.0"

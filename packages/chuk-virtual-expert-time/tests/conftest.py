@@ -2,10 +2,10 @@
 
 import pytest
 
+from chuk_virtual_expert_time import TimeExpert
+
 
 @pytest.fixture
-def time_expert():
+def time_expert() -> TimeExpert:
     """Create a TimeExpert instance for testing."""
-    from chuk_virtual_expert_time import TimeExpert
-
     return TimeExpert()

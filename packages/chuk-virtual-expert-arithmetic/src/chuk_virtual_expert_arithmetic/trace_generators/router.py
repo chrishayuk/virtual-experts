@@ -6,14 +6,13 @@ Routes problem specs to the appropriate trace generator.
 
 from __future__ import annotations
 
-from chuk_virtual_expert_arithmetic.schema.trace import Trace
 from chuk_virtual_expert_arithmetic.schema.problem import ProblemSpec, ProblemType
-from chuk_virtual_expert_arithmetic.trace_generators.base import TraceGenerator
-from chuk_virtual_expert_arithmetic.trace_generators.entity import EntityTraceGenerator
-from chuk_virtual_expert_arithmetic.trace_generators.arithmetic import ArithmeticTraceGenerator
-from chuk_virtual_expert_arithmetic.trace_generators.comparison import ComparisonTraceGenerator
+from chuk_virtual_expert_arithmetic.schema.trace import Trace
 from chuk_virtual_expert_arithmetic.trace_generators.allocation import AllocationTraceGenerator
-
+from chuk_virtual_expert_arithmetic.trace_generators.arithmetic import ArithmeticTraceGenerator
+from chuk_virtual_expert_arithmetic.trace_generators.base import TraceGenerator
+from chuk_virtual_expert_arithmetic.trace_generators.comparison import ComparisonTraceGenerator
+from chuk_virtual_expert_arithmetic.trace_generators.entity import EntityTraceGenerator
 
 # Registry of generators
 GENERATORS: list[TraceGenerator] = [

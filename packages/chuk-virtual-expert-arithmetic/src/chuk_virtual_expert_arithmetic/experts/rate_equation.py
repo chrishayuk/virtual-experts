@@ -17,9 +17,7 @@ class RateEquationExpert(TraceSolverExpert):
     """Expert for rate and formula-based problems."""
 
     name: ClassVar[str] = "rate_equation"
-    description: ClassVar[str] = (
-        "Solves rate/formula problems (speed, distance, time, work)"
-    )
+    description: ClassVar[str] = "Solves rate/formula problems (speed, distance, time, work)"
     version: ClassVar[str] = "1.0.0"
     priority: ClassVar[int] = 11
 
@@ -43,9 +41,7 @@ class RateEquationExpert(TraceSolverExpert):
         prompt_lower = prompt.lower()
         return any(re.search(p, prompt_lower) for p in patterns)
 
-    def execute_step(
-        self, step: dict[str, Any], state: dict[str, Any]
-    ) -> dict[str, Any]:
+    def execute_step(self, step: dict[str, Any], state: dict[str, Any]) -> dict[str, Any]:
         """No extra domain ops beyond common ones - formula is handled by base."""
         op = next(iter(step))
         raise ValueError(f"Unknown rate_equation operation: {op}")

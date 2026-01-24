@@ -27,7 +27,7 @@ help:
 	@echo "  typecheck         Run mypy type checking"
 	@echo "  security          Run bandit security checks"
 	@echo "  check             Run all checks (lint, typecheck, security, test)"
-	@echo "  demo              Run example demos"
+	@echo "  demo              Run the arithmetic expert demo"
 	@echo ""
 	@echo "Build & Release targets:"
 	@echo "  build             Build the project (creates dist/ artifacts)"
@@ -148,7 +148,7 @@ check: lint typecheck security test
 	@echo "All checks passed!"
 
 demo:
-	@echo "Running demos..."
+	@echo "Running arithmetic expert demo..."
 ifdef UV
 	cd ../.. && uv run python packages/chuk-virtual-expert-arithmetic/examples/demo.py
 else

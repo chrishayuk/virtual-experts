@@ -20,7 +20,7 @@ from chuk_virtual_expert_weather import (
 )
 
 
-class TestWeatherOperationEnum:
+class TestWeatherOperation:
     """Tests for WeatherOperation enum."""
 
     def test_values(self) -> None:
@@ -35,7 +35,7 @@ class TestWeatherOperationEnum:
         assert len(WeatherOperation) == 6
 
 
-class TestWeatherMCPToolEnum:
+class TestWeatherMCPTool:
     """Tests for WeatherMCPTool enum."""
 
     def test_values(self) -> None:
@@ -50,7 +50,7 @@ class TestWeatherMCPToolEnum:
         assert len(WeatherMCPTool) == 6
 
 
-class TestWeatherQueryTypeEnum:
+class TestWeatherQueryType:
     """Tests for WeatherQueryType enum."""
 
     def test_values(self) -> None:
@@ -63,7 +63,7 @@ class TestWeatherQueryTypeEnum:
         assert WeatherQueryType.ERROR == "error"
 
 
-class TestUnitEnums:
+class TestWeatherUnits:
     """Tests for unit enums."""
 
     def test_temperature_units(self) -> None:
@@ -94,7 +94,7 @@ class TestLocationAliases:
         assert "sydney" in LOCATION_ALIASES
 
     def test_alias_structure(self) -> None:
-        for city, coords in LOCATION_ALIASES.items():
+        for _city, coords in LOCATION_ALIASES.items():
             assert "latitude" in coords
             assert "longitude" in coords
             assert -90 <= coords["latitude"] <= 90

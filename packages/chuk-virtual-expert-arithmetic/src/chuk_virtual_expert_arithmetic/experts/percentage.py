@@ -16,9 +16,7 @@ class PercentageExpert(TraceSolverExpert):
     """Expert for percentage calculation problems."""
 
     name: ClassVar[str] = "percentage"
-    description: ClassVar[str] = (
-        "Computes percentage discounts, increases, and proportions"
-    )
+    description: ClassVar[str] = "Computes percentage discounts, increases, and proportions"
     version: ClassVar[str] = "1.0.0"
     priority: ClassVar[int] = 12
 
@@ -40,9 +38,7 @@ class PercentageExpert(TraceSolverExpert):
         prompt_lower = prompt.lower()
         return any(re.search(p, prompt_lower) for p in patterns)
 
-    def execute_step(
-        self, step: dict[str, Any], state: dict[str, Any]
-    ) -> dict[str, Any]:
+    def execute_step(self, step: dict[str, Any], state: dict[str, Any]) -> dict[str, Any]:
         """Execute percentage-specific operations."""
         op = next(iter(step))
 

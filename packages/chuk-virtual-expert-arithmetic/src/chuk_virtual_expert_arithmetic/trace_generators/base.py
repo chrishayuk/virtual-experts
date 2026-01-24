@@ -8,8 +8,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from chuk_virtual_expert_arithmetic.schema.trace import Trace
 from chuk_virtual_expert_arithmetic.schema.problem import ProblemSpec, ProblemType
+from chuk_virtual_expert_arithmetic.schema.trace import Trace
 
 
 class TraceGenerator(ABC):

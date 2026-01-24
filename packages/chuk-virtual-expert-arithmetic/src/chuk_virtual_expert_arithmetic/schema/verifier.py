@@ -8,22 +8,22 @@ Provides detailed error reporting for invalid traces.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from decimal import Decimal
 from enum import Enum
 from typing import Any
-from decimal import Decimal
 
-from .trace import Trace, Step, State, Action, apply_action
+from .trace import Action, State, Step, Trace, apply_action
 
 
 class VerificationStatus(Enum):
     """Result of trace verification."""
 
     VALID = "valid"
-    INVALID_STEP = "invalid_step"       # A step doesn't verify
-    BROKEN_CHAIN = "broken_chain"       # States don't chain correctly
-    WRONG_ANSWER = "wrong_answer"       # Final answer doesn't match query
-    EMPTY_TRACE = "empty_trace"         # No steps
-    MISSING_QUERY = "missing_query"     # No final query step
+    INVALID_STEP = "invalid_step"  # A step doesn't verify
+    BROKEN_CHAIN = "broken_chain"  # States don't chain correctly
+    WRONG_ANSWER = "wrong_answer"  # Final answer doesn't match query
+    EMPTY_TRACE = "empty_trace"  # No steps
+    MISSING_QUERY = "missing_query"  # No final query step
 
 
 @dataclass
@@ -36,7 +36,7 @@ class StepError:
     actual_state: State
     message: str
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "step_index": self.step_index,
             "action": self.step.action.value,
@@ -74,7 +74,7 @@ class VerificationResult:
             return False
         return self.computed_answer == self.expected_answer
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "status": self.status.value,
             "is_valid": self.is_valid,
@@ -208,7 +208,7 @@ class TraceVerifier:
         """Verify a batch of traces and return aggregate statistics."""
         results = [self.verify(t) for t in traces]
 
-        status_counts = {}
+        status_counts: dict[str, int] = {}
         for r in results:
             status_counts[r.status.value] = status_counts.get(r.status.value, 0) + 1
 

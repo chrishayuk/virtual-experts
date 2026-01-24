@@ -16,7 +16,7 @@
             {"query": "revenue"}
           ]
         },
-        "confidence": 0.95,
+        "confidence": 1.0,
         "reasoning": "Entity tracking: eggs are consumed then remaining multiplied by price"
       }
     },
@@ -33,7 +33,7 @@
             {"query": "apples"}
           ]
         },
-        "confidence": 0.95,
+        "confidence": 1.0,
         "reasoning": "Entity tracking: apples consumed in two batches"
       }
     },
@@ -52,7 +52,7 @@
             {"query": "total"}
           ]
         },
-        "confidence": 0.95,
+        "confidence": 1.0,
         "reasoning": "Pure arithmetic: multiply quantities by prices then sum"
       }
     },
@@ -69,7 +69,7 @@
             {"query": "sale_price"}
           ]
         },
-        "confidence": 0.95,
+        "confidence": 1.0,
         "reasoning": "Percentage discount applied to base price"
       }
     },
@@ -86,7 +86,7 @@
             {"query": "new_rent"}
           ]
         },
-        "confidence": 0.95,
+        "confidence": 1.0,
         "reasoning": "Percentage increase on base amount"
       }
     },
@@ -103,7 +103,7 @@
             {"query": "distance"}
           ]
         },
-        "confidence": 0.95,
+        "confidence": 1.0,
         "reasoning": "Rate equation: distance = speed * time"
       }
     },
@@ -120,7 +120,7 @@
             {"query": "difference"}
           ]
         },
-        "confidence": 0.95,
+        "confidence": 1.0,
         "reasoning": "Comparison: compute Tom's count then find difference"
       }
     }

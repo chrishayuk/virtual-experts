@@ -27,7 +27,7 @@ help:
 	@echo "  typecheck         Run mypy type checking"
 	@echo "  security          Run bandit security checks"
 	@echo "  check             Run all checks (lint, typecheck, security, test)"
-	@echo "  demo              Run the TimeExpert demo"
+	@echo "  demo              Run the time expert demo"
 	@echo ""
 	@echo "Build & Release targets:"
 	@echo "  build             Build the project (creates dist/ artifacts)"
@@ -149,7 +149,7 @@ check: lint typecheck security test
 
 # Demo target
 demo:
-	@echo "Running TimeExpert demo..."
+	@echo "Running time expert demo..."
 ifdef UV
 	cd ../.. && uv run python packages/chuk-virtual-expert-time/examples/demo.py
 else

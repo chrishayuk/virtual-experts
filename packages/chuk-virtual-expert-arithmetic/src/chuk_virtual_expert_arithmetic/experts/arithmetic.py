@@ -17,9 +17,7 @@ class ArithmeticExpert(TraceSolverExpert):
     """Expert for pure arithmetic chain problems."""
 
     name: ClassVar[str] = "arithmetic"
-    description: ClassVar[str] = (
-        "Computes arithmetic chains (cost totals, sums, products)"
-    )
+    description: ClassVar[str] = "Computes arithmetic chains (cost totals, sums, products)"
     version: ClassVar[str] = "1.0.0"
     priority: ClassVar[int] = 10
 
@@ -40,9 +38,7 @@ class ArithmeticExpert(TraceSolverExpert):
         prompt_lower = prompt.lower()
         return any(re.search(p, prompt_lower) for p in patterns)
 
-    def execute_step(
-        self, step: dict[str, Any], state: dict[str, Any]
-    ) -> dict[str, Any]:
+    def execute_step(self, step: dict[str, Any], state: dict[str, Any]) -> dict[str, Any]:
         """No domain-specific operations - raises for unknown steps."""
         op = next(iter(step))
         raise ValueError(f"Unknown arithmetic operation: {op}")

@@ -104,7 +104,7 @@ class WeatherTraceGenerator:
             examples.append(
                 {
                     "expert": "weather",
-                    "question": query,
+                    "query": query,
                     "trace": [
                         {
                             "get_forecast": {
@@ -137,7 +137,7 @@ class WeatherTraceGenerator:
             examples.append(
                 {
                     "expert": "weather",
-                    "question": query,
+                    "query": query,
                     "trace": [
                         {"geocode": {"name": city.title(), "var": "location"}},
                         {"query": "location"},
@@ -164,7 +164,7 @@ class WeatherTraceGenerator:
             examples.append(
                 {
                     "expert": "weather",
-                    "question": query,
+                    "query": query,
                     "trace": [
                         {
                             "get_historical": {
@@ -200,7 +200,7 @@ class WeatherTraceGenerator:
             examples.append(
                 {
                     "expert": "weather",
-                    "question": query,
+                    "query": query,
                     "trace": [
                         {"get_air_quality": {"location": city, "var": "aqi"}},
                         {"query": "aqi"},
@@ -227,7 +227,7 @@ class WeatherTraceGenerator:
             examples.append(
                 {
                     "expert": "weather",
-                    "question": query,
+                    "query": query,
                     "trace": [
                         {
                             "get_marine": {
@@ -278,7 +278,7 @@ class WeatherTraceGenerator:
             examples.append(
                 {
                     "expert": "weather",
-                    "question": f"Weather forecast for {city}",
+                    "query": f"Weather forecast for {city}",
                     "trace": [
                         {"geocode": {"name": city, "var": "loc"}},
                         {

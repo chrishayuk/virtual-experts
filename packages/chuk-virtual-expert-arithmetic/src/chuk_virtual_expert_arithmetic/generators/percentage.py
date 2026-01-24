@@ -1,9 +1,10 @@
 """Percentage problem generator - symbolic traces."""
 
 import random
+from typing import Any
 
 
-def generate_percent_off():
+def generate_percent_off() -> dict[str, Any]:
     """X% off a price."""
     price = random.randint(20, 200)
     percent = random.choice([10, 15, 20, 25, 30, 40, 50])
@@ -21,14 +22,14 @@ def generate_percent_off():
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "percentage",
         "trace": trace,
         "answer": final,
     }
 
 
-def generate_percent_increase():
+def generate_percent_increase() -> dict[str, Any]:
     """X% increase."""
     base = random.randint(50, 200)
     percent = random.choice([10, 15, 20, 25, 50])
@@ -50,14 +51,14 @@ def generate_percent_increase():
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "percentage",
         "trace": trace,
         "answer": final,
     }
 
 
-def generate_tip_calculation():
+def generate_tip_calculation() -> dict[str, Any]:
     """Calculate tip on a bill."""
     bill = random.randint(20, 100)
     tip_percent = random.choice([15, 18, 20, 25])
@@ -76,14 +77,14 @@ def generate_tip_calculation():
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "percentage",
         "trace": trace,
         "answer": total,
     }
 
 
-def generate_simple_percent():
+def generate_simple_percent() -> dict[str, Any]:
     """What is X% of Y?"""
     whole = random.randint(50, 200)
     percent = random.choice([10, 20, 25, 50, 75])
@@ -100,7 +101,7 @@ def generate_simple_percent():
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "percentage",
         "trace": trace,
         "answer": part,
@@ -115,7 +116,7 @@ GENERATORS = [
 ]
 
 
-def generate(n: int = 15) -> list[dict]:
+def generate(n: int = 15) -> list[dict[str, Any]]:
     """Generate n percentage examples."""
     examples = []
     for _ in range(n):

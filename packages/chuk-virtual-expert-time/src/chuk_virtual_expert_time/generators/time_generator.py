@@ -119,7 +119,7 @@ class TimeTraceGenerator:
                 {
                     "expert": "time",
                     "operation": "execute_trace",
-                    "question": query,
+                    "query": query,
                     "trace": trace,
                     "timezone": tz,
                 }
@@ -158,7 +158,7 @@ class TimeTraceGenerator:
                 {
                     "expert": "time",
                     "operation": "execute_trace",
-                    "question": query,
+                    "query": query,
                     "trace": trace,
                     "from_timezone": from_tz,
                     "to_timezone": to_tz,
@@ -188,7 +188,7 @@ class TimeTraceGenerator:
                 {
                     "expert": "time",
                     "operation": "execute_trace",
-                    "question": query,
+                    "query": query,
                     "trace": trace,
                     "timezone": tz,
                 }
@@ -226,7 +226,7 @@ class TimeTraceGenerator:
                 {
                     "expert": "time",
                     "operation": "execute_trace",
-                    "question": query,
+                    "query": query,
                     "trace": trace,
                     "from_timezone": tz1,
                     "to_timezone": tz2,

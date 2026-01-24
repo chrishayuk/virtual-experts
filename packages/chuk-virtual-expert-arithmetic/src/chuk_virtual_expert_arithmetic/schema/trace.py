@@ -8,31 +8,31 @@ Each step is verifiable by replaying the action on the prior state.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from decimal import ROUND_HALF_UP, Decimal
 from enum import Enum
 from typing import Any
-from decimal import Decimal, ROUND_HALF_UP
 
 
 class Action(Enum):
     """Atomic actions that transform state."""
 
     # Initialization
-    INIT = "init"           # Initialize entity with value
+    INIT = "init"  # Initialize entity with value
 
     # Arithmetic
-    ADD = "add"             # Add to entity value
-    SUBTRACT = "subtract"   # Subtract from entity value
-    MULTIPLY = "multiply"   # Multiply entity value
-    DIVIDE = "divide"       # Divide entity value
+    ADD = "add"  # Add to entity value
+    SUBTRACT = "subtract"  # Subtract from entity value
+    MULTIPLY = "multiply"  # Multiply entity value
+    DIVIDE = "divide"  # Divide entity value
 
     # Transfer
-    TRANSFER = "transfer"   # Move amount from one entity to another
+    TRANSFER = "transfer"  # Move amount from one entity to another
 
     # Comparison
-    COMPARE = "compare"     # Compute difference between entities
+    COMPARE = "compare"  # Compute difference between entities
 
     # Query
-    QUERY = "query"         # Read final value (produces answer)
+    QUERY = "query"  # Read final value (produces answer)
 
 
 @dataclass
@@ -49,13 +49,13 @@ class State:
         """Get entity value, default 0."""
         return self.values.get(entity, Decimal(0))
 
-    def set(self, entity: str, value: Decimal | int | float) -> "State":
+    def set(self, entity: str, value: Decimal | int | float) -> State:
         """Return new state with updated value."""
         new_values = self.values.copy()
         new_values[entity] = Decimal(str(value))
         return State(values=new_values)
 
-    def copy(self) -> "State":
+    def copy(self) -> State:
         """Return a copy of this state."""
         return State(values=self.values.copy())
 
@@ -69,7 +69,7 @@ class State:
         return {k: float(v) for k, v in self.values.items()}
 
     @classmethod
-    def from_dict(cls, d: dict[str, Any]) -> "State":
+    def from_dict(cls, d: dict[str, Any]) -> State:
         """Create from dict."""
         return cls(values={k: Decimal(str(v)) for k, v in d.items()})
 
@@ -102,7 +102,7 @@ class Step:
         computed = apply_action(self.action, self.params, self.state_before)
         return computed == self.state_after
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to JSON-serializable dict."""
         return {
             "action": self.action.value,
@@ -112,7 +112,7 @@ class Step:
         }
 
     @classmethod
-    def from_dict(cls, d: dict) -> "Step":
+    def from_dict(cls, d: dict[str, Any]) -> Step:
         """Create from dict."""
         return cls(
             action=Action(d["action"]),
@@ -191,7 +191,7 @@ class Trace:
 
         return True, state, None
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to JSON-serializable dict."""
         return {
             "steps": [s.to_dict() for s in self.steps],
@@ -200,7 +200,7 @@ class Trace:
         }
 
     @classmethod
-    def from_dict(cls, d: dict) -> "Trace":
+    def from_dict(cls, d: dict[str, Any]) -> Trace:
         """Create from dict."""
         return cls(
             steps=[Step.from_dict(s) for s in d["steps"]],
@@ -296,7 +296,7 @@ class TraceBuilder:
         self.steps: list[Step] = []
         self.problem_type = problem_type
 
-    def _add_step(self, action: Action, params: dict[str, Any]) -> "TraceBuilder":
+    def _add_step(self, action: Action, params: dict[str, Any]) -> TraceBuilder:
         """Add a step, computing the new state."""
         state_before = self.state.copy()
         state_after = apply_action(action, params, state_before)
@@ -312,45 +312,43 @@ class TraceBuilder:
         self.state = state_after
         return self
 
-    def init(self, entity: str, value: int | float | Decimal) -> "TraceBuilder":
+    def init(self, entity: str, value: int | float | Decimal) -> TraceBuilder:
         """Initialize an entity with a value."""
         return self._add_step(Action.INIT, {"entity": entity, "value": value})
 
-    def add(self, entity: str, amount: int | float | Decimal) -> "TraceBuilder":
+    def add(self, entity: str, amount: int | float | Decimal) -> TraceBuilder:
         """Add to an entity's value."""
         return self._add_step(Action.ADD, {"entity": entity, "amount": amount})
 
-    def subtract(self, entity: str, amount: int | float | Decimal) -> "TraceBuilder":
+    def subtract(self, entity: str, amount: int | float | Decimal) -> TraceBuilder:
         """Subtract from an entity's value."""
         return self._add_step(Action.SUBTRACT, {"entity": entity, "amount": amount})
 
-    def multiply(self, entity: str, factor: int | float | Decimal) -> "TraceBuilder":
+    def multiply(self, entity: str, factor: int | float | Decimal) -> TraceBuilder:
         """Multiply an entity's value."""
         return self._add_step(Action.MULTIPLY, {"entity": entity, "factor": factor})
 
-    def divide(self, entity: str, divisor: int | float | Decimal) -> "TraceBuilder":
+    def divide(self, entity: str, divisor: int | float | Decimal) -> TraceBuilder:
         """Divide an entity's value."""
         return self._add_step(Action.DIVIDE, {"entity": entity, "divisor": divisor})
 
     def transfer(
         self, from_entity: str, to_entity: str, amount: int | float | Decimal
-    ) -> "TraceBuilder":
+    ) -> TraceBuilder:
         """Transfer amount from one entity to another."""
         return self._add_step(
             Action.TRANSFER,
             {"from": from_entity, "to": to_entity, "amount": amount},
         )
 
-    def compare(
-        self, entity_a: str, entity_b: str, result: str = "_comparison"
-    ) -> "TraceBuilder":
+    def compare(self, entity_a: str, entity_b: str, result: str = "_comparison") -> TraceBuilder:
         """Compare two entities (a - b)."""
         return self._add_step(
             Action.COMPARE,
             {"entity_a": entity_a, "entity_b": entity_b, "result": result},
         )
 
-    def query(self, entity: str) -> "TraceBuilder":
+    def query(self, entity: str) -> TraceBuilder:
         """Query an entity's final value."""
         result = self.state.get(entity)
         return self._add_step(Action.QUERY, {"entity": entity, "result": float(result)})

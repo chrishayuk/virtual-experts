@@ -1,12 +1,13 @@
 """Comparison problem generator - symbolic traces."""
 
 import random
+from typing import Any
 
 NAMES = ["Alice", "Bob", "Carol", "Dan", "Emma", "Frank"]
 ITEMS = ["stickers", "cards", "marbles", "coins", "books"]
 
 
-def generate_times_more():
+def generate_times_more() -> dict[str, Any]:
     """A has X times as many as B. How many more?"""
     name1, name2 = random.sample(NAMES, 2)
     item = random.choice(ITEMS)
@@ -21,20 +22,32 @@ def generate_times_more():
     trace = [
         {"init": f"{name2.lower()}.{item}", "value": base},
         {"init": "multiplier", "value": multiplier},
-        {"compute": {"op": "mul", "args": [f"{name2.lower()}.{item}", "multiplier"], "var": f"{name1.lower()}.{item}"}},
-        {"compute": {"op": "sub", "args": [f"{name1.lower()}.{item}", f"{name2.lower()}.{item}"], "var": "difference"}},
+        {
+            "compute": {
+                "op": "mul",
+                "args": [f"{name2.lower()}.{item}", "multiplier"],
+                "var": f"{name1.lower()}.{item}",
+            }
+        },
+        {
+            "compute": {
+                "op": "sub",
+                "args": [f"{name1.lower()}.{item}", f"{name2.lower()}.{item}"],
+                "var": "difference",
+            }
+        },
         {"query": "difference"},
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "comparison",
         "trace": trace,
         "answer": difference,
     }
 
 
-def generate_sum_and_difference():
+def generate_sum_and_difference() -> dict[str, Any]:
     """Together they have X. A has Y more than B. How many does A have?"""
     name1, name2 = random.sample(NAMES, 2)
     item = random.choice(ITEMS)
@@ -53,19 +66,25 @@ def generate_sum_and_difference():
         {"formula": f"{name1.lower()} = {name2.lower()} + difference"},
         {"compute": {"op": "sub", "args": ["total", "difference"], "var": "twice_b"}},
         {"compute": {"op": "div", "args": ["twice_b", 2], "var": f"{name2.lower()}.{item}"}},
-        {"compute": {"op": "add", "args": [f"{name2.lower()}.{item}", "difference"], "var": f"{name1.lower()}.{item}"}},
+        {
+            "compute": {
+                "op": "add",
+                "args": [f"{name2.lower()}.{item}", "difference"],
+                "var": f"{name1.lower()}.{item}",
+            }
+        },
         {"query": f"{name1.lower()}.{item}"},
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "comparison",
         "trace": trace,
         "answer": a,
     }
 
 
-def generate_more_less():
+def generate_more_less() -> dict[str, Any]:
     """A has X more than B. B has Y. Total?"""
     name1, name2 = random.sample(NAMES, 2)
     item = random.choice(ITEMS)
@@ -80,20 +99,32 @@ def generate_more_less():
     trace = [
         {"init": f"{name2.lower()}.{item}", "value": base},
         {"init": "more", "value": more},
-        {"compute": {"op": "add", "args": [f"{name2.lower()}.{item}", "more"], "var": f"{name1.lower()}.{item}"}},
-        {"compute": {"op": "add", "args": [f"{name1.lower()}.{item}", f"{name2.lower()}.{item}"], "var": "total"}},
+        {
+            "compute": {
+                "op": "add",
+                "args": [f"{name2.lower()}.{item}", "more"],
+                "var": f"{name1.lower()}.{item}",
+            }
+        },
+        {
+            "compute": {
+                "op": "add",
+                "args": [f"{name1.lower()}.{item}", f"{name2.lower()}.{item}"],
+                "var": "total",
+            }
+        },
         {"query": "total"},
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "comparison",
         "trace": trace,
         "answer": total,
     }
 
 
-def generate_half_as_many():
+def generate_half_as_many() -> dict[str, Any]:
     """A has half as many as B. B has X. How many does A have?"""
     name1, name2 = random.sample(NAMES, 2)
     item = random.choice(ITEMS)
@@ -105,12 +136,18 @@ def generate_half_as_many():
 
     trace = [
         {"init": f"{name2.lower()}.{item}", "value": base},
-        {"compute": {"op": "div", "args": [f"{name2.lower()}.{item}", 2], "var": f"{name1.lower()}.{item}"}},
+        {
+            "compute": {
+                "op": "div",
+                "args": [f"{name2.lower()}.{item}", 2],
+                "var": f"{name1.lower()}.{item}",
+            }
+        },
         {"query": f"{name1.lower()}.{item}"},
     ]
 
     return {
-        "question": question,
+        "query": question,
         "expert": "comparison",
         "trace": trace,
         "answer": half,
@@ -125,7 +162,7 @@ GENERATORS = [
 ]
 
 
-def generate(n: int = 40) -> list[dict]:
+def generate(n: int = 40) -> list[dict[str, Any]]:
     """Generate n comparison examples."""
     examples = []
     for _ in range(n):
