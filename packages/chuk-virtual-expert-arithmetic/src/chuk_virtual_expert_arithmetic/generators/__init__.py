@@ -11,7 +11,8 @@ Usage (class wrapper with seed):
 """
 
 import types
-from typing import Any
+
+from chuk_virtual_expert.trace_example import TraceExample
 
 from chuk_virtual_expert_arithmetic.generators import (
     arithmetic,
@@ -33,36 +34,36 @@ class TraceGenerator:
 
         self._rng = random.Random(seed)
 
-    def _seeded_generate(self, module: types.ModuleType, n: int) -> list[dict[str, Any]]:
+    def _seeded_generate(self, module: types.ModuleType, n: int) -> list[TraceExample]:
         """Generate with temporarily seeded global random."""
         import random
 
         state = random.getstate()
         random.seed(self._rng.randint(0, 2**32 - 1))
         try:
-            result: list[dict[str, Any]] = module.generate(n)
+            result: list[TraceExample] = module.generate(n)
             return result
         finally:
             random.setstate(state)
 
-    def generate_entity_track(self, n: int = 10) -> list[dict[str, Any]]:
+    def generate_entity_track(self, n: int = 10) -> list[TraceExample]:
         return self._seeded_generate(entity_track, n)
 
-    def generate_arithmetic(self, n: int = 10) -> list[dict[str, Any]]:
+    def generate_arithmetic(self, n: int = 10) -> list[TraceExample]:
         return self._seeded_generate(arithmetic, n)
 
-    def generate_rate_equation(self, n: int = 10) -> list[dict[str, Any]]:
+    def generate_rate_equation(self, n: int = 10) -> list[TraceExample]:
         return self._seeded_generate(rate_equation, n)
 
-    def generate_comparison(self, n: int = 10) -> list[dict[str, Any]]:
+    def generate_comparison(self, n: int = 10) -> list[TraceExample]:
         return self._seeded_generate(comparison, n)
 
-    def generate_percentage(self, n: int = 10) -> list[dict[str, Any]]:
+    def generate_percentage(self, n: int = 10) -> list[TraceExample]:
         return self._seeded_generate(percentage, n)
 
-    def generate_all(self, n_per_type: int = 10) -> list[dict[str, Any]]:
+    def generate_all(self, n_per_type: int = 10) -> list[TraceExample]:
         """Generate examples for all expert types (equal distribution)."""
-        examples = []
+        examples: list[TraceExample] = []
         examples.extend(self.generate_entity_track(n_per_type))
         examples.extend(self.generate_arithmetic(n_per_type))
         examples.extend(self.generate_rate_equation(n_per_type))
@@ -71,7 +72,7 @@ class TraceGenerator:
         self._shuffle(examples)
         return examples
 
-    def generate_balanced(self, n: int = 235) -> list[dict[str, Any]]:
+    def generate_balanced(self, n: int = 235) -> list[TraceExample]:
         """Generate examples with balanced distribution weighted by complexity.
 
         Distribution (matches GSM-8K training proportions):
@@ -87,7 +88,7 @@ class TraceGenerator:
         n_comp = max(1, int(n * 0.17))
         n_pct = max(1, int(n * 0.07))
 
-        examples = []
+        examples: list[TraceExample] = []
         examples.extend(self.generate_entity_track(n_entity))
         examples.extend(self.generate_arithmetic(n_arith))
         examples.extend(self.generate_rate_equation(n_rate))
@@ -96,7 +97,7 @@ class TraceGenerator:
         self._shuffle(examples)
         return examples
 
-    def _shuffle(self, examples: list[dict[str, Any]]) -> None:
+    def _shuffle(self, examples: list[TraceExample]) -> None:
         import random
 
         state = random.getstate()

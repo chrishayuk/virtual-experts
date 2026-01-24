@@ -1,32 +1,51 @@
 """
-TraceSolverExpert - base class for trace-executing virtual experts.
+TraceSolverExpert - async base class for trace-executing virtual experts.
 
-Provides common trace operations (init, given, compute, formula, query)
-and dispatches domain-specific operations to subclass execute_step().
+Provides common trace operations (init, given, compute, formula, query, state)
+and dispatches domain-specific steps to subclass execute_step().
+Uses typed Pydantic step models with isinstance dispatch — no magic strings.
 """
 
 from __future__ import annotations
 
 import math
 from abc import abstractmethod
+from collections.abc import Sequence
 from typing import Any, ClassVar
+
+from pydantic import TypeAdapter
 
 from chuk_virtual_expert.expert import VirtualExpert
 from chuk_virtual_expert.models import TraceResult
+from chuk_virtual_expert.trace_models import (
+    BaseTraceStep,
+    ComputeOp,
+    ComputeStep,
+    FormulaStep,
+    GivenStep,
+    InitStep,
+    QueryStep,
+    StateAssertStep,
+    TraceStep,
+)
+
+# Type adapter for parsing raw dicts into typed TraceStep unions
+_step_adapter: TypeAdapter[TraceStep] = TypeAdapter(TraceStep)
 
 
 class TraceSolverExpert(VirtualExpert):
     """
     Base class for experts that execute symbolic traces.
 
-    Handles common operations:
-    - init: Initialize a variable
-    - given: Initialize multiple variables (rate problems)
-    - compute: Arithmetic operations with variable references
-    - formula: Informational annotation (no-op)
-    - query: Specify which variable to return as answer
+    Handles common operations via isinstance dispatch:
+    - InitStep: Initialize a variable
+    - GivenStep: Initialize multiple variables
+    - ComputeStep: Arithmetic with ComputeOp enum
+    - FormulaStep: Informational annotation (no-op)
+    - QueryStep: Specify which variable to return
+    - StateAssertStep: Assert expected variable values
 
-    Subclasses implement execute_step() for domain-specific operations.
+    Subclasses implement execute_step() for domain-specific steps.
     """
 
     # Subclasses must override
@@ -40,15 +59,27 @@ class TraceSolverExpert(VirtualExpert):
         """Return available operations."""
         return ["execute_trace"]
 
-    def execute_operation(
+    async def execute_operation(
         self,
         operation: str,
         parameters: dict[str, Any],
     ) -> dict[str, Any]:
         """Execute an operation - dispatches execute_trace."""
         if operation == "execute_trace":
-            trace_steps = parameters.get("trace", [])
-            result = self.execute_trace(trace_steps)
+            raw_steps = parameters.get("trace", [])
+            # Parse raw dicts into typed steps
+            try:
+                steps = [_step_adapter.validate_python(s) for s in raw_steps]
+            except Exception as e:
+                return {
+                    "success": False,
+                    "answer": None,
+                    "state": {},
+                    "error": str(e),
+                    "steps_executed": 0,
+                    "formatted": "",
+                }
+            result = await self.execute_trace(steps)
             return {
                 "success": result.success,
                 "answer": result.answer,
@@ -59,11 +90,11 @@ class TraceSolverExpert(VirtualExpert):
             }
         raise ValueError(f"Unknown operation: {operation}")
 
-    def execute_trace(self, steps: list[dict[str, Any]]) -> TraceResult:
+    async def execute_trace(self, steps: Sequence[BaseTraceStep]) -> TraceResult:
         """
-        Execute a sequence of trace steps.
+        Execute a sequence of typed trace steps.
 
-        Handles common operations internally, delegates domain ops to execute_step().
+        Handles common steps internally, delegates domain steps to execute_step().
         """
         state: dict[str, Any] = {}
         query_var: str | None = None
@@ -71,38 +102,29 @@ class TraceSolverExpert(VirtualExpert):
 
         for i, step in enumerate(steps):
             try:
-                # Determine operation type
-                op = self._get_step_op(step)
+                if isinstance(step, InitStep):
+                    state[step.var] = (
+                        float(step.value) if isinstance(step.value, (int, float)) else step.value
+                    )
 
-                if op == "init":
-                    var = str(step["init"])
-                    value = step["value"]
-                    state[var] = float(value)
+                elif isinstance(step, GivenStep):
+                    for k, v in step.values.items():
+                        state[k] = float(v)
 
-                elif op == "given":
-                    g = step["given"]
-                    for k, v in g.items():
-                        if isinstance(v, (int, float)):
-                            state[str(k)] = float(v)
+                elif isinstance(step, ComputeStep):
+                    args = [self.resolve(a, state) for a in step.args]
+                    result = self._compute(step.compute_op, args)
+                    if step.var is not None:
+                        state[step.var] = result
 
-                elif op == "compute":
-                    c = step["compute"]
-                    op_name = c["op"]
-                    args = [self.resolve(a, state) for a in c["args"]]
-                    result = self._compute(op_name, args)
-                    if "var" in c:
-                        state[str(c["var"])] = result
+                elif isinstance(step, FormulaStep):
+                    pass  # Informational only
 
-                elif op == "formula":
-                    # Informational only
-                    pass
+                elif isinstance(step, QueryStep):
+                    query_var = step.var
 
-                elif op == "query":
-                    query_var = str(step["query"])
-
-                elif op == "state":
-                    # State assertion
-                    for var, expected in step["state"].items():
+                elif isinstance(step, StateAssertStep):
+                    for var, expected in step.assertions.items():
                         actual = state.get(var, 0)
                         if abs(float(actual) - float(expected)) > self.tolerance:
                             return TraceResult(
@@ -114,8 +136,8 @@ class TraceSolverExpert(VirtualExpert):
                             )
 
                 else:
-                    # Domain-specific operation - delegate to subclass
-                    state = self.execute_step(step, state)
+                    # Domain-specific step - delegate to subclass
+                    state = await self.execute_step(step, state)
 
                 steps_executed += 1
 
@@ -140,12 +162,12 @@ class TraceSolverExpert(VirtualExpert):
         )
 
     @abstractmethod
-    def execute_step(self, step: dict[str, Any], state: dict[str, Any]) -> dict[str, Any]:
+    async def execute_step(self, step: BaseTraceStep, state: dict[str, Any]) -> dict[str, Any]:
         """
         Execute a domain-specific step.
 
         Args:
-            step: The step dict (e.g., {"transfer": {...}})
+            step: A typed trace step (e.g., TransferStep, GetForecastStep)
             state: Current variable state
 
         Returns:
@@ -163,48 +185,41 @@ class TraceSolverExpert(VirtualExpert):
         elif isinstance(arg, str):
             if arg in state:
                 return float(state[arg])
-            # Try parsing as number
             try:
                 return float(arg)
             except ValueError:
                 raise KeyError(f"Variable not found: {arg}") from None
         return float(arg)
 
-    def _compute(self, op: str, args: list[float]) -> float:
-        """Execute arithmetic operation."""
-        if op == "add":
+    def _compute(self, op: ComputeOp, args: list[float]) -> float:
+        """Execute arithmetic operation using ComputeOp enum."""
+        if op == ComputeOp.ADD:
             return sum(args)
-        elif op == "sub":
+        elif op == ComputeOp.SUB:
             return args[0] - sum(args[1:])
-        elif op == "mul":
+        elif op == ComputeOp.MUL:
             result = 1.0
             for a in args:
                 result *= a
             return result
-        elif op == "div":
+        elif op == ComputeOp.DIV:
             if args[1] == 0:
                 return float("inf")
             return args[0] / args[1]
-        elif op == "mod":
+        elif op == ComputeOp.MOD:
             return args[0] % args[1]
-        elif op == "pow":
-            return args[0] ** args[1]
-        elif op == "sqrt":
+        elif op == ComputeOp.POW:
+            return float(args[0] ** args[1])
+        elif op == ComputeOp.SQRT:
             return math.sqrt(args[0])
-        elif op == "abs":
+        elif op == ComputeOp.ABS:
             return abs(args[0])
-        elif op == "min":
+        elif op == ComputeOp.MIN:
             return min(args)
-        elif op == "max":
+        elif op == ComputeOp.MAX:
             return max(args)
         else:
             raise ValueError(f"Unknown compute op: {op}")
-
-    def _get_step_op(self, step: dict[str, Any]) -> str:
-        """Get the operation name from a step dict."""
-        for key in step:
-            return key
-        return "unknown"
 
     def _resolve_query(self, query_var: str | None, state: dict[str, Any]) -> Any:
         """Resolve the query variable from state."""
@@ -212,14 +227,7 @@ class TraceSolverExpert(VirtualExpert):
             return None
         if query_var in state:
             value = state[query_var]
-            # Return as int if close to a whole number (within tolerance)
             if isinstance(value, float) and abs(value - round(value)) < self.tolerance:
                 return int(round(value))
             return value
-        # Try complex query (e.g., "total - discount")
-        return self._resolve_complex_query(query_var, state)
-
-    def _resolve_complex_query(self, query_var: str, state: dict[str, Any]) -> Any:
-        """Attempt to resolve a complex query expression."""
-        # Simple variable reference that doesn't exist
         return None

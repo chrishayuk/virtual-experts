@@ -1,7 +1,17 @@
-"""Entity tracking problem generator - symbolic traces."""
+"""Entity tracking problem generator - typed TraceExample models."""
 
 import random
-from typing import Any
+
+from chuk_virtual_expert.trace_example import TraceExample
+from chuk_virtual_expert.trace_models import (
+    AddEntityStep,
+    ComputeOp,
+    ComputeStep,
+    ConsumeStep,
+    InitStep,
+    QueryStep,
+    TransferStep,
+)
 
 NAMES = ["Alice", "Bob", "Carol", "Dan", "Emma", "Frank", "Grace", "Henry"]
 ITEMS = ["apples", "marbles", "books", "coins", "cards", "stickers", "pencils", "cookies"]
@@ -11,7 +21,7 @@ FIND_VERBS = ["finds", "discovers", "picks up"]
 EAT_VERBS = ["eats", "consumes", "uses"]
 
 
-def generate_simple_transfer() -> dict[str, Any]:
+def generate_simple_transfer() -> TraceExample:
     """A gives B some items."""
     name1, name2 = random.sample(NAMES, 2)
     item = random.choice(ITEMS)
@@ -21,27 +31,23 @@ def generate_simple_transfer() -> dict[str, Any]:
 
     question = f"{name1} has {initial} {item}. {name1} {verb} {transfer} to {name2}. How many {item} does {name1} have?"
 
-    trace = [
-        {"init": f"{name1.lower()}.{item}", "value": initial},
-        {
-            "transfer": {
-                "from": f"{name1.lower()}.{item}",
-                "to": f"{name2.lower()}.{item}",
-                "amount": transfer,
-            }
-        },
-        {"query": f"{name1.lower()}.{item}"},
-    ]
+    from_var = f"{name1.lower()}.{item}"
+    to_var = f"{name2.lower()}.{item}"
 
-    return {
-        "query": question,
-        "expert": "entity_track",
-        "trace": trace,
-        "answer": initial - transfer,
-    }
+    return TraceExample(
+        expert="entity_track",
+        query=question,
+        trace=[
+            InitStep(var=from_var, value=initial),
+            TransferStep(from_entity=from_var, to_entity=to_var, amount=transfer),
+            QueryStep(var=from_var),
+        ],
+        answer=initial - transfer,
+        expected_operation="execute_trace",
+    )
 
 
-def generate_consume_sequence() -> dict[str, Any]:
+def generate_consume_sequence() -> TraceExample:
     """Entity consumes items multiple times."""
     name = random.choice(NAMES)
     item = random.choice(ITEMS)
@@ -55,22 +61,21 @@ def generate_consume_sequence() -> dict[str, Any]:
 
     question = f"{name} has {initial} {item}. {name} {verb1} {consume1} and then {verb2} {consume2}. How many {item} does {name} have left?"
 
-    trace = [
-        {"init": item, "value": initial},
-        {"consume": {"entity": item, "amount": consume1}},
-        {"consume": {"entity": item, "amount": consume2}},
-        {"query": item},
-    ]
+    return TraceExample(
+        expert="entity_track",
+        query=question,
+        trace=[
+            InitStep(var=item, value=initial),
+            ConsumeStep(entity=item, amount=consume1),
+            ConsumeStep(entity=item, amount=consume2),
+            QueryStep(var=item),
+        ],
+        answer=remaining,
+        expected_operation="execute_trace",
+    )
 
-    return {
-        "query": question,
-        "expert": "entity_track",
-        "trace": trace,
-        "answer": remaining,
-    }
 
-
-def generate_consume_then_multiply() -> dict[str, Any]:
+def generate_consume_then_multiply() -> TraceExample:
     """Classic GSM-8K pattern: consume then multiply remaining."""
     name = random.choice(NAMES)
     item = random.choice(ITEMS)
@@ -87,23 +92,22 @@ def generate_consume_then_multiply() -> dict[str, Any]:
 
     question = f"{name} has {initial} {item}. {name} {verb1} {consume1} and {verb2} {consume2}. {name} sells the rest for ${multiplier} each. How much money does {name} make?"
 
-    trace = [
-        {"init": item, "value": initial},
-        {"consume": {"entity": item, "amount": consume1}},
-        {"consume": {"entity": item, "amount": consume2}},
-        {"compute": {"op": "mul", "args": [item, multiplier], "var": "revenue"}},
-        {"query": "revenue"},
-    ]
+    return TraceExample(
+        expert="entity_track",
+        query=question,
+        trace=[
+            InitStep(var=item, value=initial),
+            ConsumeStep(entity=item, amount=consume1),
+            ConsumeStep(entity=item, amount=consume2),
+            ComputeStep(compute_op=ComputeOp.MUL, args=[item, multiplier], var="revenue"),
+            QueryStep(var="revenue"),
+        ],
+        answer=final,
+        expected_operation="execute_trace",
+    )
 
-    return {
-        "query": question,
-        "expert": "entity_track",
-        "trace": trace,
-        "answer": final,
-    }
 
-
-def generate_bidirectional_transfer() -> dict[str, Any]:
+def generate_bidirectional_transfer() -> TraceExample:
     """A gives to B, B gives back some."""
     name1, name2 = random.sample(NAMES, 2)
     item = random.choice(ITEMS)
@@ -116,35 +120,25 @@ def generate_bidirectional_transfer() -> dict[str, Any]:
 
     question = f"{name1} has {initial1} {item} and {name2} has {initial2}. {name1} gives {transfer1} to {name2}. Then {name2} gives {transfer2} back. How many does {name1} have?"
 
-    trace = [
-        {"init": f"{name1.lower()}.{item}", "value": initial1},
-        {"init": f"{name2.lower()}.{item}", "value": initial2},
-        {
-            "transfer": {
-                "from": f"{name1.lower()}.{item}",
-                "to": f"{name2.lower()}.{item}",
-                "amount": transfer1,
-            }
-        },
-        {
-            "transfer": {
-                "from": f"{name2.lower()}.{item}",
-                "to": f"{name1.lower()}.{item}",
-                "amount": transfer2,
-            }
-        },
-        {"query": f"{name1.lower()}.{item}"},
-    ]
+    var1 = f"{name1.lower()}.{item}"
+    var2 = f"{name2.lower()}.{item}"
 
-    return {
-        "query": question,
-        "expert": "entity_track",
-        "trace": trace,
-        "answer": final1,
-    }
+    return TraceExample(
+        expert="entity_track",
+        query=question,
+        trace=[
+            InitStep(var=var1, value=initial1),
+            InitStep(var=var2, value=initial2),
+            TransferStep(from_entity=var1, to_entity=var2, amount=transfer1),
+            TransferStep(from_entity=var2, to_entity=var1, amount=transfer2),
+            QueryStep(var=var1),
+        ],
+        answer=final1,
+        expected_operation="execute_trace",
+    )
 
 
-def generate_find_and_lose() -> dict[str, Any]:
+def generate_find_and_lose() -> TraceExample:
     """Entity finds and loses items."""
     name = random.choice(NAMES)
     item = random.choice(ITEMS)
@@ -156,19 +150,18 @@ def generate_find_and_lose() -> dict[str, Any]:
 
     question = f"{name} has {initial} {item}. {name} {random.choice(FIND_VERBS)} {found} more, then {random.choice(LOSE_VERBS)} {lost}. How many does {name} have now?"
 
-    trace = [
-        {"init": item, "value": initial},
-        {"add": {"entity": item, "amount": found}},
-        {"consume": {"entity": item, "amount": lost}},
-        {"query": item},
-    ]
-
-    return {
-        "query": question,
-        "expert": "entity_track",
-        "trace": trace,
-        "answer": final,
-    }
+    return TraceExample(
+        expert="entity_track",
+        query=question,
+        trace=[
+            InitStep(var=item, value=initial),
+            AddEntityStep(entity=item, amount=found),
+            ConsumeStep(entity=item, amount=lost),
+            QueryStep(var=item),
+        ],
+        answer=final,
+        expected_operation="execute_trace",
+    )
 
 
 GENERATORS = [
@@ -180,7 +173,7 @@ GENERATORS = [
 ]
 
 
-def generate(n: int = 100) -> list[dict[str, Any]]:
+def generate(n: int = 100) -> list[TraceExample]:
     """Generate n entity tracking examples."""
     examples = []
     for _ in range(n):

@@ -3,6 +3,8 @@
 from typing import Any, ClassVar
 from unittest.mock import Mock
 
+import pytest
+
 from chuk_virtual_expert.expert import VirtualExpert
 from chuk_virtual_expert.models import CoTExample, CoTExamples, VirtualExpertAction
 from chuk_virtual_expert.validation import (
@@ -27,7 +29,7 @@ class MockValidationExpert(VirtualExpert):
     def get_operations(self) -> list[str]:
         return ["calculate"]
 
-    def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
+    async def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
         if op == "calculate":
             a = params.get("a", 0)
             b = params.get("b", 0)
@@ -205,14 +207,15 @@ class TestFewShotValidator:
         assert validator.expert == expert
         assert validator.max_examples == 3
 
-    def test_validate_single_success(self):
+    @pytest.mark.asyncio
+    async def test_validate_single_success(self):
         expert = MockValidationExpert()
 
         def mock_generate(prompt: str, max_tokens: int) -> str:
             return '{"expert": "test", "operation": "calculate", "parameters": {"a": 1, "b": 2}, "confidence": 1.0}'
 
         validator = FewShotValidator(expert, mock_generate)
-        result = validator.validate_single("Add 1 and 2", 3)
+        result = await validator.validate_single("Add 1 and 2", 3)
 
         assert result.parsed is True
         assert result.routed_to_expert is True
@@ -220,78 +223,84 @@ class TestFewShotValidator:
         assert result.answer == 3
         assert result.correct is True
 
-    def test_validate_single_no_json(self):
+    @pytest.mark.asyncio
+    async def test_validate_single_no_json(self):
         expert = MockValidationExpert()
 
         def mock_generate(prompt: str, max_tokens: int) -> str:
             return "I don't understand"
 
         validator = FewShotValidator(expert, mock_generate)
-        result = validator.validate_single("Add 1 and 2", 3)
+        result = await validator.validate_single("Add 1 and 2", 3)
 
         assert result.parsed is False
         assert result.parse_error == "no_json"
 
-    def test_validate_single_passthrough(self):
+    @pytest.mark.asyncio
+    async def test_validate_single_passthrough(self):
         expert = MockValidationExpert()
 
         def mock_generate(prompt: str, max_tokens: int) -> str:
             return '{"expert": "none", "operation": "passthrough", "parameters": {}}'
 
         validator = FewShotValidator(expert, mock_generate)
-        result = validator.validate_single("Hello", None)
+        result = await validator.validate_single("Hello", None)
 
         assert result.parsed is True
         assert result.routed_to_expert is False
 
-    def test_validate_single_wrong_expert(self):
+    @pytest.mark.asyncio
+    async def test_validate_single_wrong_expert(self):
         expert = MockValidationExpert()
 
         def mock_generate(prompt: str, max_tokens: int) -> str:
             return '{"expert": "other", "operation": "do_something", "parameters": {}}'
 
         validator = FewShotValidator(expert, mock_generate)
-        result = validator.validate_single("Test query", 42)
+        result = await validator.validate_single("Test query", 42)
 
         assert result.parsed is True
         assert result.routed_to_expert is False
         assert "wrong_expert" in result.parse_error
 
-    def test_validate_single_execution_error(self):
+    @pytest.mark.asyncio
+    async def test_validate_single_execution_error(self):
         expert = MockValidationExpert()
 
         def mock_generate(prompt: str, max_tokens: int) -> str:
             return '{"expert": "test", "operation": "invalid_op", "parameters": {}}'
 
         validator = FewShotValidator(expert, mock_generate)
-        result = validator.validate_single("Test", 42)
+        result = await validator.validate_single("Test", 42)
 
         assert result.parsed is True
         assert result.routed_to_expert is True
         assert result.exec_error is not None
 
-    def test_validate_single_verbose(self, capsys):
+    @pytest.mark.asyncio
+    async def test_validate_single_verbose(self, capsys):
         expert = MockValidationExpert()
 
         def mock_generate(prompt: str, max_tokens: int) -> str:
             return '{"expert": "test", "operation": "calculate", "parameters": {"a": 1, "b": 2}}'
 
         validator = FewShotValidator(expert, mock_generate, verbose=True)
-        _result = validator.validate_single("Add 1 and 2", 3)
+        _result = await validator.validate_single("Add 1 and 2", 3)
 
         captured = capsys.readouterr()
         assert "Query:" in captured.out
         assert "Output:" in captured.out
         assert "Status:" in captured.out
 
-    def test_validate_multiple(self):
+    @pytest.mark.asyncio
+    async def test_validate_multiple(self):
         expert = MockValidationExpert()
 
         def mock_generate(prompt: str, max_tokens: int) -> str:
             return '{"expert": "test", "operation": "calculate", "parameters": {"a": 1, "b": 2}}'
 
         validator = FewShotValidator(expert, mock_generate)
-        summary = validator.validate(
+        summary = await validator.validate(
             ["Add 1 and 2", "Another test"],
             [3, 3],
         )
@@ -325,7 +334,8 @@ class TestFewShotValidator:
         assert validator._default_answer_check("hello ", "hello") is True
         assert validator._default_answer_check("hello", "world") is False
 
-    def test_custom_answer_checker(self):
+    @pytest.mark.asyncio
+    async def test_custom_answer_checker(self):
         expert = MockValidationExpert()
 
         def mock_generate(prompt: str, max_tokens: int) -> str:
@@ -336,20 +346,21 @@ class TestFewShotValidator:
         def custom_checker(answer: Any, expected: Any) -> bool:
             return answer >= expected
 
-        result = validator.validate_single("Add", 2, answer_checker=custom_checker)
+        result = await validator.validate_single("Add", 2, answer_checker=custom_checker)
         assert result.correct is True
 
 
 class TestValidateExpertFewShot:
     """Tests for validate_expert_few_shot convenience function."""
 
-    def test_basic_usage(self):
+    @pytest.mark.asyncio
+    async def test_basic_usage(self):
         expert = MockValidationExpert()
 
         def mock_generate(prompt: str, max_tokens: int) -> str:
             return '{"expert": "test", "operation": "calculate", "parameters": {"a": 1, "b": 2}}'
 
-        summary = validate_expert_few_shot(
+        summary = await validate_expert_few_shot(
             expert=expert,
             generate_fn=mock_generate,
             test_queries=["Add 1 and 2"],
@@ -363,14 +374,15 @@ class TestValidateExpertFewShot:
 class TestValidationResultVerboseOutput:
     """Tests for verbose mode output in validation."""
 
-    def test_verbose_failure_output(self, capsys):
+    @pytest.mark.asyncio
+    async def test_verbose_failure_output(self, capsys):
         expert = MockValidationExpert()
 
         def mock_generate(prompt: str, max_tokens: int) -> str:
             return "invalid json"
 
         validator = FewShotValidator(expert, mock_generate, verbose=True)
-        _result = validator.validate_single("Test", 42)
+        _result = await validator.validate_single("Test", 42)
 
         captured = capsys.readouterr()
         assert "Query:" in captured.out
@@ -407,7 +419,8 @@ class TestExtractActionEdgeCases:
 class TestValidationSummaryErrorTracking:
     """Tests for error tracking in ValidationSummary."""
 
-    def test_error_accumulation(self):
+    @pytest.mark.asyncio
+    async def test_error_accumulation(self):
         expert = MockValidationExpert()
 
         call_count = 0
@@ -420,7 +433,7 @@ class TestValidationSummaryErrorTracking:
             return '{"expert": "none", "operation": "passthrough", "parameters": {}}'
 
         validator = FewShotValidator(expert, mock_generate)
-        summary = validator.validate(["q1", "q2"], [1, 2])
+        summary = await validator.validate(["q1", "q2"], [1, 2])
 
         assert summary.total == 2
         assert "parse:no_json" in summary.errors

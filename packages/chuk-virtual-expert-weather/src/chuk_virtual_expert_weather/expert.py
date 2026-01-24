@@ -7,11 +7,27 @@ Delegates to the hosted MCP weather server at https://weather.chukai.io/mcp
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from enum import Enum
 from typing import Any, ClassVar
 
 from chuk_virtual_expert.mcp_expert import MCPExpert
 from chuk_virtual_expert.models import TraceResult
+from chuk_virtual_expert.trace_models import (
+    BaseTraceStep,
+    GeocodeStep,
+    GetAirQualityStep,
+    GetForecastStep,
+    GetHistoricalStep,
+    GetMarineStep,
+    InitStep,
+    InterpretCodeStep,
+    QueryStep,
+    TraceStep,
+)
+from pydantic import TypeAdapter
+
+_step_adapter: TypeAdapter[TraceStep] = TypeAdapter(TraceStep)
 
 
 class WeatherOperation(str, Enum):
@@ -451,17 +467,26 @@ class WeatherExpert(MCPExpert):
 
     # ─── Trace Execution ──────────────────────────────────────────────────────
 
-    def execute_operation(
+    async def execute_operation(
         self,
         operation: str,
         parameters: dict[str, Any],
     ) -> dict[str, Any]:
         """Execute an operation, intercepting execute_trace locally."""
         if operation == "execute_trace":
-            import asyncio
-
-            trace_steps = parameters.get("trace", [])
-            result = asyncio.run(self._execute_trace_async(trace_steps))
+            raw_steps = parameters.get("trace", [])
+            try:
+                steps = [_step_adapter.validate_python(s) for s in raw_steps]
+            except Exception as e:
+                return {
+                    "success": False,
+                    "answer": None,
+                    "state": {},
+                    "error": str(e),
+                    "steps_executed": 0,
+                    "formatted": "",
+                }
+            result = await self._execute_trace(steps)
             return {
                 "success": result.success,
                 "answer": result.answer,
@@ -470,40 +495,13 @@ class WeatherExpert(MCPExpert):
                 "steps_executed": result.steps_executed,
                 "formatted": str(result.answer) if result.answer is not None else "",
             }
-        return super().execute_operation(operation, parameters)
+        return await super().execute_operation(operation, parameters)
 
-    async def execute_operation_async(
-        self,
-        operation: str,
-        parameters: dict[str, Any],
-    ) -> dict[str, Any]:
-        """Execute an operation async, intercepting execute_trace locally."""
-        if operation == "execute_trace":
-            trace_steps = parameters.get("trace", [])
-            result = await self._execute_trace_async(trace_steps)
-            return {
-                "success": result.success,
-                "answer": result.answer,
-                "state": result.state,
-                "error": result.error,
-                "steps_executed": result.steps_executed,
-                "formatted": str(result.answer) if result.answer is not None else "",
-            }
-        return await super().execute_operation_async(operation, parameters)
-
-    async def _execute_trace_async(self, steps: list[dict[str, Any]]) -> TraceResult:
+    async def _execute_trace(self, steps: Sequence[BaseTraceStep]) -> TraceResult:
         """
-        Execute a sequence of weather trace steps.
+        Execute a sequence of typed weather trace steps.
 
-        Handles:
-        - init: Set a variable to a literal value
-        - geocode: Call MCP geocode_location, store result in variable
-        - get_forecast: Call MCP get_weather_forecast, store result
-        - get_historical: Call MCP get_historical_weather, store result
-        - get_air_quality: Call MCP get_air_quality, store result
-        - get_marine: Call MCP get_marine_forecast, store result
-        - interpret_code: Call MCP interpret_weather_code, store result
-        - query: Specify which variable to return
+        Uses isinstance dispatch on typed step models.
         """
         state: dict[str, Any] = {}
         query_var: str | None = None
@@ -511,99 +509,72 @@ class WeatherExpert(MCPExpert):
 
         for i, step in enumerate(steps):
             try:
-                op = next(iter(step))
+                if isinstance(step, InitStep):
+                    state[step.var] = step.value
 
-                if op == "init":
-                    var = step["init"]
-                    state[var] = step.get("value")
-
-                elif op == "geocode":
-                    params = step["geocode"]
-                    name = params.get("name", "")
-                    var = params.get("var", "result")
-                    result = await super().execute_operation_async(
+                elif isinstance(step, GeocodeStep):
+                    result = await super().execute_operation(
                         WeatherOperation.GEOCODE.value,
-                        {"name": name},
+                        {"name": step.name},
                     )
-                    state[var] = result
+                    state[step.var] = result
 
-                elif op == "get_forecast":
-                    params = step["get_forecast"]
-                    call_params = self._build_location_params(params, state)
-                    # Pass through extra params
-                    for key in (
-                        "forecast_days",
-                        "unit",
-                        "temperature_unit",
-                        "hourly",
-                        "daily",
-                        "timezone",
-                    ):
-                        if key in params:
-                            call_params[key] = params[key]
-                    var = params.get("var", "result")
-                    result = await super().execute_operation_async(
+                elif isinstance(step, GetForecastStep):
+                    call_params = self._build_location_params_typed(step, state)
+                    call_params["forecast_days"] = step.forecast_days
+                    var = step.var
+                    result = await super().execute_operation(
                         WeatherOperation.GET_FORECAST.value,
                         call_params,
                     )
                     state[var] = result
 
-                elif op == "get_historical":
-                    params = step["get_historical"]
-                    call_params = self._build_location_params(params, state)
-                    for key in ("start_date", "end_date", "hourly", "daily", "timezone"):
-                        if key in params:
-                            call_params[key] = params[key]
-                    var = params.get("var", "result")
-                    result = await super().execute_operation_async(
+                elif isinstance(step, GetHistoricalStep):
+                    call_params = self._build_location_params_typed(step, state)
+                    if step.start_date:
+                        call_params["start_date"] = step.start_date
+                    if step.end_date:
+                        call_params["end_date"] = step.end_date
+                    var = step.var
+                    result = await super().execute_operation(
                         WeatherOperation.GET_HISTORICAL.value,
                         call_params,
                     )
                     state[var] = result
 
-                elif op == "get_air_quality":
-                    params = step["get_air_quality"]
-                    call_params = self._build_location_params(params, state)
-                    for key in ("hourly", "timezone", "domains"):
-                        if key in params:
-                            call_params[key] = params[key]
-                    var = params.get("var", "result")
-                    result = await super().execute_operation_async(
+                elif isinstance(step, GetAirQualityStep):
+                    call_params = self._build_location_params_typed(step, state)
+                    var = step.var
+                    result = await super().execute_operation(
                         WeatherOperation.GET_AIR_QUALITY.value,
                         call_params,
                     )
                     state[var] = result
 
-                elif op == "get_marine":
-                    params = step["get_marine"]
-                    call_params = self._build_location_params(params, state)
-                    for key in ("forecast_days", "hourly", "daily", "timezone"):
-                        if key in params:
-                            call_params[key] = params[key]
-                    var = params.get("var", "result")
-                    result = await super().execute_operation_async(
+                elif isinstance(step, GetMarineStep):
+                    call_params = self._build_location_params_typed(step, state)
+                    call_params["forecast_days"] = step.forecast_days
+                    var = step.var
+                    result = await super().execute_operation(
                         WeatherOperation.GET_MARINE.value,
                         call_params,
                     )
                     state[var] = result
 
-                elif op == "interpret_code":
-                    params = step["interpret_code"]
-                    code = params.get("weather_code", params.get("code", 0))
-                    var = params.get("var", "result")
-                    result = await super().execute_operation_async(
+                elif isinstance(step, InterpretCodeStep):
+                    result = await super().execute_operation(
                         WeatherOperation.INTERPRET_CODE.value,
-                        {"weather_code": code},
+                        {"weather_code": step.weather_code},
                     )
-                    state[var] = result
+                    state[step.var] = result
 
-                elif op == "query":
-                    query_var = step["query"]
+                elif isinstance(step, QueryStep):
+                    query_var = step.var
 
                 else:
                     return TraceResult(
                         success=False,
-                        error=f"Step {i}: Unknown weather operation: {op}",
+                        error=f"Step {i}: Unknown weather step type: {type(step).__name__}",
                         state=state,
                         expert=self.name,
                         steps_executed=steps_executed,
@@ -631,20 +602,15 @@ class WeatherExpert(MCPExpert):
             steps_executed=steps_executed,
         )
 
-    def _build_location_params(
-        self, params: dict[str, Any], state: dict[str, Any]
+    def _build_location_params_typed(
+        self, step: BaseTraceStep, state: dict[str, Any]
     ) -> dict[str, Any]:
-        """
-        Build location parameters for a trace step.
-
-        Supports:
-          - Direct location/latitude/longitude in params
-          - location_var referencing a geocoded result in state
-        """
-        if "location_var" in params and params["location_var"] in state:
-            geocode_result = state[params["location_var"]]
+        """Build location parameters from a typed step."""
+        # Check for location_var first
+        location_var = getattr(step, "location_var", None)
+        if location_var and location_var in state:
+            geocode_result = state[location_var]
             if isinstance(geocode_result, dict):
-                # Handle transformed geocode result (has "locations" list)
                 locations = geocode_result.get("locations", [])
                 if locations:
                     first = locations[0]
@@ -652,22 +618,22 @@ class WeatherExpert(MCPExpert):
                         "latitude": first.get("latitude"),
                         "longitude": first.get("longitude"),
                     }
-                # Handle raw result
                 if "latitude" in geocode_result and "longitude" in geocode_result:
                     return {
                         "latitude": geocode_result["latitude"],
                         "longitude": geocode_result["longitude"],
                     }
-            raise ValueError(
-                f"Cannot extract coordinates from location_var '{params['location_var']}'"
-            )
+            raise ValueError(f"Cannot extract coordinates from location_var '{location_var}'")
 
-        # Build from direct params
-        result: dict[str, Any] = {}
-        if "latitude" in params and "longitude" in params:
-            result["latitude"] = params["latitude"]
-            result["longitude"] = params["longitude"]
-        elif "location" in params:
-            result["location"] = params["location"]
+        # Check for direct coords
+        latitude = getattr(step, "latitude", None)
+        longitude = getattr(step, "longitude", None)
+        if latitude is not None and longitude is not None:
+            return {"latitude": latitude, "longitude": longitude}
 
-        return result
+        # Check for location string
+        location = getattr(step, "location", None)
+        if location:
+            return {"location": location}
+
+        return {}

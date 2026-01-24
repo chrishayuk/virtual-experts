@@ -21,7 +21,7 @@ class MockExpert(VirtualExpert):
     def get_operations(self) -> list[str]:
         return ["op1"]
 
-    def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
+    async def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
         return {"result": "ok"}
 
 
@@ -38,7 +38,7 @@ class HighPriorityExpert(VirtualExpert):
     def get_operations(self) -> list[str]:
         return []
 
-    def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
+    async def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
         return {}
 
 
@@ -55,7 +55,7 @@ class LowPriorityExpert(VirtualExpert):
     def get_operations(self) -> list[str]:
         return []
 
-    def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
+    async def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
         return {}
 
 

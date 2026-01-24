@@ -2,14 +2,33 @@
 
 from __future__ import annotations
 
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Literal
 
 import pytest
 
-from chuk_virtual_expert.models import Trace, TraceStep
 from chuk_virtual_expert.registry_v2 import ExpertRegistry
+from chuk_virtual_expert.trace_models import (
+    BaseTraceStep,
+    ComputeOp,
+    ComputeStep,
+    FormulaStep,
+    GivenStep,
+    InitStep,
+    QueryStep,
+    StateAssertStep,
+)
 from chuk_virtual_expert.trace_solver import TraceSolverExpert
 from chuk_virtual_expert.trace_verifier import TraceVerifier
+
+# --- Custom domain step for testing ---
+
+
+class DoubleStep(BaseTraceStep):
+    """Double a variable's value."""
+
+    op: Literal["double"] = "double"
+    var: str
+
 
 # --- Concrete test expert ---
 
@@ -23,50 +42,12 @@ class SimpleTraceExpert(TraceSolverExpert):
     def can_handle(self, prompt: str) -> bool:
         return "simple" in prompt.lower()
 
-    def execute_step(self, step: dict[str, Any], state: dict[str, Any]) -> dict[str, Any]:
-        op = next(iter(step))
-        if op == "double":
-            var = step["double"]
-            if var in state:
-                state[var] = state[var] * 2
+    async def execute_step(self, step: BaseTraceStep, state: dict[str, Any]) -> dict[str, Any]:
+        if isinstance(step, DoubleStep):
+            if step.var in state:
+                state[step.var] = state[step.var] * 2
             return state
-        raise ValueError(f"Unknown operation: {op}")
-
-
-# --- TraceStep and Trace model tests ---
-
-
-class TestTraceStep:
-    def test_operation(self):
-        step = TraceStep(raw={"init": "x", "value": 10})
-        assert step.operation == "init"
-
-    def test_payload(self):
-        step = TraceStep(raw={"init": "x", "value": 10})
-        assert step.payload == "x"
-
-    def test_compute_payload(self):
-        step = TraceStep(raw={"compute": {"op": "add", "args": [1, 2], "var": "r"}})
-        assert step.operation == "compute"
-        assert step.payload == {"op": "add", "args": [1, 2], "var": "r"}
-
-
-class TestTrace:
-    def test_from_yaml(self):
-        yaml_str = "expert: simple\ntrace:\n  - {init: x, value: 5}\n  - {query: x}\n"
-        trace = Trace.from_yaml(yaml_str)
-        assert trace.expert == "simple"
-        assert len(trace.steps) == 2
-        assert trace.query_var == "x"
-
-    def test_from_yaml_no_query(self):
-        yaml_str = "expert: simple\ntrace:\n  - {init: x, value: 5}\n"
-        trace = Trace.from_yaml(yaml_str)
-        assert trace.query_var is None
-
-    def test_from_yaml_invalid(self):
-        with pytest.raises(ValueError):
-            Trace.from_yaml("not a dict")
+        raise ValueError(f"Unknown step type: {type(step).__name__}")
 
 
 # --- TraceSolverExpert tests ---
@@ -79,267 +60,306 @@ class TestTraceSolverExpert:
     def test_get_operations(self):
         assert self.expert.get_operations() == ["execute_trace"]
 
-    def test_init_and_query(self):
+    @pytest.mark.asyncio
+    async def test_init_and_query(self):
         steps = [
-            {"init": "x", "value": 42},
-            {"query": "x"},
+            InitStep(var="x", value=42),
+            QueryStep(var="x"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.success
         assert result.answer == 42
         assert result.state["x"] == 42.0
 
-    def test_compute_add(self):
+    @pytest.mark.asyncio
+    async def test_compute_add(self):
         steps = [
-            {"init": "a", "value": 10},
-            {"init": "b", "value": 20},
-            {"compute": {"op": "add", "args": ["a", "b"], "var": "sum"}},
-            {"query": "sum"},
+            InitStep(var="a", value=10),
+            InitStep(var="b", value=20),
+            ComputeStep(compute_op=ComputeOp.ADD, args=["a", "b"], var="sum"),
+            QueryStep(var="sum"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.success
         assert result.answer == 30
 
-    def test_compute_sub(self):
+    @pytest.mark.asyncio
+    async def test_compute_sub(self):
         steps = [
-            {"init": "a", "value": 50},
-            {"init": "b", "value": 20},
-            {"compute": {"op": "sub", "args": ["a", "b"], "var": "diff"}},
-            {"query": "diff"},
+            InitStep(var="a", value=50),
+            InitStep(var="b", value=20),
+            ComputeStep(compute_op=ComputeOp.SUB, args=["a", "b"], var="diff"),
+            QueryStep(var="diff"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.success
         assert result.answer == 30
 
-    def test_compute_mul(self):
+    @pytest.mark.asyncio
+    async def test_compute_mul(self):
         steps = [
-            {"init": "a", "value": 7},
-            {"init": "b", "value": 6},
-            {"compute": {"op": "mul", "args": ["a", "b"], "var": "product"}},
-            {"query": "product"},
+            InitStep(var="a", value=7),
+            InitStep(var="b", value=6),
+            ComputeStep(compute_op=ComputeOp.MUL, args=["a", "b"], var="product"),
+            QueryStep(var="product"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.success
         assert result.answer == 42
 
-    def test_compute_div(self):
+    @pytest.mark.asyncio
+    async def test_compute_div(self):
         steps = [
-            {"init": "a", "value": 100},
-            {"init": "b", "value": 4},
-            {"compute": {"op": "div", "args": ["a", "b"], "var": "quotient"}},
-            {"query": "quotient"},
+            InitStep(var="a", value=100),
+            InitStep(var="b", value=4),
+            ComputeStep(compute_op=ComputeOp.DIV, args=["a", "b"], var="quotient"),
+            QueryStep(var="quotient"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.success
         assert result.answer == 25
 
-    def test_given_step(self):
+    @pytest.mark.asyncio
+    async def test_given_step(self):
         steps = [
-            {"given": {"speed": 60, "time": 2.5}},
-            {"compute": {"op": "mul", "args": ["speed", "time"], "var": "distance"}},
-            {"query": "distance"},
+            GivenStep(values={"speed": 60, "time": 2.5}),
+            ComputeStep(compute_op=ComputeOp.MUL, args=["speed", "time"], var="distance"),
+            QueryStep(var="distance"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.success
         assert result.answer == 150
 
-    def test_formula_step_noop(self):
+    @pytest.mark.asyncio
+    async def test_formula_step_noop(self):
         steps = [
-            {"given": {"rate": 10, "hours": 3}},
-            {"formula": "total = rate * hours"},
-            {"compute": {"op": "mul", "args": ["rate", "hours"], "var": "total"}},
-            {"query": "total"},
+            GivenStep(values={"rate": 10, "hours": 3}),
+            FormulaStep(expression="total = rate * hours"),
+            ComputeStep(compute_op=ComputeOp.MUL, args=["rate", "hours"], var="total"),
+            QueryStep(var="total"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.success
         assert result.answer == 30
 
-    def test_state_assertion_pass(self):
+    @pytest.mark.asyncio
+    async def test_state_assertion_pass(self):
         steps = [
-            {"init": "x", "value": 10},
-            {"state": {"x": 10}},
-            {"query": "x"},
+            InitStep(var="x", value=10),
+            StateAssertStep(assertions={"x": 10}),
+            QueryStep(var="x"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.success
 
-    def test_state_assertion_fail(self):
+    @pytest.mark.asyncio
+    async def test_state_assertion_fail(self):
         steps = [
-            {"init": "x", "value": 10},
-            {"state": {"x": 99}},
+            InitStep(var="x", value=10),
+            StateAssertStep(assertions={"x": 99}),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert not result.success
         assert "state" in result.error
 
-    def test_domain_step(self):
+    @pytest.mark.asyncio
+    async def test_domain_step(self):
         steps = [
-            {"init": "x", "value": 5},
-            {"double": "x"},
-            {"query": "x"},
+            InitStep(var="x", value=5),
+            DoubleStep(var="x"),
+            QueryStep(var="x"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.success
         assert result.answer == 10
 
-    def test_unknown_domain_step(self):
-        steps = [
-            {"init": "x", "value": 5},
-            {"unknown_op": "x"},
-        ]
-        result = self.expert.execute_trace(steps)
-        assert not result.success
-        assert "Unknown operation" in result.error
+    @pytest.mark.asyncio
+    async def test_unknown_domain_step(self):
+        """Test that unrecognized step types raise in execute_step."""
 
-    def test_variable_not_found(self):
+        class UnknownStep(BaseTraceStep):
+            op: Literal["unknown_op"] = "unknown_op"
+
         steps = [
-            {"compute": {"op": "add", "args": ["missing_var", 1], "var": "r"}},
+            InitStep(var="x", value=5),
+            UnknownStep(),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
+        assert not result.success
+        assert "Unknown step type" in result.error
+
+    @pytest.mark.asyncio
+    async def test_variable_not_found(self):
+        steps = [
+            ComputeStep(compute_op=ComputeOp.ADD, args=["missing_var", 1], var="r"),
+        ]
+        result = await self.expert.execute_trace(steps)
         assert not result.success
         assert "not found" in result.error
 
-    def test_execute_operation(self):
-        params = {"trace": [{"init": "x", "value": 7}, {"query": "x"}]}
-        data = self.expert.execute_operation("execute_trace", params)
+    @pytest.mark.asyncio
+    async def test_execute_operation(self):
+        params = {
+            "trace": [
+                {"op": "init", "var": "x", "value": 7},
+                {"op": "query", "var": "x"},
+            ]
+        }
+        data = await self.expert.execute_operation("execute_trace", params)
         assert data["success"]
         assert data["answer"] == 7
         assert data["formatted"] == "7"
 
-    def test_execute_operation_unknown(self):
+    @pytest.mark.asyncio
+    async def test_execute_operation_unknown(self):
         with pytest.raises(ValueError):
-            self.expert.execute_operation("unknown", {})
+            await self.expert.execute_operation("unknown", {})
 
-    def test_int_answer_for_whole_numbers(self):
+    @pytest.mark.asyncio
+    async def test_int_answer_for_whole_numbers(self):
         steps = [
-            {"init": "x", "value": 10.0},
-            {"query": "x"},
+            InitStep(var="x", value=10.0),
+            QueryStep(var="x"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.answer == 10
         assert isinstance(result.answer, int)
 
-    def test_float_answer_for_decimals(self):
+    @pytest.mark.asyncio
+    async def test_float_answer_for_decimals(self):
         steps = [
-            {"init": "x", "value": 10.5},
-            {"query": "x"},
+            InitStep(var="x", value=10.5),
+            QueryStep(var="x"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.answer == 10.5
         assert isinstance(result.answer, float)
 
-    def test_resolve_literal_number(self):
+    @pytest.mark.asyncio
+    async def test_resolve_literal_number(self):
         steps = [
-            {"compute": {"op": "add", "args": [3, 4], "var": "r"}},
-            {"query": "r"},
+            ComputeStep(compute_op=ComputeOp.ADD, args=[3, 4], var="r"),
+            QueryStep(var="r"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.success
         assert result.answer == 7
 
-    def test_steps_executed_count(self):
+    @pytest.mark.asyncio
+    async def test_steps_executed_count(self):
         steps = [
-            {"init": "x", "value": 1},
-            {"init": "y", "value": 2},
-            {"compute": {"op": "add", "args": ["x", "y"], "var": "z"}},
-            {"query": "z"},
+            InitStep(var="x", value=1),
+            InitStep(var="y", value=2),
+            ComputeStep(compute_op=ComputeOp.ADD, args=["x", "y"], var="z"),
+            QueryStep(var="z"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.steps_executed == 4
 
-    def test_compute_mod(self):
+    @pytest.mark.asyncio
+    async def test_compute_mod(self):
         steps = [
-            {"compute": {"op": "mod", "args": [10, 3], "var": "r"}},
-            {"query": "r"},
+            ComputeStep(compute_op=ComputeOp.MOD, args=[10, 3], var="r"),
+            QueryStep(var="r"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.success
         assert result.answer == 1
 
-    def test_compute_pow(self):
+    @pytest.mark.asyncio
+    async def test_compute_pow(self):
         steps = [
-            {"compute": {"op": "pow", "args": [2, 10], "var": "r"}},
-            {"query": "r"},
+            ComputeStep(compute_op=ComputeOp.POW, args=[2, 10], var="r"),
+            QueryStep(var="r"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.success
         assert result.answer == 1024
 
-    def test_compute_sqrt(self):
+    @pytest.mark.asyncio
+    async def test_compute_sqrt(self):
         steps = [
-            {"compute": {"op": "sqrt", "args": [144], "var": "r"}},
-            {"query": "r"},
+            ComputeStep(compute_op=ComputeOp.SQRT, args=[144], var="r"),
+            QueryStep(var="r"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.success
         assert result.answer == 12
 
-    def test_compute_abs(self):
+    @pytest.mark.asyncio
+    async def test_compute_abs(self):
         steps = [
-            {"init": "x", "value": -5},
-            {"compute": {"op": "abs", "args": ["x"], "var": "r"}},
-            {"query": "r"},
+            InitStep(var="x", value=-5),
+            ComputeStep(compute_op=ComputeOp.ABS, args=["x"], var="r"),
+            QueryStep(var="r"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.success
         assert result.answer == 5
 
-    def test_compute_min(self):
+    @pytest.mark.asyncio
+    async def test_compute_min(self):
         steps = [
-            {"compute": {"op": "min", "args": [5, 3, 8], "var": "r"}},
-            {"query": "r"},
+            ComputeStep(compute_op=ComputeOp.MIN, args=[5, 3, 8], var="r"),
+            QueryStep(var="r"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.success
         assert result.answer == 3
 
-    def test_compute_max(self):
+    @pytest.mark.asyncio
+    async def test_compute_max(self):
         steps = [
-            {"compute": {"op": "max", "args": [5, 3, 8], "var": "r"}},
-            {"query": "r"},
+            ComputeStep(compute_op=ComputeOp.MAX, args=[5, 3, 8], var="r"),
+            QueryStep(var="r"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.success
         assert result.answer == 8
 
-    def test_compute_unknown_op(self):
-        steps = [
-            {"compute": {"op": "unknown_op", "args": [1, 2], "var": "r"}},
-        ]
-        result = self.expert.execute_trace(steps)
-        assert not result.success
-        assert "Unknown compute op" in result.error
+    @pytest.mark.asyncio
+    async def test_compute_invalid_op_via_execute_operation(self):
+        """Invalid compute ops are caught during Pydantic parsing."""
+        params = {
+            "trace": [
+                {"op": "compute", "compute_op": "unknown_op", "args": [1, 2], "var": "r"},
+            ]
+        }
+        data = await self.expert.execute_operation("execute_trace", params)
+        assert not data["success"]
 
-    def test_query_nonexistent_var(self):
+    @pytest.mark.asyncio
+    async def test_query_nonexistent_var(self):
         steps = [
-            {"init": "x", "value": 10},
-            {"query": "missing"},
+            InitStep(var="x", value=10),
+            QueryStep(var="missing"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.success
         assert result.answer is None
 
-    def test_no_query_returns_none(self):
+    @pytest.mark.asyncio
+    async def test_no_query_returns_none(self):
         steps = [
-            {"init": "x", "value": 10},
+            InitStep(var="x", value=10),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.success
         assert result.answer is None
 
-    def test_near_integer_rounding(self):
+    @pytest.mark.asyncio
+    async def test_near_integer_rounding(self):
         """Test that near-integer floats are returned as int."""
         steps = [
-            {"init": "x", "value": 9.999999999},
-            {"query": "x"},
+            InitStep(var="x", value=9.999999999),
+            QueryStep(var="x"),
         ]
-        result = self.expert.execute_trace(steps)
+        result = await self.expert.execute_trace(steps)
         assert result.answer == 10
         assert isinstance(result.answer, int)
 
     def test_resolve_non_numeric_arg(self):
         """Test resolving a non-string, non-numeric arg."""
-        # resolve() should handle arbitrary types by converting to float
         assert self.expert.resolve(True, {}) == 1.0
 
 
@@ -352,65 +372,75 @@ class TestTraceVerifier:
         self.registry.register(SimpleTraceExpert())
         self.verifier = TraceVerifier(self.registry)
 
-    def test_execute_yaml(self):
-        yaml_str = "expert: simple\ntrace:\n  - {init: x, value: 42}\n  - {query: x}\n"
-        result = self.verifier.execute_yaml(yaml_str)
+    @pytest.mark.asyncio
+    async def test_execute_yaml(self):
+        yaml_str = "expert: simple\ntrace:\n  - op: init\n    var: x\n    value: 42\n  - op: query\n    var: x\n"
+        result = await self.verifier.execute_yaml(yaml_str)
         assert result.success
         assert result.answer == 42
 
-    def test_verify_correct_answer(self):
-        yaml_str = "expert: simple\ntrace:\n  - {init: x, value: 42}\n  - {query: x}\n"
-        result = self.verifier.verify(yaml_str, expected_answer=42)
+    @pytest.mark.asyncio
+    async def test_verify_correct_answer(self):
+        yaml_str = "expert: simple\ntrace:\n  - op: init\n    var: x\n    value: 42\n  - op: query\n    var: x\n"
+        result = await self.verifier.verify(yaml_str, expected_answer=42)
         assert result.parsed
         assert result.trace_valid
         assert result.answer_correct
         assert result.reward == 1.0
 
-    def test_verify_wrong_answer(self):
-        yaml_str = "expert: simple\ntrace:\n  - {init: x, value: 42}\n  - {query: x}\n"
-        result = self.verifier.verify(yaml_str, expected_answer=99)
+    @pytest.mark.asyncio
+    async def test_verify_wrong_answer(self):
+        yaml_str = "expert: simple\ntrace:\n  - op: init\n    var: x\n    value: 42\n  - op: query\n    var: x\n"
+        result = await self.verifier.verify(yaml_str, expected_answer=99)
         assert result.parsed
         assert result.trace_valid
         assert not result.answer_correct
         assert result.reward == 0.7
 
-    def test_verify_invalid_yaml(self):
-        result = self.verifier.verify("{{{{invalid yaml", expected_answer=42)
+    @pytest.mark.asyncio
+    async def test_verify_invalid_yaml(self):
+        result = await self.verifier.verify("{{{{invalid yaml", expected_answer=42)
         assert not result.parsed
         assert result.reward == 0.0
 
-    def test_verify_wrong_expert(self):
-        yaml_str = "expert: wrong_name\ntrace:\n  - {init: x, value: 42}\n  - {query: x}\n"
-        result = self.verifier.verify(yaml_str, expected_answer=42, expected_expert="simple")
+    @pytest.mark.asyncio
+    async def test_verify_wrong_expert(self):
+        yaml_str = "expert: wrong_name\ntrace:\n  - op: init\n    var: x\n    value: 42\n  - op: query\n    var: x\n"
+        result = await self.verifier.verify(yaml_str, expected_answer=42, expected_expert="simple")
         assert result.parsed
         assert result.reward == 0.3
 
-    def test_verify_trace_error(self):
-        yaml_str = "expert: simple\ntrace:\n  - {unknown_op: bad}\n"
-        result = self.verifier.verify(yaml_str, expected_answer=42)
-        assert result.parsed
-        assert not result.trace_valid
-        assert result.reward == 0.5
+    @pytest.mark.asyncio
+    async def test_verify_trace_error(self):
+        """Invalid op value causes Pydantic parse error."""
+        yaml_str = "expert: simple\ntrace:\n  - op: invalid_step_type\n"
+        result = await self.verifier.verify(yaml_str, expected_answer=42)
+        assert not result.parsed
+        assert result.reward == 0.0
 
-    def test_verify_no_expected(self):
-        yaml_str = "expert: simple\ntrace:\n  - {init: x, value: 42}\n  - {query: x}\n"
-        result = self.verifier.verify(yaml_str, expected_answer=None)
+    @pytest.mark.asyncio
+    async def test_verify_no_expected(self):
+        yaml_str = "expert: simple\ntrace:\n  - op: init\n    var: x\n    value: 42\n  - op: query\n    var: x\n"
+        result = await self.verifier.verify(yaml_str, expected_answer=None)
         assert result.parsed
         assert result.trace_valid
         assert result.reward == 0.7
 
-    def test_verify_unknown_expert(self):
-        yaml_str = "expert: nonexistent\ntrace:\n  - {init: x, value: 1}\n"
-        result = self.verifier.execute_yaml(yaml_str)
+    @pytest.mark.asyncio
+    async def test_verify_unknown_expert(self):
+        yaml_str = "expert: nonexistent\ntrace:\n  - op: init\n    var: x\n    value: 1\n"
+        result = await self.verifier.execute_yaml(yaml_str)
         assert not result.success
         assert "not found" in result.error
 
-    def test_numeric_tolerance(self):
-        yaml_str = "expert: simple\ntrace:\n  - {init: x, value: 10.001}\n  - {query: x}\n"
-        result = self.verifier.verify(yaml_str, expected_answer=10.0, tolerance=0.01)
+    @pytest.mark.asyncio
+    async def test_numeric_tolerance(self):
+        yaml_str = "expert: simple\ntrace:\n  - op: init\n    var: x\n    value: 10.001\n  - op: query\n    var: x\n"
+        result = await self.verifier.verify(yaml_str, expected_answer=10.0, tolerance=0.01)
         assert result.answer_correct
 
-    def test_non_trace_solver_expert(self):
+    @pytest.mark.asyncio
+    async def test_non_trace_solver_expert(self):
         """Test that non-TraceSolverExpert experts are rejected."""
         from chuk_virtual_expert.expert import VirtualExpert
 
@@ -424,15 +454,15 @@ class TestTraceVerifier:
             def get_operations(self) -> list[str]:
                 return []
 
-            def execute_operation(self, operation: str, parameters: dict) -> dict:
+            async def execute_operation(self, operation: str, parameters: dict) -> dict:
                 return {}
 
         registry = ExpertRegistry()
         registry.register(DummyExpert())
         verifier = TraceVerifier(registry)
 
-        yaml_str = "expert: dummy\ntrace:\n  - {init: x, value: 1}\n"
-        result = verifier.execute_yaml(yaml_str)
+        yaml_str = "expert: dummy\ntrace:\n  - op: init\n    var: x\n    value: 1\n"
+        result = await verifier.execute_yaml(yaml_str)
         assert not result.success
         assert "not a TraceSolverExpert" in result.error
 

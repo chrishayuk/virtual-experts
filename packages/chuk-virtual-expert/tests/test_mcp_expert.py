@@ -302,47 +302,12 @@ class TestParseToolResultEdgeCases:
         assert result == {"error": "Unknown error"}
 
 
-class TestExecuteOperationSync:
-    """Tests for synchronous execute_operation wrapper."""
-
-    def test_execute_operation_wraps_async(self):
-        """Test that execute_operation calls the async version."""
-        expert = MockMCPExpert()
-
-        # Can't easily test without mocking MCP, but we can test error handling
-        try:
-            expert.execute_operation("test_op", {"key": "value"})
-        except Exception:
-            # Expected - no actual MCP server
-            pass
-
-
-class TestExecuteSync:
-    """Tests for synchronous execute wrapper."""
-
-    def test_execute_wraps_async(self):
-        """Test that execute calls the async version."""
-        from chuk_virtual_expert.models import VirtualExpertAction
-
-        expert = MockMCPExpert()
-        action = VirtualExpertAction(
-            expert="mock_mcp",
-            operation="test_op",
-            parameters={"key": "value"},
-        )
-
-        # Will fail because no MCP server, but tests the code path
-        result = expert.execute(action)
-        assert result.success is False
-        assert result.error is not None
-
-
 class TestExecuteAsyncErrorHandling:
     """Tests for async execute error handling."""
 
     @pytest.mark.asyncio
-    async def test_execute_async_catches_errors(self):
-        """Test that execute_async catches and wraps errors."""
+    async def test_execute_catches_errors(self):
+        """Test that execute catches and wraps errors."""
         from chuk_virtual_expert.models import VirtualExpertAction
 
         expert = MockMCPExpert()
@@ -353,7 +318,7 @@ class TestExecuteAsyncErrorHandling:
         )
 
         # Will fail because no MCP server
-        result = await expert.execute_async(action)
+        result = await expert.execute(action)
         assert result.success is False
         assert result.error is not None
         assert result.expert_name == "mock_mcp"
@@ -363,8 +328,8 @@ class TestNoUrlConfigured:
     """Tests for missing URL configuration."""
 
     @pytest.mark.asyncio
-    async def test_execute_operation_async_no_url_raises(self):
-        """Test that execute_operation_async raises when no URL configured."""
+    async def test_execute_operation_no_url_raises(self):
+        """Test that execute_operation raises when no URL configured."""
         from typing import ClassVar
 
         from chuk_virtual_expert.mcp_expert import MCPExpert
@@ -390,7 +355,7 @@ class TestNoUrlConfigured:
 
         expert = NoUrlExpert()
         with pytest.raises(ValueError, match="No MCP server URL configured"):
-            await expert.execute_operation_async("op", {})
+            await expert.execute_operation("op", {})
 
     @pytest.mark.asyncio
     async def test_list_mcp_tools_no_url_raises(self):

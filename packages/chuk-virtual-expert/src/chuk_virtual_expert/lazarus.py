@@ -58,7 +58,7 @@ class LazarusAdapter:
         """Delegate to expert's get_calibration_prompts method."""
         return self._expert.get_calibration_prompts()
 
-    def execute(self, prompt: str) -> str | None:
+    async def execute(self, prompt: str) -> str | None:
         """
         Execute and return formatted string for Lazarus.
 
@@ -68,7 +68,7 @@ class LazarusAdapter:
 
         # Parse prompt into action
         action = self._parse_prompt(prompt)
-        result = self._expert.execute(action)
+        result = await self._expert.execute(action)
 
         if result.success and result.data:
             return self._format_result(result.data)
@@ -174,7 +174,7 @@ class LazarusAdapter:
         # Fallback: JSON
         return json.dumps(data, default=str)
 
-    def execute_action(self, action: Any) -> str | None:
+    async def execute_action(self, action: Any) -> str | None:
         """
         Execute with a VirtualExpertAction.
 
@@ -200,7 +200,7 @@ class LazarusAdapter:
         else:
             return None
 
-        result = self._expert.execute(pydantic_action)
+        result = await self._expert.execute(pydantic_action)
 
         if result.success and result.data:
             return self._format_result(result.data)

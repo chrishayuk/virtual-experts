@@ -273,24 +273,27 @@ class TestGetCalibrationData:
 class TestMCPIntegration:
     """Integration tests that call the actual MCP server."""
 
-    def test_execute_get_time(self):
+    @pytest.mark.asyncio
+    async def test_execute_get_time(self):
         expert = TimeExpert()
-        result = expert.execute_operation("get_time", {"timezone": "UTC"})
+        result = await expert.execute_operation("get_time", {"timezone": "UTC"})
 
         assert result["query_type"] == TimeQueryType.CURRENT_TIME.value
         assert result["timezone"] == "UTC"
         assert "iso8601" in result
 
-    def test_execute_get_time_with_alias(self):
+    @pytest.mark.asyncio
+    async def test_execute_get_time_with_alias(self):
         expert = TimeExpert()
-        result = expert.execute_operation("get_time", {"timezone": "tokyo"})
+        result = await expert.execute_operation("get_time", {"timezone": "tokyo"})
 
         assert result["timezone"] == "Asia/Tokyo"
         assert result["abbreviation"] == "JST"
 
-    def test_execute_convert_time(self):
+    @pytest.mark.asyncio
+    async def test_execute_convert_time(self):
         expert = TimeExpert()
-        result = expert.execute_operation(
+        result = await expert.execute_operation(
             "convert_time",
             {
                 "time": "2024-01-15T09:00:00",
@@ -303,34 +306,37 @@ class TestMCPIntegration:
         assert result["from_timezone"] == "America/New_York"
         assert result["to_timezone"] == "Asia/Tokyo"
 
-    def test_execute_get_timezone_info(self):
+    @pytest.mark.asyncio
+    async def test_execute_get_timezone_info(self):
         expert = TimeExpert()
-        result = expert.execute_operation("get_timezone_info", {"location": "tokyo"})
+        result = await expert.execute_operation("get_timezone_info", {"location": "tokyo"})
 
         assert result["query_type"] == TimeQueryType.TIMEZONE_INFO.value
         assert result["iana_timezone"] == "Asia/Tokyo"
 
-    def test_execute_action(self):
+    @pytest.mark.asyncio
+    async def test_execute_action(self):
         expert = TimeExpert()
         action = VirtualExpertAction(
             expert="time",
             operation="get_time",
             parameters={"timezone": "UTC"},
         )
-        result = expert.execute(action)
+        result = await expert.execute(action)
 
         assert isinstance(result, VirtualExpertResult)
         assert result.success is True
         assert result.data is not None
         assert result.expert_name == "time"
 
-    def test_execute_failure(self):
+    @pytest.mark.asyncio
+    async def test_execute_failure(self):
         expert = TimeExpert()
         action = VirtualExpertAction(
             expert="time",
             operation="invalid_op",
         )
-        result = expert.execute(action)
+        result = await expert.execute(action)
 
         assert result.success is False
         assert result.error is not None

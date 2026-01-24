@@ -9,7 +9,6 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any
 
-import yaml
 from pydantic import BaseModel, Field
 
 
@@ -206,54 +205,6 @@ class ExpertSchema(BaseModel):
 
 
 # --- Trace Execution Models ---
-
-
-class TraceStep(BaseModel):
-    """Wraps a raw trace step dict."""
-
-    raw: dict[str, Any] = Field(description="Raw step dictionary from trace")
-
-    @property
-    def operation(self) -> str:
-        """Get the operation type (first key in the step dict)."""
-        for key in self.raw:
-            return key
-        return "unknown"
-
-    @property
-    def payload(self) -> Any:
-        """Get the payload (value of the first key)."""
-        for key in self.raw:
-            return self.raw[key]
-        return None
-
-
-class Trace(BaseModel):
-    """A complete trace with expert name and steps."""
-
-    expert: str = Field(description="Name of the expert that handles this trace")
-    steps: list[TraceStep] = Field(default_factory=list, description="Ordered trace steps")
-
-    @property
-    def query_var(self) -> str | None:
-        """Extract the query variable from the trace steps."""
-        for step in self.steps:
-            if step.operation == "query":
-                return step.payload
-        return None
-
-    @classmethod
-    def from_yaml(cls, yaml_str: str) -> Trace:
-        """Parse a Trace from YAML string."""
-        data = yaml.safe_load(yaml_str)
-        if not isinstance(data, dict):
-            raise ValueError("YAML output is not a dict")
-        expert = data.get("expert", "unknown")
-        raw_steps = data.get("trace", [])
-        if not isinstance(raw_steps, list):
-            raise ValueError("Trace is not a list")
-        steps = [TraceStep(raw=s) for s in raw_steps]
-        return cls(expert=expert, steps=steps)
 
 
 class TraceResult(BaseModel):

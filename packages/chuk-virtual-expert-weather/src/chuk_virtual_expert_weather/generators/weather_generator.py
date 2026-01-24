@@ -1,14 +1,23 @@
 """
 Weather trace generator for synthetic training data.
 
-Generates structured trace examples for all weather operations,
+Generates structured TraceExample models for all weather operations,
 useful for training and evaluation.
 """
 
 from __future__ import annotations
 
 import random
-from typing import Any
+
+from chuk_virtual_expert.trace_example import TraceExample
+from chuk_virtual_expert.trace_models import (
+    GeocodeStep,
+    GetAirQualityStep,
+    GetForecastStep,
+    GetHistoricalStep,
+    GetMarineStep,
+    QueryStep,
+)
 
 from chuk_virtual_expert_weather.expert import LOCATION_ALIASES, WeatherOperation
 
@@ -91,9 +100,9 @@ class WeatherTraceGenerator:
         cities = list(CITY_COORDS.keys())
         return [self._rng.choice(cities) for _ in range(n)]
 
-    def generate_get_forecast(self, n: int = 10) -> list[dict[str, Any]]:
+    def generate_get_forecast(self, n: int = 10) -> list[TraceExample]:
         """Generate n get_forecast trace examples."""
-        examples: list[dict[str, Any]] = []
+        examples: list[TraceExample] = []
         cities = self._pick_cities(n)
 
         for city in cities:
@@ -102,56 +111,54 @@ class WeatherTraceGenerator:
             forecast_days = self._rng.choice([1, 3, 5, 7])
 
             examples.append(
-                {
-                    "expert": "weather",
-                    "query": query,
-                    "trace": [
-                        {
-                            "get_forecast": {
-                                "location": city,
-                                "forecast_days": forecast_days,
-                                "var": "weather",
-                            }
-                        },
-                        {"query": "weather"},
+                TraceExample(
+                    expert="weather",
+                    query=query,
+                    trace=[
+                        GetForecastStep(
+                            location=city,
+                            forecast_days=forecast_days,
+                            var="weather",
+                        ),
+                        QueryStep(var="weather"),
                     ],
-                    "expected_operation": WeatherOperation.GET_FORECAST.value,
-                    "expected_params": {
+                    expected_operation=WeatherOperation.GET_FORECAST.value,
+                    expected_params={
                         "latitude": lat,
                         "longitude": lon,
                         "forecast_days": forecast_days,
                     },
-                }
+                )
             )
 
         return examples
 
-    def generate_geocode(self, n: int = 10) -> list[dict[str, Any]]:
+    def generate_geocode(self, n: int = 10) -> list[TraceExample]:
         """Generate n geocode trace examples."""
-        examples: list[dict[str, Any]] = []
+        examples: list[TraceExample] = []
         cities = self._pick_cities(n)
 
         for city in cities:
             query = self._rng.choice(_GEOCODE_QUERIES).format(city=city.title())
 
             examples.append(
-                {
-                    "expert": "weather",
-                    "query": query,
-                    "trace": [
-                        {"geocode": {"name": city.title(), "var": "location"}},
-                        {"query": "location"},
+                TraceExample(
+                    expert="weather",
+                    query=query,
+                    trace=[
+                        GeocodeStep(name=city.title(), var="location"),
+                        QueryStep(var="location"),
                     ],
-                    "expected_operation": WeatherOperation.GEOCODE.value,
-                    "expected_params": {"name": city.title()},
-                }
+                    expected_operation=WeatherOperation.GEOCODE.value,
+                    expected_params={"name": city.title()},
+                )
             )
 
         return examples
 
-    def generate_get_historical(self, n: int = 10) -> list[dict[str, Any]]:
+    def generate_get_historical(self, n: int = 10) -> list[TraceExample]:
         """Generate n get_historical trace examples."""
-        examples: list[dict[str, Any]] = []
+        examples: list[TraceExample] = []
         cities = self._pick_cities(n)
 
         for city in cities:
@@ -162,35 +169,33 @@ class WeatherTraceGenerator:
             lat, lon = CITY_COORDS[city]
 
             examples.append(
-                {
-                    "expert": "weather",
-                    "query": query,
-                    "trace": [
-                        {
-                            "get_historical": {
-                                "location": city,
-                                "start_date": start,
-                                "end_date": end,
-                                "var": "history",
-                            }
-                        },
-                        {"query": "history"},
+                TraceExample(
+                    expert="weather",
+                    query=query,
+                    trace=[
+                        GetHistoricalStep(
+                            location=city,
+                            start_date=start,
+                            end_date=end,
+                            var="history",
+                        ),
+                        QueryStep(var="history"),
                     ],
-                    "expected_operation": WeatherOperation.GET_HISTORICAL.value,
-                    "expected_params": {
+                    expected_operation=WeatherOperation.GET_HISTORICAL.value,
+                    expected_params={
                         "latitude": lat,
                         "longitude": lon,
                         "start_date": start,
                         "end_date": end,
                     },
-                }
+                )
             )
 
         return examples
 
-    def generate_get_air_quality(self, n: int = 10) -> list[dict[str, Any]]:
+    def generate_get_air_quality(self, n: int = 10) -> list[TraceExample]:
         """Generate n get_air_quality trace examples."""
-        examples: list[dict[str, Any]] = []
+        examples: list[TraceExample] = []
         cities = self._pick_cities(n)
 
         for city in cities:
@@ -198,23 +203,23 @@ class WeatherTraceGenerator:
             lat, lon = CITY_COORDS[city]
 
             examples.append(
-                {
-                    "expert": "weather",
-                    "query": query,
-                    "trace": [
-                        {"get_air_quality": {"location": city, "var": "aqi"}},
-                        {"query": "aqi"},
+                TraceExample(
+                    expert="weather",
+                    query=query,
+                    trace=[
+                        GetAirQualityStep(location=city, var="aqi"),
+                        QueryStep(var="aqi"),
                     ],
-                    "expected_operation": WeatherOperation.GET_AIR_QUALITY.value,
-                    "expected_params": {"latitude": lat, "longitude": lon},
-                }
+                    expected_operation=WeatherOperation.GET_AIR_QUALITY.value,
+                    expected_params={"latitude": lat, "longitude": lon},
+                )
             )
 
         return examples
 
-    def generate_get_marine(self, n: int = 10) -> list[dict[str, Any]]:
+    def generate_get_marine(self, n: int = 10) -> list[TraceExample]:
         """Generate n get_marine trace examples."""
-        examples: list[dict[str, Any]] = []
+        examples: list[TraceExample] = []
         # Prefer coastal cities
         coastal = ["miami", "sydney", "tokyo", "los angeles", "seattle", "hong kong", "mumbai"]
         cities = [self._rng.choice(coastal) for _ in range(n)]
@@ -225,33 +230,31 @@ class WeatherTraceGenerator:
             forecast_days = self._rng.choice([3, 5, 7])
 
             examples.append(
-                {
-                    "expert": "weather",
-                    "query": query,
-                    "trace": [
-                        {
-                            "get_marine": {
-                                "location": city,
-                                "forecast_days": forecast_days,
-                                "var": "marine",
-                            }
-                        },
-                        {"query": "marine"},
+                TraceExample(
+                    expert="weather",
+                    query=query,
+                    trace=[
+                        GetMarineStep(
+                            location=city,
+                            forecast_days=forecast_days,
+                            var="marine",
+                        ),
+                        QueryStep(var="marine"),
                     ],
-                    "expected_operation": WeatherOperation.GET_MARINE.value,
-                    "expected_params": {
+                    expected_operation=WeatherOperation.GET_MARINE.value,
+                    expected_params={
                         "latitude": lat,
                         "longitude": lon,
                         "forecast_days": forecast_days,
                     },
-                }
+                )
             )
 
         return examples
 
-    def generate_multi_step(self, n: int = 10) -> list[dict[str, Any]]:
+    def generate_multi_step(self, n: int = 10) -> list[TraceExample]:
         """Generate n multi-step traces (geocode then forecast)."""
-        examples: list[dict[str, Any]] = []
+        examples: list[TraceExample] = []
         # Use city names not in aliases to force geocoding
         unknown_cities = [
             "Zurich",
@@ -276,30 +279,28 @@ class WeatherTraceGenerator:
             forecast_days = self._rng.choice([3, 5, 7])
 
             examples.append(
-                {
-                    "expert": "weather",
-                    "query": f"Weather forecast for {city}",
-                    "trace": [
-                        {"geocode": {"name": city, "var": "loc"}},
-                        {
-                            "get_forecast": {
-                                "location_var": "loc",
-                                "forecast_days": forecast_days,
-                                "var": "weather",
-                            }
-                        },
-                        {"query": "weather"},
+                TraceExample(
+                    expert="weather",
+                    query=f"Weather forecast for {city}",
+                    trace=[
+                        GeocodeStep(name=city, var="loc"),
+                        GetForecastStep(
+                            location_var="loc",
+                            forecast_days=forecast_days,
+                            var="weather",
+                        ),
+                        QueryStep(var="weather"),
                     ],
-                    "expected_operation": "execute_trace",
-                    "multi_step": True,
-                }
+                    expected_operation="execute_trace",
+                    multi_step=True,
+                )
             )
 
         return examples
 
-    def generate_all(self, n_per_type: int = 10) -> list[dict[str, Any]]:
+    def generate_all(self, n_per_type: int = 10) -> list[TraceExample]:
         """Generate examples for all operation types, shuffled."""
-        all_examples: list[dict[str, Any]] = []
+        all_examples: list[TraceExample] = []
         all_examples.extend(self.generate_get_forecast(n_per_type))
         all_examples.extend(self.generate_geocode(n_per_type))
         all_examples.extend(self.generate_get_historical(n_per_type))

@@ -147,7 +147,7 @@ class Dispatcher(BaseModel):
         dispatcher = Dispatcher(registry=registry)
         dispatcher.set_extractor(llm_extractor)
 
-        result = dispatcher.dispatch("What time is it in Tokyo?")
+        result = await dispatcher.dispatch("What time is it in Tokyo?")
         # result.action = VirtualExpertAction(expert="time", ...)
         # result.result = VirtualExpertResult(data={...})
     """
@@ -164,7 +164,7 @@ class Dispatcher(BaseModel):
         """Set the action extractor (usually LLM-based)."""
         self.extractor = extractor
 
-    def dispatch(self, query: str) -> DispatchResult:
+    async def dispatch(self, query: str) -> DispatchResult:
         """
         Dispatch a query to the appropriate expert.
 
@@ -196,9 +196,9 @@ class Dispatcher(BaseModel):
         )
 
         # Dispatch to expert
-        return self.dispatch_action(action)
+        return await self.dispatch_action(action)
 
-    def dispatch_action(self, action: VirtualExpertAction) -> DispatchResult:
+    async def dispatch_action(self, action: VirtualExpertAction) -> DispatchResult:
         """
         Dispatch a pre-extracted action directly.
 
@@ -215,7 +215,7 @@ class Dispatcher(BaseModel):
         if not action.is_passthrough():
             expert = self.registry.get(action.expert)
             if expert:
-                result = expert.execute(action)
+                result = await expert.execute(action)
 
         return DispatchResult(action=action, result=result)
 

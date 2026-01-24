@@ -7,11 +7,24 @@ Delegates to the hosted MCP time server at https://time.chukai.io/mcp
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from enum import Enum
 from typing import Any, ClassVar
 
 from chuk_virtual_expert.mcp_expert import MCPExpert
 from chuk_virtual_expert.models import TraceResult
+from chuk_virtual_expert.trace_models import (
+    BaseTraceStep,
+    ConvertTimeStep,
+    GetTimeStep,
+    GetTimezoneInfoStep,
+    InitStep,
+    QueryStep,
+    TraceStep,
+)
+from pydantic import TypeAdapter
+
+_step_adapter: TypeAdapter[TraceStep] = TypeAdapter(TraceStep)
 
 
 class TimeOperation(str, Enum):
@@ -251,17 +264,26 @@ class TimeExpert(MCPExpert):
             "transitions": result.get("transitions", []),
         }
 
-    def execute_operation(
+    async def execute_operation(
         self,
         operation: str,
         parameters: dict[str, Any],
     ) -> dict[str, Any]:
         """Execute an operation, intercepting execute_trace locally."""
         if operation == "execute_trace":
-            import asyncio
-
-            trace_steps = parameters.get("trace", [])
-            result = asyncio.run(self._execute_trace_async(trace_steps))
+            raw_steps = parameters.get("trace", [])
+            try:
+                steps = [_step_adapter.validate_python(s) for s in raw_steps]
+            except Exception as e:
+                return {
+                    "success": False,
+                    "answer": None,
+                    "state": {},
+                    "error": str(e),
+                    "steps_executed": 0,
+                    "formatted": "",
+                }
+            result = await self._execute_trace(steps)
             return {
                 "success": result.success,
                 "answer": result.answer,
@@ -270,37 +292,13 @@ class TimeExpert(MCPExpert):
                 "steps_executed": result.steps_executed,
                 "formatted": str(result.answer) if result.answer is not None else "",
             }
-        return super().execute_operation(operation, parameters)
+        return await super().execute_operation(operation, parameters)
 
-    async def execute_operation_async(
-        self,
-        operation: str,
-        parameters: dict[str, Any],
-    ) -> dict[str, Any]:
-        """Execute an operation async, intercepting execute_trace locally."""
-        if operation == "execute_trace":
-            trace_steps = parameters.get("trace", [])
-            result = await self._execute_trace_async(trace_steps)
-            return {
-                "success": result.success,
-                "answer": result.answer,
-                "state": result.state,
-                "error": result.error,
-                "steps_executed": result.steps_executed,
-                "formatted": str(result.answer) if result.answer is not None else "",
-            }
-        return await super().execute_operation_async(operation, parameters)
-
-    async def _execute_trace_async(self, steps: list[dict[str, Any]]) -> TraceResult:
+    async def _execute_trace(self, steps: Sequence[BaseTraceStep]) -> TraceResult:
         """
-        Execute a sequence of time trace steps.
+        Execute a sequence of typed time trace steps.
 
-        Handles:
-        - init: Set a variable to a literal value
-        - get_time: Call MCP get_time, store result in variable
-        - convert_time: Call MCP convert_time, store result in variable
-        - get_timezone_info: Call MCP get_timezone_info, store result in variable
-        - query: Specify which variable to return
+        Uses isinstance dispatch on typed step models.
         """
         state: dict[str, Any] = {}
         query_var: str | None = None
@@ -308,60 +306,49 @@ class TimeExpert(MCPExpert):
 
         for i, step in enumerate(steps):
             try:
-                op = next(iter(step))
+                if isinstance(step, InitStep):
+                    state[step.var] = step.value
 
-                if op == "init":
-                    var = step["init"]
-                    state[var] = step.get("value")
-
-                elif op == "get_time":
-                    params = step["get_time"]
-                    timezone = params.get("timezone", "UTC")
-                    var = params.get("var", "result")
-                    result = await super().execute_operation_async(
+                elif isinstance(step, GetTimeStep):
+                    result = await super().execute_operation(
                         TimeOperation.GET_TIME.value,
-                        {"timezone": timezone},
+                        {"timezone": step.timezone},
                     )
-                    state[var] = result
+                    state[step.var] = result
 
-                elif op == "convert_time":
-                    params = step["convert_time"]
+                elif isinstance(step, ConvertTimeStep):
                     # Support referencing a time_var from state
-                    time_str = params.get("time", "")
-                    if "time_var" in params and params["time_var"] in state:
-                        stored = state[params["time_var"]]
+                    time_str = step.time
+                    if step.time_var and step.time_var in state:
+                        stored = state[step.time_var]
                         if isinstance(stored, dict):
                             time_str = stored.get("iso8601", stored.get("formatted", ""))
                         else:
                             time_str = str(stored)
-                    var = params.get("var", "result")
-                    result = await super().execute_operation_async(
+                    result = await super().execute_operation(
                         TimeOperation.CONVERT_TIME.value,
                         {
                             "time": time_str,
-                            "from_timezone": params.get("from_timezone", "UTC"),
-                            "to_timezone": params.get("to_timezone", "UTC"),
+                            "from_timezone": step.from_timezone,
+                            "to_timezone": step.to_timezone,
                         },
                     )
-                    state[var] = result
+                    state[step.var] = result
 
-                elif op == "get_timezone_info":
-                    params = step["get_timezone_info"]
-                    location = params.get("location", "")
-                    var = params.get("var", "result")
-                    result = await super().execute_operation_async(
+                elif isinstance(step, GetTimezoneInfoStep):
+                    result = await super().execute_operation(
                         TimeOperation.GET_TIMEZONE_INFO.value,
-                        {"location": location},
+                        {"location": step.location},
                     )
-                    state[var] = result
+                    state[step.var] = result
 
-                elif op == "query":
-                    query_var = step["query"]
+                elif isinstance(step, QueryStep):
+                    query_var = step.var
 
                 else:
                     return TraceResult(
                         success=False,
-                        error=f"Step {i}: Unknown time operation: {op}",
+                        error=f"Step {i}: Unknown time step type: {type(step).__name__}",
                         state=state,
                         expert=self.name,
                         steps_executed=steps_executed,

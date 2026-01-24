@@ -10,6 +10,7 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar
 
+from chuk_virtual_expert.trace_models import BaseTraceStep
 from chuk_virtual_expert.trace_solver import TraceSolverExpert
 
 
@@ -38,7 +39,6 @@ class ArithmeticExpert(TraceSolverExpert):
         prompt_lower = prompt.lower()
         return any(re.search(p, prompt_lower) for p in patterns)
 
-    def execute_step(self, step: dict[str, Any], state: dict[str, Any]) -> dict[str, Any]:
+    async def execute_step(self, step: BaseTraceStep, state: dict[str, Any]) -> dict[str, Any]:
         """No domain-specific operations - raises for unknown steps."""
-        op = next(iter(step))
-        raise ValueError(f"Unknown arithmetic operation: {op}")
+        raise ValueError(f"Unknown arithmetic step type: {type(step).__name__}")

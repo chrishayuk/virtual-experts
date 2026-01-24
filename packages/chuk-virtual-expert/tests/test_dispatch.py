@@ -27,7 +27,7 @@ class MockExpert(VirtualExpert):
     def get_operations(self) -> list[str]:
         return ["echo"]
 
-    def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
+    async def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
         return {"message": params.get("text", "hello")}
 
 
@@ -109,7 +109,7 @@ class TestFewShotExtractorParseResponse:
         assert "No JSON" in action.reasoning
 
     def test_parse_invalid_json_returns_none_action(self, extractor):
-        response = '{"expert": "time", "operation": '  # incomplete
+        response = '{"expert": "time", "operation": '
         action = extractor.parse_response(response)
         assert action.is_passthrough()
 
@@ -148,11 +148,13 @@ class TestDispatcher:
         dispatcher.set_extractor(extractor)
         assert dispatcher.extractor is extractor
 
-    def test_dispatch_without_extractor_raises(self, dispatcher):
+    @pytest.mark.asyncio
+    async def test_dispatch_without_extractor_raises(self, dispatcher):
         with pytest.raises(ValueError, match="No extractor set"):
-            dispatcher.dispatch("test query")
+            await dispatcher.dispatch("test query")
 
-    def test_dispatch_with_extractor(self, dispatcher):
+    @pytest.mark.asyncio
+    async def test_dispatch_with_extractor(self, dispatcher):
         action = VirtualExpertAction(
             expert="mock",
             operation="echo",
@@ -160,17 +162,18 @@ class TestDispatcher:
         )
         dispatcher.set_extractor(MockExtractor(action))
 
-        result = dispatcher.dispatch("test query")
+        result = await dispatcher.dispatch("test query")
 
         assert result.action == action
         assert result.result is not None
         assert result.result.success
 
-    def test_dispatch_passthrough(self, dispatcher):
+    @pytest.mark.asyncio
+    async def test_dispatch_passthrough(self, dispatcher):
         action = VirtualExpertAction.none_action("Not handled")
         dispatcher.set_extractor(MockExtractor(action))
 
-        result = dispatcher.dispatch("test query")
+        result = await dispatcher.dispatch("test query")
 
         assert result.action == action
         assert result.result is None
@@ -190,36 +193,39 @@ class TestDispatchAction:
     def dispatcher(self, registry):
         return Dispatcher(registry=registry)
 
-    def test_dispatch_action_success(self, dispatcher):
+    @pytest.mark.asyncio
+    async def test_dispatch_action_success(self, dispatcher):
         action = VirtualExpertAction(
             expert="mock",
             operation="echo",
             parameters={"text": "test"},
         )
-        result = dispatcher.dispatch_action(action)
+        result = await dispatcher.dispatch_action(action)
 
         assert result.action == action
         assert result.result is not None
         assert result.result.data == {"message": "test"}
         assert result.was_handled
 
-    def test_dispatch_action_passthrough(self, dispatcher):
+    @pytest.mark.asyncio
+    async def test_dispatch_action_passthrough(self, dispatcher):
         action = VirtualExpertAction.none_action()
-        result = dispatcher.dispatch_action(action)
+        result = await dispatcher.dispatch_action(action)
 
         assert result.action == action
         assert result.result is None
         assert not result.was_handled
 
-    def test_dispatch_action_unknown_expert(self, dispatcher):
+    @pytest.mark.asyncio
+    async def test_dispatch_action_unknown_expert(self, dispatcher):
         action = VirtualExpertAction(
             expert="unknown",
             operation="something",
         )
-        result = dispatcher.dispatch_action(action)
+        result = await dispatcher.dispatch_action(action)
 
         assert result.action == action
-        assert result.result is None  # Expert not found
+        assert result.result is None
 
 
 class TestCalibrationData:

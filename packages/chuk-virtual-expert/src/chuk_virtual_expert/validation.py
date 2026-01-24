@@ -211,7 +211,7 @@ If the query is NOT for this expert, respond:
 Query: "%s"
 Action:"""
 
-    def validate_single(
+    async def validate_single(
         self,
         query: str,
         expected_answer: Any,
@@ -261,7 +261,7 @@ Action:"""
 
         # 4. Execute via expert
         try:
-            exec_result = self.expert.execute(action)
+            exec_result = await self.expert.execute(action)
             result.executed = True
 
             if not exec_result.success:
@@ -292,7 +292,7 @@ Action:"""
 
         return result
 
-    def validate(
+    async def validate(
         self,
         queries: list[str],
         expected_answers: list[Any],
@@ -312,7 +312,7 @@ Action:"""
         summary = ValidationSummary()
 
         for query, expected in zip(queries, expected_answers, strict=True):
-            result = self.validate_single(query, expected, answer_checker)
+            result = await self.validate_single(query, expected, answer_checker)
             summary.results.append(result)
 
             summary.total += 1
@@ -388,7 +388,7 @@ Action:"""
 # =============================================================================
 
 
-def validate_expert_few_shot(
+async def validate_expert_few_shot(
     expert: VirtualExpert,
     generate_fn: Callable[[str, int], str],
     test_queries: list[str],
@@ -416,4 +416,4 @@ def validate_expert_few_shot(
         max_examples=max_examples,
         verbose=verbose,
     )
-    return validator.validate(test_queries, expected_answers)
+    return await validator.validate(test_queries, expected_answers)

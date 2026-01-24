@@ -9,6 +9,12 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar
 
+from chuk_virtual_expert.trace_models import (
+    BaseTraceStep,
+    PercentIncreaseStep,
+    PercentOffStep,
+    PercentOfStep,
+)
 from chuk_virtual_expert.trace_solver import TraceSolverExpert
 
 
@@ -38,35 +44,30 @@ class PercentageExpert(TraceSolverExpert):
         prompt_lower = prompt.lower()
         return any(re.search(p, prompt_lower) for p in patterns)
 
-    def execute_step(self, step: dict[str, Any], state: dict[str, Any]) -> dict[str, Any]:
+    async def execute_step(self, step: BaseTraceStep, state: dict[str, Any]) -> dict[str, Any]:
         """Execute percentage-specific operations."""
-        op = next(iter(step))
-
-        if op == "percent_off":
-            p = step["percent_off"]
-            base_val = self.resolve(p["base"], state)
-            rate = self.resolve(p["rate"], state)
+        if isinstance(step, PercentOffStep):
+            base_val = self.resolve(step.base, state)
+            rate = self.resolve(step.rate, state)
             result = base_val * (1 - rate / 100)
-            if "var" in p:
-                state[str(p["var"])] = result
+            if step.var is not None:
+                state[step.var] = result
 
-        elif op == "percent_increase":
-            p = step["percent_increase"]
-            base_val = self.resolve(p["base"], state)
-            rate = self.resolve(p["rate"], state)
+        elif isinstance(step, PercentIncreaseStep):
+            base_val = self.resolve(step.base, state)
+            rate = self.resolve(step.rate, state)
             result = base_val * (1 + rate / 100)
-            if "var" in p:
-                state[str(p["var"])] = result
+            if step.var is not None:
+                state[step.var] = result
 
-        elif op == "percent_of":
-            p = step["percent_of"]
-            base_val = self.resolve(p["base"], state)
-            rate = self.resolve(p["rate"], state)
+        elif isinstance(step, PercentOfStep):
+            base_val = self.resolve(step.base, state)
+            rate = self.resolve(step.rate, state)
             result = base_val * rate / 100
-            if "var" in p:
-                state[str(p["var"])] = result
+            if step.var is not None:
+                state[step.var] = result
 
         else:
-            raise ValueError(f"Unknown percentage operation: {op}")
+            raise ValueError(f"Unknown percentage step type: {type(step).__name__}")
 
         return state

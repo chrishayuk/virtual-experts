@@ -1,10 +1,18 @@
-"""Rate/equation problem generator - symbolic traces."""
+"""Rate/equation problem generator - typed TraceExample models."""
 
 import random
-from typing import Any
+
+from chuk_virtual_expert.trace_example import TraceExample
+from chuk_virtual_expert.trace_models import (
+    ComputeOp,
+    ComputeStep,
+    FormulaStep,
+    InitStep,
+    QueryStep,
+)
 
 
-def generate_rate_time_quantity() -> dict[str, Any]:
+def generate_rate_time_quantity() -> TraceExample:
     """Rate x time = quantity."""
     rate = random.randint(5, 50)
     time = random.randint(2, 12)
@@ -19,23 +27,22 @@ def generate_rate_time_quantity() -> dict[str, Any]:
 
     question, unit = random.choice(scenarios)
 
-    trace = [
-        {"init": "rate", "value": rate},
-        {"init": "time", "value": time},
-        {"formula": "quantity = rate * time"},
-        {"compute": {"op": "mul", "args": ["rate", "time"], "var": "quantity"}},
-        {"query": "quantity"},
-    ]
+    return TraceExample(
+        expert="rate_equation",
+        query=question,
+        trace=[
+            InitStep(var="rate", value=rate),
+            InitStep(var="time", value=time),
+            FormulaStep(expression="quantity = rate * time"),
+            ComputeStep(compute_op=ComputeOp.MUL, args=["rate", "time"], var="quantity"),
+            QueryStep(var="quantity"),
+        ],
+        answer=result,
+        expected_operation="execute_trace",
+    )
 
-    return {
-        "query": question,
-        "expert": "rate_equation",
-        "trace": trace,
-        "answer": result,
-    }
 
-
-def generate_distance_speed_time() -> dict[str, Any]:
+def generate_distance_speed_time() -> TraceExample:
     """Distance = speed x time."""
     speed = random.randint(30, 80)
     time = random.randint(2, 8)
@@ -43,23 +50,22 @@ def generate_distance_speed_time() -> dict[str, Any]:
 
     question = f"A car travels at {speed} km/h. How far does it go in {time} hours?"
 
-    trace = [
-        {"init": "speed", "value": speed},
-        {"init": "time", "value": time},
-        {"formula": "distance = speed * time"},
-        {"compute": {"op": "mul", "args": ["speed", "time"], "var": "distance"}},
-        {"query": "distance"},
-    ]
+    return TraceExample(
+        expert="rate_equation",
+        query=question,
+        trace=[
+            InitStep(var="speed", value=speed),
+            InitStep(var="time", value=time),
+            FormulaStep(expression="distance = speed * time"),
+            ComputeStep(compute_op=ComputeOp.MUL, args=["speed", "time"], var="distance"),
+            QueryStep(var="distance"),
+        ],
+        answer=distance,
+        expected_operation="execute_trace",
+    )
 
-    return {
-        "query": question,
-        "expert": "rate_equation",
-        "trace": trace,
-        "answer": distance,
-    }
 
-
-def generate_work_rate() -> dict[str, Any]:
+def generate_work_rate() -> TraceExample:
     """Work = rate x time, then divide."""
     workers = random.randint(2, 5)
     time = random.randint(2, 6)
@@ -70,24 +76,23 @@ def generate_work_rate() -> dict[str, Any]:
 
     question = f"A team does {rate} tasks per hour. After {time} hours, they split the work among {workers} people. How many tasks per person?"
 
-    trace = [
-        {"init": "rate", "value": rate},
-        {"init": "time", "value": time},
-        {"init": "workers", "value": workers},
-        {"compute": {"op": "mul", "args": ["rate", "time"], "var": "total"}},
-        {"compute": {"op": "div", "args": ["total", "workers"], "var": "per_worker"}},
-        {"query": "per_worker"},
-    ]
+    return TraceExample(
+        expert="rate_equation",
+        query=question,
+        trace=[
+            InitStep(var="rate", value=rate),
+            InitStep(var="time", value=time),
+            InitStep(var="workers", value=workers),
+            ComputeStep(compute_op=ComputeOp.MUL, args=["rate", "time"], var="total"),
+            ComputeStep(compute_op=ComputeOp.DIV, args=["total", "workers"], var="per_worker"),
+            QueryStep(var="per_worker"),
+        ],
+        answer=per_worker,
+        expected_operation="execute_trace",
+    )
 
-    return {
-        "query": question,
-        "expert": "rate_equation",
-        "trace": trace,
-        "answer": per_worker,
-    }
 
-
-def generate_combined_rate() -> dict[str, Any]:
+def generate_combined_rate() -> TraceExample:
     """Two rates combined."""
     rate1 = random.randint(5, 20)
     rate2 = random.randint(5, 20)
@@ -97,21 +102,20 @@ def generate_combined_rate() -> dict[str, Any]:
 
     question = f"Machine A produces {rate1} items/hour. Machine B produces {rate2} items/hour. How many total in {time} hours?"
 
-    trace = [
-        {"init": "rate_a", "value": rate1},
-        {"init": "rate_b", "value": rate2},
-        {"init": "time", "value": time},
-        {"compute": {"op": "add", "args": ["rate_a", "rate_b"], "var": "combined_rate"}},
-        {"compute": {"op": "mul", "args": ["combined_rate", "time"], "var": "total"}},
-        {"query": "total"},
-    ]
-
-    return {
-        "query": question,
-        "expert": "rate_equation",
-        "trace": trace,
-        "answer": total,
-    }
+    return TraceExample(
+        expert="rate_equation",
+        query=question,
+        trace=[
+            InitStep(var="rate_a", value=rate1),
+            InitStep(var="rate_b", value=rate2),
+            InitStep(var="time", value=time),
+            ComputeStep(compute_op=ComputeOp.ADD, args=["rate_a", "rate_b"], var="combined_rate"),
+            ComputeStep(compute_op=ComputeOp.MUL, args=["combined_rate", "time"], var="total"),
+            QueryStep(var="total"),
+        ],
+        answer=total,
+        expected_operation="execute_trace",
+    )
 
 
 GENERATORS = [
@@ -122,7 +126,7 @@ GENERATORS = [
 ]
 
 
-def generate(n: int = 40) -> list[dict[str, Any]]:
+def generate(n: int = 40) -> list[TraceExample]:
     """Generate n rate equation examples."""
     examples = []
     for _ in range(n):

@@ -88,7 +88,7 @@ class VirtualExpert(ABC, BaseModel):
         ...
 
     @abstractmethod
-    def execute_operation(
+    async def execute_operation(
         self,
         operation: str,
         parameters: dict[str, Any],
@@ -105,58 +105,14 @@ class VirtualExpert(ABC, BaseModel):
         """
         ...
 
-    def execute(self, action: VirtualExpertAction) -> VirtualExpertResult:
+    async def execute(self, action: VirtualExpertAction) -> VirtualExpertResult:
         """
         Execute a VirtualExpertAction and return result.
 
         This is the main entry point used by the dispatcher.
-        For async contexts, prefer execute_async().
         """
         try:
-            data = self.execute_operation(action.operation, action.parameters)
-            return VirtualExpertResult(
-                data=data,
-                expert_name=self.name,
-                success=True,
-                action=action,
-            )
-        except Exception as e:
-            return VirtualExpertResult(
-                data=None,
-                expert_name=self.name,
-                success=False,
-                error=str(e),
-                action=action,
-            )
-
-    async def execute_operation_async(
-        self,
-        operation: str,
-        parameters: dict[str, Any],
-    ) -> dict[str, Any]:
-        """
-        Execute an operation asynchronously.
-
-        Default implementation wraps execute_operation().
-        Override in subclasses for true async behavior.
-
-        Args:
-            operation: Operation name
-            parameters: Operation parameters
-
-        Returns:
-            Structured result data
-        """
-        return self.execute_operation(operation, parameters)
-
-    async def execute_async(self, action: VirtualExpertAction) -> VirtualExpertResult:
-        """
-        Execute a VirtualExpertAction asynchronously.
-
-        This is the preferred entry point for async contexts.
-        """
-        try:
-            data = await self.execute_operation_async(action.operation, action.parameters)
+            data = await self.execute_operation(action.operation, action.parameters)
             return VirtualExpertResult(
                 data=data,
                 expert_name=self.name,

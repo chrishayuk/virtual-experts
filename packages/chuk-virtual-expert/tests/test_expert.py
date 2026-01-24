@@ -24,7 +24,7 @@ class MockExpert(VirtualExpert):
     def get_operations(self) -> list[str]:
         return ["echo", "reverse", "fail"]
 
-    def execute_operation(
+    async def execute_operation(
         self,
         operation: str,
         parameters: dict[str, Any],
@@ -86,69 +86,33 @@ class TestGetOperations:
 class TestExecuteOperation:
     """Tests for execute_operation method."""
 
-    def test_echo_operation(self):
+    @pytest.mark.asyncio
+    async def test_echo_operation(self):
         expert = MockExpert()
-        result = expert.execute_operation("echo", {"message": "test"})
+        result = await expert.execute_operation("echo", {"message": "test"})
         assert result == {"result": "test"}
 
-    def test_echo_default_message(self):
+    @pytest.mark.asyncio
+    async def test_echo_default_message(self):
         expert = MockExpert()
-        result = expert.execute_operation("echo", {})
+        result = await expert.execute_operation("echo", {})
         assert result == {"result": "hello"}
 
-    def test_reverse_operation(self):
+    @pytest.mark.asyncio
+    async def test_reverse_operation(self):
         expert = MockExpert()
-        result = expert.execute_operation("reverse", {"message": "hello"})
+        result = await expert.execute_operation("reverse", {"message": "hello"})
         assert result == {"result": "olleh"}
 
-    def test_unknown_operation_raises(self):
+    @pytest.mark.asyncio
+    async def test_unknown_operation_raises(self):
         expert = MockExpert()
         with pytest.raises(ValueError, match="Unknown operation"):
-            expert.execute_operation("invalid", {})
+            await expert.execute_operation("invalid", {})
 
 
 class TestExecute:
-    """Tests for execute method (main entry point)."""
-
-    def test_successful_execution(self):
-        expert = MockExpert()
-        action = VirtualExpertAction(
-            expert="mock",
-            operation="echo",
-            parameters={"message": "hello world"},
-        )
-        result = expert.execute(action)
-
-        assert result.success is True
-        assert result.data == {"result": "hello world"}
-        assert result.expert_name == "mock"
-        assert result.action == action
-        assert result.error is None
-
-    def test_failed_execution(self):
-        expert = MockExpert()
-        action = VirtualExpertAction(
-            expert="mock",
-            operation="fail",
-        )
-        result = expert.execute(action)
-
-        assert result.success is False
-        assert result.data is None
-        assert result.error == "Intentional failure"
-        assert result.expert_name == "mock"
-
-    def test_returns_virtualexpertresult(self):
-        from chuk_virtual_expert.models import VirtualExpertResult
-
-        expert = MockExpert()
-        action = VirtualExpertAction(expert="mock", operation="echo")
-        result = expert.execute(action)
-        assert isinstance(result, VirtualExpertResult)
-
-
-class TestExecuteAsync:
-    """Tests for execute_async method (async entry point)."""
+    """Tests for execute method."""
 
     @pytest.mark.asyncio
     async def test_successful_execution(self):
@@ -156,12 +120,12 @@ class TestExecuteAsync:
         action = VirtualExpertAction(
             expert="mock",
             operation="echo",
-            parameters={"message": "hello async"},
+            parameters={"message": "hello world"},
         )
-        result = await expert.execute_async(action)
+        result = await expert.execute(action)
 
         assert result.success is True
-        assert result.data == {"result": "hello async"}
+        assert result.data == {"result": "hello world"}
         assert result.expert_name == "mock"
         assert result.action == action
         assert result.error is None
@@ -173,7 +137,7 @@ class TestExecuteAsync:
             expert="mock",
             operation="fail",
         )
-        result = await expert.execute_async(action)
+        result = await expert.execute(action)
 
         assert result.success is False
         assert result.data is None
@@ -186,30 +150,8 @@ class TestExecuteAsync:
 
         expert = MockExpert()
         action = VirtualExpertAction(expert="mock", operation="echo")
-        result = await expert.execute_async(action)
+        result = await expert.execute(action)
         assert isinstance(result, VirtualExpertResult)
-
-
-class TestExecuteOperationAsync:
-    """Tests for execute_operation_async method."""
-
-    @pytest.mark.asyncio
-    async def test_echo_operation(self):
-        expert = MockExpert()
-        result = await expert.execute_operation_async("echo", {"message": "test"})
-        assert result == {"result": "test"}
-
-    @pytest.mark.asyncio
-    async def test_reverse_operation(self):
-        expert = MockExpert()
-        result = await expert.execute_operation_async("reverse", {"message": "hello"})
-        assert result == {"result": "olleh"}
-
-    @pytest.mark.asyncio
-    async def test_unknown_operation_raises(self):
-        expert = MockExpert()
-        with pytest.raises(ValueError, match="Unknown operation"):
-            await expert.execute_operation_async("invalid", {})
 
 
 class TestGetCotExamples:
@@ -271,7 +213,6 @@ class TestGetFewShotPrompt:
     def test_respects_max_examples(self):
         expert = MockExpert()
         prompt = expert.get_few_shot_prompt(max_examples=3)
-        # With no examples, should return empty string
         assert prompt == ""
 
 
@@ -289,7 +230,6 @@ class TestLoadCotExamplesFromFile:
     """Tests for loading CoT examples from actual file."""
 
     def test_loads_from_file(self, tmp_path):
-        # Create a temporary expert with examples file
         examples_data = {
             "expert_name": "test",
             "examples": [
@@ -306,12 +246,10 @@ class TestLoadCotExamplesFromFile:
             ],
         }
 
-        # Write examples file
         examples_file = tmp_path / "cot_examples.json"
         with open(examples_file, "w") as f:
             json.dump(examples_data, f)
 
-        # Create expert that uses this directory
         class TmpExpert(VirtualExpert):
             name: ClassVar[str] = "test"
             description: ClassVar[str] = "Test"
@@ -325,7 +263,7 @@ class TestLoadCotExamplesFromFile:
             def get_operations(self) -> list[str]:
                 return ["test_op"]
 
-            def execute_operation(self, op: str, params: dict) -> dict:
+            async def execute_operation(self, op: str, params: dict) -> dict:
                 return {}
 
         expert = TmpExpert()
@@ -357,7 +295,6 @@ class TestLoadSchemaFromFile:
             },
         }
 
-        # Write schema file
         schema_file = tmp_path / "schema.json"
         with open(schema_file, "w") as f:
             json.dump(schema_data, f)
@@ -375,7 +312,7 @@ class TestLoadSchemaFromFile:
             def get_operations(self) -> list[str]:
                 return ["test_op"]
 
-            def execute_operation(self, op: str, params: dict) -> dict:
+            async def execute_operation(self, op: str, params: dict) -> dict:
                 return {}
 
         expert = TmpExpert()

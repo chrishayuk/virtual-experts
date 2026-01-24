@@ -29,7 +29,7 @@ class ExpertRegistry(BaseModel):
 
         expert = registry.get("time")
         if expert:
-            result = expert.execute(action)
+            result = await expert.execute(action)
     """
 
     model_config = {"arbitrary_types_allowed": True}

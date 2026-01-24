@@ -97,6 +97,47 @@ class TestPackageExports:
         assert ValidationSummary is not None
         assert validate_expert_few_shot is not None
 
+    def test_exports_trace_models(self):
+        from chuk_virtual_expert import (
+            ALL_STEP_TYPES,
+            AddEntityStep,
+            BaseTraceStep,
+            CompareStep,
+            ComputeOp,
+            ComputeStep,
+            ConsumeStep,
+            FormulaStep,
+            GeocodeStep,
+            GetForecastStep,
+            GivenStep,
+            InitStep,
+            PercentOffStep,
+            QueryStep,
+            StateAssertStep,
+            TraceExample,
+            TraceStep,
+            TransferStep,
+        )
+
+        assert BaseTraceStep is not None
+        assert TraceStep is not None
+        assert ComputeOp is not None
+        assert InitStep is not None
+        assert GivenStep is not None
+        assert ComputeStep is not None
+        assert FormulaStep is not None
+        assert QueryStep is not None
+        assert StateAssertStep is not None
+        assert TransferStep is not None
+        assert ConsumeStep is not None
+        assert AddEntityStep is not None
+        assert PercentOffStep is not None
+        assert CompareStep is not None
+        assert GeocodeStep is not None
+        assert GetForecastStep is not None
+        assert TraceExample is not None
+        assert ALL_STEP_TYPES is not None
+
     def test_exports_calibration_data(self):
         from chuk_virtual_expert import CalibrationData
 

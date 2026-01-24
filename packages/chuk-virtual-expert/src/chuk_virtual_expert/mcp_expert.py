@@ -16,7 +16,6 @@ from typing import Any, ClassVar
 from pydantic import Field
 
 from chuk_virtual_expert.expert import VirtualExpert
-from chuk_virtual_expert.models import VirtualExpertAction, VirtualExpertResult
 
 
 class MCPTransportType(str, Enum):
@@ -115,7 +114,7 @@ class MCPExpert(VirtualExpert):
         """Get the effective timeout."""
         return self.timeout or self.mcp_timeout
 
-    async def execute_operation_async(
+    async def execute_operation(
         self,
         operation: str,
         parameters: dict[str, Any],
@@ -230,53 +229,6 @@ class MCPExpert(VirtualExpert):
             return result
         except json.JSONDecodeError:
             return {"text": text}
-
-    def execute_operation(
-        self,
-        operation: str,
-        parameters: dict[str, Any],
-    ) -> dict[str, Any]:
-        """
-        Sync wrapper for execute_operation_async.
-
-        For async contexts, prefer execute_operation_async directly.
-        """
-        import asyncio
-
-        return asyncio.run(self.execute_operation_async(operation, parameters))
-
-    async def execute_async(self, action: VirtualExpertAction) -> VirtualExpertResult:
-        """
-        Execute a VirtualExpertAction asynchronously.
-
-        This is the preferred entry point for async contexts.
-        """
-        try:
-            data = await self.execute_operation_async(action.operation, action.parameters)
-            return VirtualExpertResult(
-                data=data,
-                expert_name=self.name,
-                success=True,
-                action=action,
-            )
-        except Exception as e:
-            return VirtualExpertResult(
-                data=None,
-                expert_name=self.name,
-                success=False,
-                error=str(e),
-                action=action,
-            )
-
-    def execute(self, action: VirtualExpertAction) -> VirtualExpertResult:
-        """
-        Sync wrapper for execute_async.
-
-        For async contexts, prefer execute_async directly.
-        """
-        import asyncio
-
-        return asyncio.run(self.execute_async(action))
 
     async def list_mcp_tools(self) -> list[dict[str, Any]]:
         """

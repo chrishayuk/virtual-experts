@@ -1,10 +1,19 @@
-"""Percentage problem generator - symbolic traces."""
+"""Percentage problem generator - typed TraceExample models."""
 
 import random
-from typing import Any
+
+from chuk_virtual_expert.trace_example import TraceExample
+from chuk_virtual_expert.trace_models import (
+    ComputeOp,
+    ComputeStep,
+    InitStep,
+    PercentIncreaseStep,
+    PercentOffStep,
+    QueryStep,
+)
 
 
-def generate_percent_off() -> dict[str, Any]:
+def generate_percent_off() -> TraceExample:
     """X% off a price."""
     price = random.randint(20, 200)
     percent = random.choice([10, 15, 20, 25, 30, 40, 50])
@@ -14,22 +23,21 @@ def generate_percent_off() -> dict[str, Any]:
 
     question = f"A {item} costs ${price}. It's {percent}% off. What's the sale price?"
 
-    trace = [
-        {"init": "price", "value": price},
-        {"init": "discount_rate", "value": percent},
-        {"percent_off": {"base": "price", "rate": "discount_rate", "var": "sale_price"}},
-        {"query": "sale_price"},
-    ]
+    return TraceExample(
+        expert="percentage",
+        query=question,
+        trace=[
+            InitStep(var="price", value=price),
+            InitStep(var="discount_rate", value=percent),
+            PercentOffStep(base="price", rate="discount_rate", var="sale_price"),
+            QueryStep(var="sale_price"),
+        ],
+        answer=final,
+        expected_operation="execute_trace",
+    )
 
-    return {
-        "query": question,
-        "expert": "percentage",
-        "trace": trace,
-        "answer": final,
-    }
 
-
-def generate_percent_increase() -> dict[str, Any]:
+def generate_percent_increase() -> TraceExample:
     """X% increase."""
     base = random.randint(50, 200)
     percent = random.choice([10, 15, 20, 25, 50])
@@ -43,22 +51,21 @@ def generate_percent_increase() -> dict[str, Any]:
 
     question = random.choice(scenarios)
 
-    trace = [
-        {"init": "base", "value": base},
-        {"init": "increase_rate", "value": percent},
-        {"percent_increase": {"base": "base", "rate": "increase_rate", "var": "final"}},
-        {"query": "final"},
-    ]
+    return TraceExample(
+        expert="percentage",
+        query=question,
+        trace=[
+            InitStep(var="base", value=base),
+            InitStep(var="increase_rate", value=percent),
+            PercentIncreaseStep(base="base", rate="increase_rate", var="final"),
+            QueryStep(var="final"),
+        ],
+        answer=final,
+        expected_operation="execute_trace",
+    )
 
-    return {
-        "query": question,
-        "expert": "percentage",
-        "trace": trace,
-        "answer": final,
-    }
 
-
-def generate_tip_calculation() -> dict[str, Any]:
+def generate_tip_calculation() -> TraceExample:
     """Calculate tip on a bill."""
     bill = random.randint(20, 100)
     tip_percent = random.choice([15, 18, 20, 25])
@@ -67,24 +74,23 @@ def generate_tip_calculation() -> dict[str, Any]:
 
     question = f"Your bill is ${bill}. You want to leave a {tip_percent}% tip. What's the total including tip?"
 
-    trace = [
-        {"init": "bill", "value": bill},
-        {"init": "tip_rate", "value": tip_percent},
-        {"compute": {"op": "mul", "args": ["bill", "tip_rate"], "var": "tip_times_100"}},
-        {"compute": {"op": "div", "args": ["tip_times_100", 100], "var": "tip"}},
-        {"compute": {"op": "add", "args": ["bill", "tip"], "var": "total"}},
-        {"query": "total"},
-    ]
+    return TraceExample(
+        expert="percentage",
+        query=question,
+        trace=[
+            InitStep(var="bill", value=bill),
+            InitStep(var="tip_rate", value=tip_percent),
+            ComputeStep(compute_op=ComputeOp.MUL, args=["bill", "tip_rate"], var="tip_times_100"),
+            ComputeStep(compute_op=ComputeOp.DIV, args=["tip_times_100", 100], var="tip"),
+            ComputeStep(compute_op=ComputeOp.ADD, args=["bill", "tip"], var="total"),
+            QueryStep(var="total"),
+        ],
+        answer=total,
+        expected_operation="execute_trace",
+    )
 
-    return {
-        "query": question,
-        "expert": "percentage",
-        "trace": trace,
-        "answer": total,
-    }
 
-
-def generate_simple_percent() -> dict[str, Any]:
+def generate_simple_percent() -> TraceExample:
     """What is X% of Y?"""
     whole = random.randint(50, 200)
     percent = random.choice([10, 20, 25, 50, 75])
@@ -92,20 +98,19 @@ def generate_simple_percent() -> dict[str, Any]:
 
     question = f"What is {percent}% of {whole}?"
 
-    trace = [
-        {"init": "whole", "value": whole},
-        {"init": "percent", "value": percent},
-        {"compute": {"op": "mul", "args": ["whole", "percent"], "var": "times_100"}},
-        {"compute": {"op": "div", "args": ["times_100", 100], "var": "result"}},
-        {"query": "result"},
-    ]
-
-    return {
-        "query": question,
-        "expert": "percentage",
-        "trace": trace,
-        "answer": part,
-    }
+    return TraceExample(
+        expert="percentage",
+        query=question,
+        trace=[
+            InitStep(var="whole", value=whole),
+            InitStep(var="percent", value=percent),
+            ComputeStep(compute_op=ComputeOp.MUL, args=["whole", "percent"], var="times_100"),
+            ComputeStep(compute_op=ComputeOp.DIV, args=["times_100", 100], var="result"),
+            QueryStep(var="result"),
+        ],
+        answer=part,
+        expected_operation="execute_trace",
+    )
 
 
 GENERATORS = [
@@ -116,7 +121,7 @@ GENERATORS = [
 ]
 
 
-def generate(n: int = 15) -> list[dict[str, Any]]:
+def generate(n: int = 15) -> list[TraceExample]:
     """Generate n percentage examples."""
     examples = []
     for _ in range(n):

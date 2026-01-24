@@ -10,6 +10,12 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar
 
+from chuk_virtual_expert.trace_models import (
+    AddEntityStep,
+    BaseTraceStep,
+    ConsumeStep,
+    TransferStep,
+)
 from chuk_virtual_expert.trace_solver import TraceSolverExpert
 
 
@@ -39,15 +45,12 @@ class EntityTrackExpert(TraceSolverExpert):
         prompt_lower = prompt.lower()
         return any(re.search(p, prompt_lower) for p in patterns)
 
-    def execute_step(self, step: dict[str, Any], state: dict[str, Any]) -> dict[str, Any]:
+    async def execute_step(self, step: BaseTraceStep, state: dict[str, Any]) -> dict[str, Any]:
         """Execute entity-specific operations."""
-        op = next(iter(step))
-
-        if op == "transfer":
-            t = step["transfer"]
-            from_e = str(t["from"])
-            to_e = str(t["to"])
-            amount = self.resolve(t["amount"], state)
+        if isinstance(step, TransferStep):
+            from_e = step.from_entity
+            to_e = step.to_entity
+            amount = self.resolve(step.amount, state)
 
             if from_e not in state:
                 state[from_e] = 0.0
@@ -60,10 +63,9 @@ class EntityTrackExpert(TraceSolverExpert):
             state[from_e] -= amount
             state[to_e] += amount
 
-        elif op == "consume":
-            c = step["consume"]
-            entity = str(c["entity"])
-            amount = self.resolve(c["amount"], state)
+        elif isinstance(step, ConsumeStep):
+            entity = step.entity
+            amount = self.resolve(step.amount, state)
 
             if entity not in state:
                 raise ValueError(f"Entity {entity} not initialized")
@@ -72,16 +74,15 @@ class EntityTrackExpert(TraceSolverExpert):
 
             state[entity] -= amount
 
-        elif op == "add":
-            a = step["add"]
-            entity = str(a["entity"])
-            amount = self.resolve(a["amount"], state)
+        elif isinstance(step, AddEntityStep):
+            entity = step.entity
+            amount = self.resolve(step.amount, state)
 
             if entity not in state:
                 state[entity] = 0.0
             state[entity] += amount
 
         else:
-            raise ValueError(f"Unknown entity_track operation: {op}")
+            raise ValueError(f"Unknown entity_track step type: {type(step).__name__}")
 
         return state

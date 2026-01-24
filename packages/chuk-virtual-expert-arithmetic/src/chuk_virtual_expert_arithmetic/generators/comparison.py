@@ -1,13 +1,21 @@
-"""Comparison problem generator - symbolic traces."""
+"""Comparison problem generator - typed TraceExample models."""
 
 import random
-from typing import Any
+
+from chuk_virtual_expert.trace_example import TraceExample
+from chuk_virtual_expert.trace_models import (
+    ComputeOp,
+    ComputeStep,
+    FormulaStep,
+    InitStep,
+    QueryStep,
+)
 
 NAMES = ["Alice", "Bob", "Carol", "Dan", "Emma", "Frank"]
 ITEMS = ["stickers", "cards", "marbles", "coins", "books"]
 
 
-def generate_times_more() -> dict[str, Any]:
+def generate_times_more() -> TraceExample:
     """A has X times as many as B. How many more?"""
     name1, name2 = random.sample(NAMES, 2)
     item = random.choice(ITEMS)
@@ -19,35 +27,25 @@ def generate_times_more() -> dict[str, Any]:
 
     question = f"{name1} has {multiplier} times as many {item} as {name2}. {name2} has {base}. How many more does {name1} have than {name2}?"
 
-    trace = [
-        {"init": f"{name2.lower()}.{item}", "value": base},
-        {"init": "multiplier", "value": multiplier},
-        {
-            "compute": {
-                "op": "mul",
-                "args": [f"{name2.lower()}.{item}", "multiplier"],
-                "var": f"{name1.lower()}.{item}",
-            }
-        },
-        {
-            "compute": {
-                "op": "sub",
-                "args": [f"{name1.lower()}.{item}", f"{name2.lower()}.{item}"],
-                "var": "difference",
-            }
-        },
-        {"query": "difference"},
-    ]
+    var2 = f"{name2.lower()}.{item}"
+    var1 = f"{name1.lower()}.{item}"
 
-    return {
-        "query": question,
-        "expert": "comparison",
-        "trace": trace,
-        "answer": difference,
-    }
+    return TraceExample(
+        expert="comparison",
+        query=question,
+        trace=[
+            InitStep(var=var2, value=base),
+            InitStep(var="multiplier", value=multiplier),
+            ComputeStep(compute_op=ComputeOp.MUL, args=[var2, "multiplier"], var=var1),
+            ComputeStep(compute_op=ComputeOp.SUB, args=[var1, var2], var="difference"),
+            QueryStep(var="difference"),
+        ],
+        answer=difference,
+        expected_operation="execute_trace",
+    )
 
 
-def generate_sum_and_difference() -> dict[str, Any]:
+def generate_sum_and_difference() -> TraceExample:
     """Together they have X. A has Y more than B. How many does A have?"""
     name1, name2 = random.sample(NAMES, 2)
     item = random.choice(ITEMS)
@@ -59,32 +57,28 @@ def generate_sum_and_difference() -> dict[str, Any]:
 
     question = f"{name1} and {name2} have {total} {item} together. {name1} has {diff} more than {name2}. How many does {name1} have?"
 
-    trace = [
-        {"init": "total", "value": total},
-        {"init": "difference", "value": diff},
-        {"formula": f"{name1.lower()} + {name2.lower()} = total"},
-        {"formula": f"{name1.lower()} = {name2.lower()} + difference"},
-        {"compute": {"op": "sub", "args": ["total", "difference"], "var": "twice_b"}},
-        {"compute": {"op": "div", "args": ["twice_b", 2], "var": f"{name2.lower()}.{item}"}},
-        {
-            "compute": {
-                "op": "add",
-                "args": [f"{name2.lower()}.{item}", "difference"],
-                "var": f"{name1.lower()}.{item}",
-            }
-        },
-        {"query": f"{name1.lower()}.{item}"},
-    ]
+    var1 = f"{name1.lower()}.{item}"
+    var2 = f"{name2.lower()}.{item}"
 
-    return {
-        "query": question,
-        "expert": "comparison",
-        "trace": trace,
-        "answer": a,
-    }
+    return TraceExample(
+        expert="comparison",
+        query=question,
+        trace=[
+            InitStep(var="total", value=total),
+            InitStep(var="difference", value=diff),
+            FormulaStep(expression=f"{name1.lower()} + {name2.lower()} = total"),
+            FormulaStep(expression=f"{name1.lower()} = {name2.lower()} + difference"),
+            ComputeStep(compute_op=ComputeOp.SUB, args=["total", "difference"], var="twice_b"),
+            ComputeStep(compute_op=ComputeOp.DIV, args=["twice_b", 2], var=var2),
+            ComputeStep(compute_op=ComputeOp.ADD, args=[var2, "difference"], var=var1),
+            QueryStep(var=var1),
+        ],
+        answer=a,
+        expected_operation="execute_trace",
+    )
 
 
-def generate_more_less() -> dict[str, Any]:
+def generate_more_less() -> TraceExample:
     """A has X more than B. B has Y. Total?"""
     name1, name2 = random.sample(NAMES, 2)
     item = random.choice(ITEMS)
@@ -96,35 +90,25 @@ def generate_more_less() -> dict[str, Any]:
 
     question = f"{name1} has {more} more {item} than {name2}. {name2} has {base}. How many do they have together?"
 
-    trace = [
-        {"init": f"{name2.lower()}.{item}", "value": base},
-        {"init": "more", "value": more},
-        {
-            "compute": {
-                "op": "add",
-                "args": [f"{name2.lower()}.{item}", "more"],
-                "var": f"{name1.lower()}.{item}",
-            }
-        },
-        {
-            "compute": {
-                "op": "add",
-                "args": [f"{name1.lower()}.{item}", f"{name2.lower()}.{item}"],
-                "var": "total",
-            }
-        },
-        {"query": "total"},
-    ]
+    var1 = f"{name1.lower()}.{item}"
+    var2 = f"{name2.lower()}.{item}"
 
-    return {
-        "query": question,
-        "expert": "comparison",
-        "trace": trace,
-        "answer": total,
-    }
+    return TraceExample(
+        expert="comparison",
+        query=question,
+        trace=[
+            InitStep(var=var2, value=base),
+            InitStep(var="more", value=more),
+            ComputeStep(compute_op=ComputeOp.ADD, args=[var2, "more"], var=var1),
+            ComputeStep(compute_op=ComputeOp.ADD, args=[var1, var2], var="total"),
+            QueryStep(var="total"),
+        ],
+        answer=total,
+        expected_operation="execute_trace",
+    )
 
 
-def generate_half_as_many() -> dict[str, Any]:
+def generate_half_as_many() -> TraceExample:
     """A has half as many as B. B has X. How many does A have?"""
     name1, name2 = random.sample(NAMES, 2)
     item = random.choice(ITEMS)
@@ -134,24 +118,20 @@ def generate_half_as_many() -> dict[str, Any]:
 
     question = f"{name1} has half as many {item} as {name2}. {name2} has {base}. How many does {name1} have?"
 
-    trace = [
-        {"init": f"{name2.lower()}.{item}", "value": base},
-        {
-            "compute": {
-                "op": "div",
-                "args": [f"{name2.lower()}.{item}", 2],
-                "var": f"{name1.lower()}.{item}",
-            }
-        },
-        {"query": f"{name1.lower()}.{item}"},
-    ]
+    var1 = f"{name1.lower()}.{item}"
+    var2 = f"{name2.lower()}.{item}"
 
-    return {
-        "query": question,
-        "expert": "comparison",
-        "trace": trace,
-        "answer": half,
-    }
+    return TraceExample(
+        expert="comparison",
+        query=question,
+        trace=[
+            InitStep(var=var2, value=base),
+            ComputeStep(compute_op=ComputeOp.DIV, args=[var2, 2], var=var1),
+            QueryStep(var=var1),
+        ],
+        answer=half,
+        expected_operation="execute_trace",
+    )
 
 
 GENERATORS = [
@@ -162,7 +142,7 @@ GENERATORS = [
 ]
 
 
-def generate(n: int = 40) -> list[dict[str, Any]]:
+def generate(n: int = 40) -> list[TraceExample]:
     """Generate n comparison examples."""
     examples = []
     for _ in range(n):

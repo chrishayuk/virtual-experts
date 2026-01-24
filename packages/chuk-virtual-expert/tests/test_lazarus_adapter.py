@@ -2,6 +2,8 @@
 
 from typing import Any, ClassVar
 
+import pytest
+
 from chuk_virtual_expert.expert import VirtualExpert
 from chuk_virtual_expert.lazarus import LazarusAdapter, adapt_expert
 from chuk_virtual_expert.models import VirtualExpertAction
@@ -23,7 +25,7 @@ class MockTimeExpert(VirtualExpert):
     def get_operations(self) -> list[str]:
         return ["get_time", "convert_time"]
 
-    def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
+    async def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
         if op == "get_time":
             tz = params.get("timezone", "UTC")
             return {
@@ -56,7 +58,7 @@ class MockGenericExpert(VirtualExpert):
     def get_operations(self) -> list[str]:
         return ["do_something"]
 
-    def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
+    async def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
         return {"result": "done"}
 
 
@@ -118,38 +120,43 @@ class TestCanHandle:
 class TestExecute:
     """Tests for execute method."""
 
-    def test_execute_utc_time(self):
+    @pytest.mark.asyncio
+    async def test_execute_utc_time(self):
         adapter = LazarusAdapter(MockTimeExpert())
-        result = adapter.execute("What time is it?")
+        result = await adapter.execute("What time is it?")
         assert "12:00:00" in result
         assert "UTC" in result
 
-    def test_execute_timezone_time(self):
+    @pytest.mark.asyncio
+    async def test_execute_timezone_time(self):
         adapter = LazarusAdapter(MockTimeExpert())
-        result = adapter.execute("What time is it in Tokyo?")
+        result = await adapter.execute("What time is it in Tokyo?")
         assert result is not None
 
-    def test_execute_returns_string(self):
+    @pytest.mark.asyncio
+    async def test_execute_returns_string(self):
         adapter = LazarusAdapter(MockTimeExpert())
-        result = adapter.execute("What time is it?")
+        result = await adapter.execute("What time is it?")
         assert isinstance(result, str)
 
 
 class TestExecuteAction:
     """Tests for execute_action method (CoT interface)."""
 
-    def test_execute_with_pydantic_action(self):
+    @pytest.mark.asyncio
+    async def test_execute_with_pydantic_action(self):
         adapter = LazarusAdapter(MockTimeExpert())
         action = VirtualExpertAction(
             expert="time",
             operation="get_time",
             parameters={"timezone": "Asia/Tokyo"},
         )
-        result = adapter.execute_action(action)
+        result = await adapter.execute_action(action)
         assert result is not None
         assert isinstance(result, str)
 
-    def test_execute_with_mock_lazarus_action(self):
+    @pytest.mark.asyncio
+    async def test_execute_with_mock_lazarus_action(self):
         adapter = LazarusAdapter(MockTimeExpert())
 
         # Simulate a Lazarus dataclass-style action
@@ -164,16 +171,17 @@ class TestExecuteAction:
                 return '{"expert": "time"}'
 
         action = MockLazarusAction()
-        result = adapter.execute_action(action)
+        result = await adapter.execute_action(action)
         assert result is not None
 
-    def test_execute_action_error_handling(self):
+    @pytest.mark.asyncio
+    async def test_execute_action_error_handling(self):
         adapter = LazarusAdapter(MockTimeExpert())
         action = VirtualExpertAction(
             expert="time",
             operation="unknown_operation",
         )
-        result = adapter.execute_action(action)
+        result = await adapter.execute_action(action)
         # Should return error message
         assert result is None or "Error" in str(result)
 
@@ -299,7 +307,8 @@ class TestRepr:
 class TestExecuteErrorPaths:
     """Tests for error handling in execute method."""
 
-    def test_execute_returns_error_message(self):
+    @pytest.mark.asyncio
+    async def test_execute_returns_error_message(self):
         """Test that error results are formatted as error messages."""
 
         class FailingExpert(VirtualExpert):
@@ -313,15 +322,16 @@ class TestExecuteErrorPaths:
             def get_operations(self) -> list[str]:
                 return ["fail"]
 
-            def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
+            async def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
                 raise ValueError("Intentional failure")
 
         adapter = LazarusAdapter(FailingExpert())
-        result = adapter.execute("test")
+        result = await adapter.execute("test")
         assert result is not None
         assert "Error" in result
 
-    def test_execute_returns_none_when_no_data(self):
+    @pytest.mark.asyncio
+    async def test_execute_returns_none_when_no_data(self):
         """Test that execute returns None when result has no data."""
 
         class EmptyResultExpert(VirtualExpert):
@@ -335,11 +345,11 @@ class TestExecuteErrorPaths:
             def get_operations(self) -> list[str]:
                 return ["empty"]
 
-            def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
+            async def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
                 return {}  # Empty dict, no data
 
         adapter = LazarusAdapter(EmptyResultExpert())
-        result = adapter.execute("test")
+        result = await adapter.execute("test")
         # Empty dict is falsy, so _format_result is not called
         # result.data is {} which is falsy, so execute returns None
         assert result is None
@@ -373,10 +383,6 @@ class TestParseTimePrompt:
     def test_parse_timezone_info(self):
         """Test parsing timezone info prompts."""
         adapter = LazarusAdapter(MockTimeExpert())
-        action = adapter._parse_time_prompt("What timezone is Tokyo in?")
-        # The regex looks for "timezone for/of/in/is <location>"
-        # Since "What timezone is Tokyo" doesn't match, it falls through
-        # Let's use the exact pattern
         action = adapter._parse_time_prompt("Get timezone for Tokyo")
         assert action.operation == "get_timezone_info"
         assert action.parameters.get("location") == "tokyo"
@@ -427,13 +433,15 @@ class TestFormatResultWithEnum:
 class TestExecuteActionEdgeCases:
     """Tests for execute_action edge cases."""
 
-    def test_execute_action_with_invalid_object(self):
+    @pytest.mark.asyncio
+    async def test_execute_action_with_invalid_object(self):
         """Test execute_action returns None for invalid action."""
         adapter = LazarusAdapter(MockTimeExpert())
-        result = adapter.execute_action({"not": "an action"})
+        result = await adapter.execute_action({"not": "an action"})
         assert result is None
 
-    def test_execute_action_success_without_error(self):
+    @pytest.mark.asyncio
+    async def test_execute_action_success_without_error(self):
         """Test execute_action returns formatted result on success."""
         adapter = LazarusAdapter(MockTimeExpert())
         action = VirtualExpertAction(
@@ -441,11 +449,12 @@ class TestExecuteActionEdgeCases:
             operation="get_time",
             parameters={"timezone": "UTC"},
         )
-        result = adapter.execute_action(action)
+        result = await adapter.execute_action(action)
         assert result is not None
         assert "UTC" in result
 
-    def test_execute_action_with_failing_execution(self):
+    @pytest.mark.asyncio
+    async def test_execute_action_with_failing_execution(self):
         """Test execute_action with failing expert."""
 
         class FailingExpert(VirtualExpert):
@@ -459,7 +468,7 @@ class TestExecuteActionEdgeCases:
             def get_operations(self) -> list[str]:
                 return ["fail"]
 
-            def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
+            async def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
                 raise ValueError("Intentional failure")
 
         adapter = LazarusAdapter(FailingExpert())
@@ -468,30 +477,13 @@ class TestExecuteActionEdgeCases:
             operation="fail",
             parameters={},
         )
-        result = adapter.execute_action(action)
+        result = await adapter.execute_action(action)
         assert result is not None
         assert "Error" in result
 
-    def test_execute_action_returns_none_no_data(self):
+    @pytest.mark.asyncio
+    async def test_execute_action_returns_none_no_data(self):
         """Test execute_action returns None when result has no data and no error."""
-
-        class NoDataExpert(VirtualExpert):
-            name: ClassVar[str] = "nodata"
-            description: ClassVar[str] = "Returns no data"
-            priority: ClassVar[int] = 1
-
-            def can_handle(self, prompt: str) -> bool:
-                return True
-
-            def get_operations(self) -> list[str]:
-                return ["nodata"]
-
-            def execute_operation(self, op: str, params: dict[str, Any]) -> dict[str, Any]:
-                # Return empty data to test the "no data" path
-                return None  # type: ignore
-
-        # This would trigger a different code path - the execute catches exceptions
-        # Let's test a mock scenario
         adapter = LazarusAdapter(MockTimeExpert())
 
         class MockAction:
@@ -499,6 +491,6 @@ class TestExecuteActionEdgeCases:
             operation = "get_time"
             parameters = {}
 
-        result = adapter.execute_action(MockAction())
+        result = await adapter.execute_action(MockAction())
         # Should succeed
         assert result is not None

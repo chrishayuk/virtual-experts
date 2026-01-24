@@ -1,10 +1,12 @@
-"""Arithmetic chain problem generator - symbolic traces."""
+"""Arithmetic chain problem generator - typed TraceExample models."""
 
 import random
-from typing import Any
+
+from chuk_virtual_expert.trace_example import TraceExample
+from chuk_virtual_expert.trace_models import ComputeOp, ComputeStep, InitStep, QueryStep
 
 
-def generate_price_chain() -> dict[str, Any]:
+def generate_price_chain() -> TraceExample:
     """Price + tax + shipping pattern."""
     base = random.randint(10, 100)
     tax = round(random.uniform(1, 10), 2)
@@ -17,24 +19,23 @@ def generate_price_chain() -> dict[str, Any]:
         f"A {item} costs ${base}. Tax adds ${tax}. Shipping is ${shipping}. What's the total?"
     )
 
-    trace = [
-        {"init": "price", "value": base},
-        {"init": "tax", "value": tax},
-        {"init": "shipping", "value": shipping},
-        {"compute": {"op": "add", "args": ["price", "tax"], "var": "with_tax"}},
-        {"compute": {"op": "add", "args": ["with_tax", "shipping"], "var": "total"}},
-        {"query": "total"},
-    ]
+    return TraceExample(
+        expert="arithmetic",
+        query=question,
+        trace=[
+            InitStep(var="price", value=base),
+            InitStep(var="tax", value=tax),
+            InitStep(var="shipping", value=shipping),
+            ComputeStep(compute_op=ComputeOp.ADD, args=["price", "tax"], var="with_tax"),
+            ComputeStep(compute_op=ComputeOp.ADD, args=["with_tax", "shipping"], var="total"),
+            QueryStep(var="total"),
+        ],
+        answer=total,
+        expected_operation="execute_trace",
+    )
 
-    return {
-        "query": question,
-        "expert": "arithmetic",
-        "trace": trace,
-        "answer": total,
-    }
 
-
-def generate_subtract_chain() -> dict[str, Any]:
+def generate_subtract_chain() -> TraceExample:
     """Start with amount, subtract multiple times."""
     start = random.randint(50, 200)
     sub1 = random.randint(5, 30)
@@ -45,26 +46,27 @@ def generate_subtract_chain() -> dict[str, Any]:
 
     question = f"You have ${start}. You spend ${sub1} on lunch, ${sub2} on a ticket, and ${sub3} on snacks. How much do you have left?"
 
-    trace = [
-        {"init": "money", "value": start},
-        {"init": "lunch", "value": sub1},
-        {"init": "ticket", "value": sub2},
-        {"init": "snacks", "value": sub3},
-        {"compute": {"op": "sub", "args": ["money", "lunch"], "var": "after_lunch"}},
-        {"compute": {"op": "sub", "args": ["after_lunch", "ticket"], "var": "after_ticket"}},
-        {"compute": {"op": "sub", "args": ["after_ticket", "snacks"], "var": "remaining"}},
-        {"query": "remaining"},
-    ]
+    return TraceExample(
+        expert="arithmetic",
+        query=question,
+        trace=[
+            InitStep(var="money", value=start),
+            InitStep(var="lunch", value=sub1),
+            InitStep(var="ticket", value=sub2),
+            InitStep(var="snacks", value=sub3),
+            ComputeStep(compute_op=ComputeOp.SUB, args=["money", "lunch"], var="after_lunch"),
+            ComputeStep(
+                compute_op=ComputeOp.SUB, args=["after_lunch", "ticket"], var="after_ticket"
+            ),
+            ComputeStep(compute_op=ComputeOp.SUB, args=["after_ticket", "snacks"], var="remaining"),
+            QueryStep(var="remaining"),
+        ],
+        answer=final,
+        expected_operation="execute_trace",
+    )
 
-    return {
-        "query": question,
-        "expert": "arithmetic",
-        "trace": trace,
-        "answer": final,
-    }
 
-
-def generate_multiply_add() -> dict[str, Any]:
+def generate_multiply_add() -> TraceExample:
     """Multiply then add."""
     count = random.randint(3, 10)
     price = random.randint(5, 20)
@@ -75,24 +77,23 @@ def generate_multiply_add() -> dict[str, Any]:
 
     question = f"You buy {count} {item} at ${price} each and pay ${extra} for gift wrapping. What's the total?"
 
-    trace = [
-        {"init": "count", "value": count},
-        {"init": "price", "value": price},
-        {"init": "wrapping", "value": extra},
-        {"compute": {"op": "mul", "args": ["count", "price"], "var": "subtotal"}},
-        {"compute": {"op": "add", "args": ["subtotal", "wrapping"], "var": "total"}},
-        {"query": "total"},
-    ]
+    return TraceExample(
+        expert="arithmetic",
+        query=question,
+        trace=[
+            InitStep(var="count", value=count),
+            InitStep(var="price", value=price),
+            InitStep(var="wrapping", value=extra),
+            ComputeStep(compute_op=ComputeOp.MUL, args=["count", "price"], var="subtotal"),
+            ComputeStep(compute_op=ComputeOp.ADD, args=["subtotal", "wrapping"], var="total"),
+            QueryStep(var="total"),
+        ],
+        answer=total,
+        expected_operation="execute_trace",
+    )
 
-    return {
-        "query": question,
-        "expert": "arithmetic",
-        "trace": trace,
-        "answer": total,
-    }
 
-
-def generate_divide_multiply() -> dict[str, Any]:
+def generate_divide_multiply() -> TraceExample:
     """Divide then multiply."""
     divisor = random.choice([2, 4, 5, 10])
     per_item = random.randint(5, 25)
@@ -110,21 +111,20 @@ def generate_divide_multiply() -> dict[str, Any]:
 
     question = f"You split ${total} equally among {divisor} people. Each person {mult_text} their share. How much does each have?"
 
-    trace = [
-        {"init": "total", "value": total},
-        {"init": "people", "value": divisor},
-        {"init": "multiplier", "value": multiplier},
-        {"compute": {"op": "div", "args": ["total", "people"], "var": "per_person"}},
-        {"compute": {"op": "mul", "args": ["per_person", "multiplier"], "var": "final"}},
-        {"query": "final"},
-    ]
-
-    return {
-        "query": question,
-        "expert": "arithmetic",
-        "trace": trace,
-        "answer": final,
-    }
+    return TraceExample(
+        expert="arithmetic",
+        query=question,
+        trace=[
+            InitStep(var="total", value=total),
+            InitStep(var="people", value=divisor),
+            InitStep(var="multiplier", value=multiplier),
+            ComputeStep(compute_op=ComputeOp.DIV, args=["total", "people"], var="per_person"),
+            ComputeStep(compute_op=ComputeOp.MUL, args=["per_person", "multiplier"], var="final"),
+            QueryStep(var="final"),
+        ],
+        answer=final,
+        expected_operation="execute_trace",
+    )
 
 
 GENERATORS = [
@@ -135,7 +135,7 @@ GENERATORS = [
 ]
 
 
-def generate(n: int = 40) -> list[dict[str, Any]]:
+def generate(n: int = 40) -> list[TraceExample]:
     """Generate n arithmetic examples."""
     examples = []
     for _ in range(n):
