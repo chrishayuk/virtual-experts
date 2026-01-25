@@ -1,0 +1,40 @@
+{
+  "name": "consume_then_sell",
+  "description": "Produce - consume = remainder × price (Janet's ducks pattern)",
+  "pattern": "consume_then_sell",
+  "variant": "animal_farm",
+  "variables": {
+    "produced": {"type": "int", "min": 15, "max": 30},
+    "use1": {"type": "int", "min": 2, "max": 6},
+    "use2": {"type": "int", "min": 2, "max": 6},
+    "price": {"type": "int", "min": 2, "max": 5}
+  },
+  "constraints": {
+    "produced - use1 - use2": {"min": 5}
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "animal": {"path": "animals.farm_animals"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subject": "person.subject",
+    "subj": "person.subject|capitalize",
+    "his_her": "person.possessive",
+    "animals": "animal.name",
+    "verb": "animal.verb",
+    "product": "animal.produces",
+    "product_singular": "animal.produces|singularize"
+  },
+  "trace": [
+    {"op": "init", "var": "produced", "value": "produced"},
+    {"op": "init", "var": "use1", "value": "use1"},
+    {"op": "init", "var": "use2", "value": "use2"},
+    {"op": "compute", "compute_op": "sub", "args": ["produced", "use1"], "var": "after1"},
+    {"op": "compute", "compute_op": "sub", "args": ["after1", "use2"], "var": "remainder"},
+    {"op": "init", "var": "price", "value": "price"},
+    {"op": "compute", "compute_op": "mul", "args": ["remainder", "price"], "var": "revenue"},
+    {"op": "query", "var": "revenue"}
+  ],
+  "answer": "(produced - use1 - use2) * price"
+}

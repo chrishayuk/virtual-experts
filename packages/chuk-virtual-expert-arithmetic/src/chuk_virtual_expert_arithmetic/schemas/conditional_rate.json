@@ -1,0 +1,29 @@
+{
+  "name": "conditional_rate",
+  "description": "If rate × time pattern",
+  "pattern": "conditional",
+  "variant": "if_then",
+  "variables": {
+    "rate": {"type": "int", "min": 5, "max": 25},
+    "time": {"type": "int", "min": 2, "max": 8}
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "items": {"path": "items.countable"},
+    "item": {"path": "items.countable_singular"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subject": "person.subject",
+    "his_her": "person.possessive",
+    "price": "rate",
+    "count": "time"
+  },
+  "trace": [
+    {"op": "init", "var": "rate", "value": "rate"},
+    {"op": "init", "var": "time", "value": "time"},
+    {"op": "compute", "compute_op": "mul", "args": ["rate", "time"], "var": "total"},
+    {"op": "query", "var": "total"}
+  ],
+  "answer": "rate * time"
+}

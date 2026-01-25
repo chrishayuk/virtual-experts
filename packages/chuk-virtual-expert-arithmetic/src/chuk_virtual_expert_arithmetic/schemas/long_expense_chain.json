@@ -1,0 +1,42 @@
+{
+  "name": "long_expense_chain",
+  "description": "Start - expenses, then multiply remainder",
+  "pattern": "long_expense_chain",
+  "variables": {
+    "start": {"type": "int", "min": 100, "max": 300},
+    "exp1": {"type": "int", "min": 10, "max": 40},
+    "exp2": {"type": "int", "min": 10, "max": 40},
+    "exp3": {"type": "int", "min": 10, "max": 30},
+    "multiplier": {"type": "int", "min": 2, "max": 4}
+  },
+  "constraints": {
+    "start - exp1 - exp2 - exp3": {"min": 20}
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "expenses": {"path": "phrases.expense_categories", "sample": 3}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subj": "person.subject|capitalize",
+    "subject": "person.subject",
+    "his_her": "person.possessive",
+    "cat1": "expenses.0",
+    "cat2": "expenses.1",
+    "cat3": "expenses.2",
+    "mult_word": "doubled"
+  },
+  "trace": [
+    {"op": "init", "var": "start", "value": "start"},
+    {"op": "init", "var": "expense1", "value": "exp1"},
+    {"op": "init", "var": "expense2", "value": "exp2"},
+    {"op": "init", "var": "expense3", "value": "exp3"},
+    {"op": "init", "var": "multiplier", "value": "multiplier"},
+    {"op": "compute", "compute_op": "sub", "args": ["start", "expense1"], "var": "after1"},
+    {"op": "compute", "compute_op": "sub", "args": ["after1", "expense2"], "var": "after2"},
+    {"op": "compute", "compute_op": "sub", "args": ["after2", "expense3"], "var": "after3"},
+    {"op": "compute", "compute_op": "mul", "args": ["after3", "multiplier"], "var": "final"},
+    {"op": "query", "var": "final"}
+  ],
+  "answer": "(start - exp1 - exp2 - exp3) * multiplier"
+}

@@ -17,6 +17,7 @@ from typing import Any
 import yaml
 from pydantic import TypeAdapter
 
+from chuk_virtual_expert.composition_solver import CompositionSolver
 from chuk_virtual_expert.models import TraceResult, VerificationResult
 from chuk_virtual_expert.registry_v2 import ExpertRegistry
 from chuk_virtual_expert.trace_models import BaseTraceStep, TraceStep
@@ -68,6 +69,42 @@ class TraceVerifier:
                 trace_error=f"YAML parse error: {e}",
                 expected_answer=expected_answer,
                 reward=0.0,
+            )
+
+        # Handle composed traces
+        if expert_name == "__composed__":
+            solver = CompositionSolver(self._registry)
+            result = await solver.execute(steps)
+
+            if not result.success:
+                return VerificationResult(
+                    parsed=True,
+                    expert="composed",
+                    trace_valid=False,
+                    trace_error=result.error,
+                    expected_answer=expected_answer,
+                    reward=0.5,
+                )
+
+            computed = result.answer
+            if expected_answer is None:
+                return VerificationResult(
+                    parsed=True,
+                    expert="composed",
+                    trace_valid=True,
+                    computed_answer=computed,
+                    reward=0.7,
+                )
+
+            correct = self._check_answer(computed, expected_answer, tolerance)
+            return VerificationResult(
+                parsed=True,
+                expert="composed",
+                trace_valid=True,
+                computed_answer=computed,
+                expected_answer=expected_answer,
+                answer_correct=correct,
+                reward=1.0 if correct else 0.7,
             )
 
         # Check expert name
@@ -122,11 +159,18 @@ class TraceVerifier:
             reward=1.0 if correct else 0.7,
         )
 
-    def _parse_yaml(self, yaml_str: str) -> tuple[str, Sequence[BaseTraceStep]]:
-        """Parse YAML string into expert name and typed steps."""
+    def _parse_yaml(self, yaml_str: str) -> tuple[str, Sequence[BaseTraceStep] | list[dict]]:
+        """Parse YAML string into expert name and typed steps.
+
+        Returns ("__composed__", list[dict]) for composed traces (YAML list),
+        or (expert_name, list[BaseTraceStep]) for single-expert traces (YAML dict).
+        """
         data = yaml.safe_load(yaml_str)
+        if isinstance(data, list):
+            # Composed trace — return raw sub-trace dicts for CompositionSolver
+            return "__composed__", data
         if not isinstance(data, dict):
-            raise ValueError("YAML output is not a dict")
+            raise ValueError("YAML output is not a dict or list")
         expert_name = data.get("expert", "unknown")
         raw_steps = data.get("trace", [])
         if not isinstance(raw_steps, list):

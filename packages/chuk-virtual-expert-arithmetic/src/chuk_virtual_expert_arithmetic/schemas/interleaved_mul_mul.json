@@ -1,0 +1,30 @@
+{
+  "name": "interleaved_mul_mul",
+  "description": "Sessions × per_session × days pattern",
+  "pattern": "interleaved_mul_mul",
+  "variant": "practice",
+  "variables": {
+    "sessions": {"type": "int", "min": 2, "max": 6},
+    "per_session": {"type": "int", "min": 2, "max": 6},
+    "days": {"type": "int", "min": 7, "max": 30}
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "skill": {"path": "phrases.skills"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subject": "person.subject",
+    "subj": "person.subject|capitalize",
+    "does_do": "person.verb_s|does_do"
+  },
+  "trace": [
+    {"op": "init", "var": "sessions", "value": "sessions"},
+    {"op": "init", "var": "per_session", "value": "per_session"},
+    {"op": "compute", "compute_op": "mul", "args": ["sessions", "per_session"], "var": "daily"},
+    {"op": "init", "var": "days", "value": "days"},
+    {"op": "compute", "compute_op": "mul", "args": ["daily", "days"], "var": "total"},
+    {"op": "query", "var": "total"}
+  ],
+  "answer": "sessions * per_session * days"
+}

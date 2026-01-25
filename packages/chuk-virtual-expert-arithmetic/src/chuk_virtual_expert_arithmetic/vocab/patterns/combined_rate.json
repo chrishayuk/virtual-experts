@@ -1,0 +1,8 @@
+{
+  "templates": [
+    "${name} has two machines in ${his_her} factory that run simultaneously to keep up with customer demand. ${machine1} produces ${rate1} ${item} per hour, while ${machine2} makes ${rate2} ${item} per hour. If both machines run together for ${time} hours, how many ${item} will ${name} have produced in total?",
+    "In ${name}'s busy workshop, ${machine1} can make ${rate1} ${item} per hour and ${machine2} can make ${rate2} ${item} per hour. ${name} runs both machines for ${time} hours to meet an important deadline for a customer. How many ${item} are produced in total by both machines?",
+    "${name} operates ${machine1} and ${machine2} at ${his_her} manufacturing plant to keep up with growing demand. ${machine1} outputs ${rate1} ${item} hourly, and ${machine2} outputs ${rate2} ${item} hourly. Working together for ${time} hours, how many ${item} do they produce combined?",
+    "At ${name}'s factory on the outskirts of town, ${machine1} makes ${rate1} ${item} each hour while ${machine2} makes ${rate2} ${item} each hour. After running both machines for ${time} hours to fill a large customer order, what is the total number of ${item} produced?"
+  ]
+}

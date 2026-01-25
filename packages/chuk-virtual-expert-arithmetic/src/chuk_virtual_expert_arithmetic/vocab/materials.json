@@ -1,0 +1,18 @@
+{
+  "fabrics": [
+    "fiber", "fabric", "cotton", "silk", "wool", "linen",
+    "velvet", "denim", "canvas", "satin", "polyester", "fleece"
+  ],
+  "building": [
+    "wood", "metal", "plastic", "glass", "concrete", "brick",
+    "steel", "aluminum", "copper", "rubber", "stone", "tile"
+  ],
+  "craft": [
+    "paper", "cardboard", "foam", "felt", "yarn", "ribbon",
+    "leather", "clay", "wire", "string"
+  ],
+  "units": [
+    "bolts", "yards", "meters", "feet", "rolls",
+    "sheets", "pieces", "strips", "squares", "panels", "sections"
+  ]
+}

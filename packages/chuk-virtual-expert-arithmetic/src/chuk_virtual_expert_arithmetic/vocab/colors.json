@@ -1,0 +1,10 @@
+{
+  "basic": [
+    "red", "blue", "green", "yellow", "orange", "purple",
+    "pink", "brown", "black", "white", "gray", "gold", "silver"
+  ],
+  "fabric": [
+    "red", "blue", "green", "white", "black", "navy", "beige",
+    "cream", "ivory", "tan", "burgundy", "teal", "coral"
+  ]
+}

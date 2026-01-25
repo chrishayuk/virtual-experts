@@ -1,0 +1,31 @@
+{
+  "name": "multiply_add",
+  "description": "Count × price + extra fee",
+  "pattern": "multiply_add",
+  "variables": {
+    "count": {"type": "int", "min": 3, "max": 10},
+    "price": {"type": "int", "min": 5, "max": 20},
+    "extra": {"type": "int", "min": 5, "max": 20}
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "items": {"path": "items.countable"},
+    "fee": {"path": "phrases.fee_types"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subj": "person.subject|capitalize",
+    "subject": "person.subject",
+    "his_her": "person.possessive",
+    "item_singular": "items|singularize"
+  },
+  "trace": [
+    {"op": "init", "var": "count", "value": "count"},
+    {"op": "init", "var": "price", "value": "price"},
+    {"op": "init", "var": "wrapping", "value": "extra"},
+    {"op": "compute", "compute_op": "mul", "args": ["count", "price"], "var": "subtotal"},
+    {"op": "compute", "compute_op": "add", "args": ["subtotal", "wrapping"], "var": "total"},
+    {"op": "query", "var": "total"}
+  ],
+  "answer": "count * price + extra"
+}

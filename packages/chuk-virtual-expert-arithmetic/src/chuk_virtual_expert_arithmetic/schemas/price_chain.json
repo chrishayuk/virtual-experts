@@ -1,0 +1,34 @@
+{
+  "name": "price_chain",
+  "description": "Price + tax + shipping pattern",
+  "pattern": "price_chain",
+  "variables": {
+    "base": {"type": "int", "min": 10, "max": 100},
+    "tax": {"type": "float", "min": 1, "max": 10, "precision": 2},
+    "shipping": {"type": "int", "min": 2, "max": 10}
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "item": {"path": "items.countable_singular"},
+    "store": {"path": "places.stores"},
+    "fee": {"path": "phrases.fee_types"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subject": "person.subject",
+    "subj": "person.subject|capitalize",
+    "his_her": "person.possessive",
+    "reflexive": "person.reflexive",
+    "has_have": "person.verb_s|has_have",
+    "a_item": "item|with_article"
+  },
+  "trace": [
+    {"op": "init", "var": "price", "value": "base"},
+    {"op": "init", "var": "tax", "value": "tax"},
+    {"op": "init", "var": "shipping", "value": "shipping"},
+    {"op": "compute", "compute_op": "add", "args": ["price", "tax"], "var": "with_tax"},
+    {"op": "compute", "compute_op": "add", "args": ["with_tax", "shipping"], "var": "total"},
+    {"op": "query", "var": "total"}
+  ],
+  "answer": "base + tax + shipping"
+}

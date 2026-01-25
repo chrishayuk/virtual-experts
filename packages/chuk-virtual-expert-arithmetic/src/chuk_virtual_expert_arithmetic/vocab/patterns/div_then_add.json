@@ -1,0 +1,26 @@
+{
+  "container": [
+    "${name} has two ${container_plural} of ${items} in ${his_her} room that ${subject} has been organizing. The first ${container_type} contains ${base} ${items}. The second ${container_type} has half as many ${items} as the first. How many ${items} does ${name} have in total between both containers?",
+    "There are ${base} ${items} stored in the first ${container_type}. The second ${container_type} has half that number. How many ${items} are there altogether in both containers?",
+    "${name} is organizing ${items} into two ${container_plural}. ${subj} puts ${base} in the first ${container_type} and half as many in the second. What is the total number of ${items} in both containers?",
+    "The first ${container_type} holds ${base} ${items}. The second ${container_type} holds half as many ${items} as the first. How many ${items} are there in total?"
+  ],
+  "material": [
+    "${name} is working on a craft project that needs two types of ${material}. ${subj} uses ${base} ${units} of ${m1} and half as much ${m2}. How many ${units} of ${material} does ${name} use in total for the project?",
+    "For ${his_her} craft project, ${name} bought ${base} ${units} of ${m1} from the supply store. ${subj} also needs half that amount in ${m2}. How many ${units} of material does ${subject} need altogether?",
+    "A recipe calls for ${base} ${units} of ${m1} and half as many ${units} of ${m2}. How many ${units} of ingredients are needed in total to complete the recipe?",
+    "${name}'s building project requires ${base} ${units} of ${m1}. It also needs half as much ${m2}. What is the total amount of material needed for the project?"
+  ],
+  "inverted": [
+    "${name} has twice as many ${items} as ${name2}. If ${name} has ${base} ${items}, how many ${items} do they have together?",
+    "Between ${name} and ${name2}, ${name} has twice as many ${items}. ${name} has ${base} ${items} in ${his_her} collection. What is the total number of ${items} they both have?",
+    "${name} owns ${base} ${items}, which is twice as many as ${name2} owns. How many ${items} do ${name} and ${name2} have combined?",
+    "If ${name} has ${base} ${items}, and that's twice what ${name2} has, how many ${items} do they have in total?"
+  ],
+  "project": [
+    "${name} is building something that has two parts. The first part needs ${base} ${units}, and the second part needs half as many ${units}. How many ${units} does ${name} need in total for the project?",
+    "A construction project requires ${base} ${units} for the first part and half that amount for the second part. What is the total number of ${units} needed?",
+    "${name}'s project has two components that need to be completed. The first part uses ${base} ${units} and the second part uses half as much. How many ${units} are needed altogether?",
+    "For the first part of the project, ${name} needs ${base} ${units}. The second part requires half as many ${units}. What is the total?"
+  ]
+}

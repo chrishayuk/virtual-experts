@@ -95,8 +95,12 @@ class TraceSolverExpert(VirtualExpert):
         Execute a sequence of typed trace steps.
 
         Handles common steps internally, delegates domain steps to execute_step().
+
+        Enforces: query targets must be computed/modified variables, not raw init values.
+        This prevents the model from short-circuiting by querying extracted values directly.
         """
         state: dict[str, Any] = {}
+        init_only_vars: set[str] = set()  # Vars set only by init, never modified
         query_var: str | None = None
         steps_executed = 0
 
@@ -106,22 +110,34 @@ class TraceSolverExpert(VirtualExpert):
                     state[step.var] = (
                         float(step.value) if isinstance(step.value, (int, float)) else step.value
                     )
+                    init_only_vars.add(step.var)
 
                 elif isinstance(step, GivenStep):
                     for k, v in step.values.items():
                         state[k] = float(v)
+                        init_only_vars.add(k)
 
                 elif isinstance(step, ComputeStep):
                     args = [self.resolve(a, state) for a in step.args]
                     result = self._compute(step.compute_op, args)
                     if step.var is not None:
                         state[step.var] = result
+                        init_only_vars.discard(step.var)
 
                 elif isinstance(step, FormulaStep):
                     pass  # Informational only
 
                 elif isinstance(step, QueryStep):
                     query_var = step.var
+                    # Enforce: query must target a computed/modified variable
+                    if query_var in init_only_vars:
+                        return TraceResult(
+                            success=False,
+                            error=f"Step {i}: query targets init variable '{query_var}', not a computed result",
+                            state=state,
+                            expert=self.name,
+                            steps_executed=steps_executed,
+                        )
 
                 elif isinstance(step, StateAssertStep):
                     for var, expected in step.assertions.items():
@@ -137,7 +153,12 @@ class TraceSolverExpert(VirtualExpert):
 
                 else:
                     # Domain-specific step - delegate to subclass
+                    prev_state = dict(state)
                     state = await self.execute_step(step, state)
+                    # Any modified vars are no longer init-only
+                    for var in list(init_only_vars):
+                        if state.get(var) != prev_state.get(var):
+                            init_only_vars.discard(var)
 
                 steps_executed += 1
 

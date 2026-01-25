@@ -1,0 +1,8 @@
+{
+  "templates": [
+    "${name}'s ${worker} produces ${rate} ${items} per hour when running at full capacity. After working continuously for ${time} hours, all the ${items} need to be packed into ${workers} ${targets} for shipping to customers. If each ${target_singular} gets the same number of ${items}, how many ${items} go in each ${target_singular}?",
+    "${A_worker} at ${name}'s factory can make ${rate} ${items} every hour when running smoothly without any interruptions. It runs for ${time} hours straight, then the ${items} are divided equally among ${workers} ${targets} for distribution. How many ${items} are placed in each ${target_singular}?",
+    "${name} owns ${a_worker} that produces ${rate} ${items} per hour at ${his_her} small business. After ${time} hours of continuous operation, ${subject} distributes the finished ${items} equally into ${workers} ${targets} for delivery to various stores. How many ${items} does each ${target_singular} contain?",
+    "The ${worker} in ${name}'s workshop makes ${rate} ${items} every hour when operating normally. ${name} runs it for ${time} hours straight to complete a big order, then splits all the finished ${items} equally among ${workers} ${targets} for shipping. How many ${items} go in each ${target_singular}?"
+  ]
+}

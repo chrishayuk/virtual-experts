@@ -1,0 +1,24 @@
+{
+  "letter_pairs": [
+    {"first": "A", "second": "B"},
+    {"first": "X", "second": "Y"},
+    {"first": "1", "second": "2"}
+  ],
+  "word_pairs": [
+    {"first": "first", "second": "second"},
+    {"first": "large", "second": "small"},
+    {"first": "big", "second": "little"},
+    {"first": "top", "second": "bottom"},
+    {"first": "left", "second": "right"},
+    {"first": "front", "second": "back"},
+    {"first": "upper", "second": "lower"},
+    {"first": "main", "second": "secondary"},
+    {"first": "primary", "second": "backup"}
+  ],
+  "sequences": ["first", "second", "third", "fourth", "fifth"],
+  "comparison": {
+    "more": ["more", "additional", "extra"],
+    "less": ["fewer", "less"],
+    "same": ["same", "equal", "identical"]
+  }
+}

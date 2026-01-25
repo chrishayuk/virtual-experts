@@ -1,0 +1,34 @@
+{
+  "name": "div_then_add",
+  "description": "Container has X, other has half, total?",
+  "pattern": "div_then_add",
+  "variant": "container",
+  "variables": {
+    "base": {"type": "int", "min": 10, "max": 50, "multiple_of": 2}
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "containers": {"path": "containers.types"},
+    "items": {"path": "items.countable"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subj": "person.subject|capitalize",
+    "subject": "person.subject",
+    "his_her": "person.possessive",
+    "container_type": "containers",
+    "container_plural": "containers|pluralize"
+  },
+  "derived": {
+    "c1": "'the first ' + containers",
+    "c2": "'the second ' + containers"
+  },
+  "trace": [
+    {"op": "init", "var": "first", "value": "base"},
+    {"op": "init", "var": "divisor", "value": 2},
+    {"op": "compute", "compute_op": "div", "args": ["first", "divisor"], "var": "second"},
+    {"op": "compute", "compute_op": "add", "args": ["first", "second"], "var": "total"},
+    {"op": "query", "var": "total"}
+  ],
+  "answer": "base + base // 2"
+}

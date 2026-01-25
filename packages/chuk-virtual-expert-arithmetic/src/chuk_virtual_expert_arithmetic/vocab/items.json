@@ -1,0 +1,28 @@
+{
+  "countable": [
+    "apples", "oranges", "books", "coins", "marbles", "cards", "boxes",
+    "bottles", "cans", "bags", "pencils", "pens", "toys", "balls",
+    "cookies", "muffins", "cupcakes", "sandwiches", "pizzas"
+  ],
+  "countable_singular": [
+    "apple", "orange", "book", "coin", "marble", "card", "box",
+    "bottle", "can", "bag", "pencil", "pen", "toy", "ball",
+    "cookie", "muffin", "cupcake", "sandwich", "pizza"
+  ],
+  "produce": [
+    "tomatoes", "cucumbers", "carrots", "potatoes", "onions", "peppers",
+    "lettuce", "spinach", "broccoli", "beans", "peas", "corn"
+  ],
+  "fruits": [
+    "apples", "oranges", "bananas", "grapes", "strawberries", "blueberries",
+    "peaches", "pears", "plums", "cherries", "lemons", "limes"
+  ],
+  "baked_goods": [
+    "cookies", "muffins", "cupcakes", "cakes", "pies", "bread loaves",
+    "pastries", "donuts", "brownies", "scones"
+  ],
+  "manufactured": [
+    "widgets", "parts", "units", "items", "products", "components",
+    "modules", "pieces", "gadgets", "devices"
+  ]
+}

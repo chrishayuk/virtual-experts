@@ -1,0 +1,39 @@
+{
+  "name": "shopping_spree",
+  "description": "Multi-store shopping with budget",
+  "pattern": "multi_step_narrative",
+  "variant": "shopping_spree",
+  "variables": {
+    "start": {"type": "int", "min": 100, "max": 250},
+    "cost1": {"type": "int", "min": 10, "max": 40},
+    "cost2": {"type": "int", "min": 10, "max": 40},
+    "cost3": {"type": "int", "min": 10, "max": 30}
+  },
+  "constraints": {
+    "start - cost1 - cost2 - cost3": {"min": 10}
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "items": {"path": "phrases.expense_categories", "sample": 3}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subj": "person.subject|capitalize",
+    "subject": "person.subject",
+    "his_her": "person.possessive",
+    "item1": "items.0",
+    "item2": "items.1",
+    "item3": "items.2"
+  },
+  "trace": [
+    {"op": "init", "var": "start", "value": "start"},
+    {"op": "init", "var": "cost1", "value": "cost1"},
+    {"op": "init", "var": "cost2", "value": "cost2"},
+    {"op": "init", "var": "cost3", "value": "cost3"},
+    {"op": "compute", "compute_op": "sub", "args": ["start", "cost1"], "var": "after1"},
+    {"op": "compute", "compute_op": "sub", "args": ["after1", "cost2"], "var": "after2"},
+    {"op": "compute", "compute_op": "sub", "args": ["after2", "cost3"], "var": "remaining"},
+    {"op": "query", "var": "remaining"}
+  ],
+  "answer": "start - cost1 - cost2 - cost3"
+}

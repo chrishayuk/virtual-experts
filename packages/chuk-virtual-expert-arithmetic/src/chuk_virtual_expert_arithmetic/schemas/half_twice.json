@@ -1,0 +1,30 @@
+{
+  "name": "half_twice",
+  "description": "Two people comparison with half/twice",
+  "pattern": "half_twice_compare",
+  "variant": "two_people",
+  "variables": {
+    "base": {"type": "int", "min": 10, "max": 50, "multiple_of": 2}
+  },
+  "vocab": {
+    "person1": {"type": "person_with_pronouns"},
+    "person2": {"type": "person_with_pronouns"},
+    "items": {"path": "items.countable"}
+  },
+  "template_vars": {
+    "name1": "person1.name",
+    "name2": "person2.name",
+    "his_her1": "person1.possessive",
+    "his_her2": "person2.possessive",
+    "subject1": "person1.subject",
+    "subject2": "person2.subject"
+  },
+  "trace": [
+    {"op": "init", "var": "person1", "value": "base"},
+    {"op": "init", "var": "divisor", "value": 2},
+    {"op": "compute", "compute_op": "div", "args": ["person1", "divisor"], "var": "person2"},
+    {"op": "compute", "compute_op": "add", "args": ["person1", "person2"], "var": "total"},
+    {"op": "query", "var": "total"}
+  ],
+  "answer": "base + base // 2"
+}

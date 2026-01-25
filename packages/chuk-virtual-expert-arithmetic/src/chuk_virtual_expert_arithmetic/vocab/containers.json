@@ -1,0 +1,14 @@
+{
+  "types": [
+    "tank", "shelf", "box", "bin", "basket", "bag", "bucket",
+    "jar", "can", "drawer", "cabinet", "room", "pile", "stack",
+    "group", "container", "crate", "tray", "rack", "compartment"
+  ],
+  "locations": [
+    "warehouse", "store", "garage", "basement", "attic", "shed",
+    "office", "kitchen", "garden", "farm", "factory", "workshop"
+  ],
+  "structures": [
+    "building", "house", "barn", "greenhouse", "storage unit"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "name": "divide_multiply",
+  "description": "Split total among group, then multiply investment returns",
+  "pattern": "divide_multiply",
+  "variables": {
+    "divisor": {"type": "choice", "options": [2, 4, 5, 10]},
+    "per_item": {"type": "int", "min": 5, "max": 25},
+    "multiplier": {"type": "int", "min": 2, "max": 5}
+  },
+  "derived": {
+    "total": "per_item * divisor",
+    "count_minus_one": "divisor - 1"
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "group": {"path": "phrases.group_terms"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "his_her": "person.possessive",
+    "group_singular": "group|singularize"
+  },
+  "trace": [
+    {"op": "init", "var": "total", "value": "total"},
+    {"op": "init", "var": "people", "value": "divisor"},
+    {"op": "init", "var": "multiplier", "value": "multiplier"},
+    {"op": "compute", "compute_op": "div", "args": ["total", "people"], "var": "per_person"},
+    {"op": "compute", "compute_op": "mul", "args": ["per_person", "multiplier"], "var": "final"},
+    {"op": "query", "var": "final"}
+  ],
+  "answer": "per_item * multiplier"
+}

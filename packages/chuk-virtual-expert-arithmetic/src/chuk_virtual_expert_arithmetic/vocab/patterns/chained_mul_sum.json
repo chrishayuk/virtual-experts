@@ -1,0 +1,20 @@
+{
+  "cities": [
+    "${place1} has a population of ${count1} ${animals} in its famous zoo that attracts visitors from around the region. ${place2}'s zoo has ${factor1} times as many ${animals} as ${place1}. ${place3}'s zoo has ${factor2} times as many ${animals} as ${place2}. How many ${animals} do all three zoos have in total?",
+    "The ${place1} animal shelter houses ${count1} ${animals} waiting for adoption. The ${place2} shelter is larger and has ${factor1} times that many, and ${place3}'s shelter has ${factor2} times as many as ${place2}. What is the total number of ${animals} in all three shelters?",
+    "${place1} reported ${count1} ${animals} in its nature reserve last year. ${place2} has ${factor1} times as many ${animals}, and ${place3} has ${factor2} times as many as ${place2}. How many ${animals} are there altogether across all three locations?",
+    "There are ${count1} ${animals} in ${place1}'s wildlife sanctuary. ${place2} has ${factor1} times as many ${animals} as ${place1}, and ${place3} has ${factor2} times as many as ${place2}. What is the total number of ${animals} across all three places?"
+  ],
+  "stores": [
+    "${name} manages three retail stores in the area and is reviewing the sales data. The ${place1} sold ${count1} ${items} last month. The ${place2} sold ${factor1} times as many ${items}, and the ${place3} sold ${factor2} times as many as the ${place2}. How many ${items} did all three stores sell in total?",
+    "Last week, the ${place1} sold ${count1} ${items} to customers. The ${place2} sold ${factor1} times that amount, and the ${place3} sold ${factor2} times what the ${place2} sold. What was the total number of ${items} sold across all three locations?",
+    "${name}'s company has three locations across the city. The ${place1} shipped ${count1} ${items} to customers. The ${place2} shipped ${factor1} times as many, and the ${place3} shipped ${factor2} times as many. How many ${items} were shipped in total?",
+    "The ${place1} has ${count1} ${items} in stock. The ${place2} has ${factor1} times as many, and the ${place3} has ${factor2} times what the ${place2} has. How many ${items} do all locations have combined in their inventory?"
+  ],
+  "people": [
+    "${person1} has ${count1} ${items} that ${subject1} collected over the years. ${person2} has ${factor1} times as many ${items} as ${person1}. ${person3} has ${factor2} times as many as ${person2}. How many ${items} do the three of them have altogether?",
+    "${person1} collected ${count1} ${items} over the summer vacation. ${person2} collected ${factor1} times as many as ${person1} because ${subject2} had more free time, and ${person3} collected ${factor2} times as many as ${person2}. What is the total number of ${items} they collected?",
+    "In a competition at school, ${person1} won ${count1} ${items} as prizes. ${person2} won ${factor1} times as many as ${person1} because ${subject2} competed more, and ${person3} won ${factor2} times as many as ${person2}. How many ${items} did they win in total?",
+    "${person1} owns ${count1} ${items}. ${his_her1} friend ${person2} owns ${factor1} times that many because ${subject2} has been collecting longer. Their friend ${person3} owns ${factor2} times what ${person2} has. Together, how many ${items} do they own?"
+  ]
+}

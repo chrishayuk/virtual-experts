@@ -1,0 +1,35 @@
+{
+  "name": "subtract_chain",
+  "description": "Start with amount, subtract multiple expenses",
+  "pattern": "subtract_chain",
+  "variables": {
+    "start": {"type": "int", "min": 50, "max": 200},
+    "sub1": {"type": "int", "min": 5, "max": 30},
+    "sub2": {"type": "int", "min": 5, "max": 30},
+    "sub3": {"type": "int", "min": 5, "max": 20}
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "expenses": {"path": "phrases.expense_categories", "sample": 3}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subj": "person.subject|capitalize",
+    "subject": "person.subject",
+    "his_her": "person.possessive",
+    "exp1": "expenses.0",
+    "exp2": "expenses.1",
+    "exp3": "expenses.2"
+  },
+  "trace": [
+    {"op": "init", "var": "money", "value": "start"},
+    {"op": "init", "var": "exp1", "value": "sub1"},
+    {"op": "init", "var": "exp2", "value": "sub2"},
+    {"op": "init", "var": "exp3", "value": "sub3"},
+    {"op": "compute", "compute_op": "sub", "args": ["money", "exp1"], "var": "after1"},
+    {"op": "compute", "compute_op": "sub", "args": ["after1", "exp2"], "var": "after2"},
+    {"op": "compute", "compute_op": "sub", "args": ["after2", "exp3"], "var": "remaining"},
+    {"op": "query", "var": "remaining"}
+  ],
+  "answer": "start - sub1 - sub2 - sub3"
+}

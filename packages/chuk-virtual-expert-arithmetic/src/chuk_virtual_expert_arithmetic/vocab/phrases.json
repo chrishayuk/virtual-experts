@@ -1,0 +1,170 @@
+{
+  "half_of": [
+    "half as many",
+    "half that much",
+    "half the amount",
+    "half that number",
+    "50% as many",
+    "half the quantity"
+  ],
+  "twice_as": [
+    "twice as many",
+    "double the amount",
+    "two times as many",
+    "twice as much",
+    "double"
+  ],
+  "total_query": [
+    "How many in total?",
+    "How many altogether?",
+    "How many in all?",
+    "What is the total?",
+    "How many combined?"
+  ],
+  "total_words": [
+    "total", "altogether", "in all", "combined", "in total"
+  ],
+  "production": [
+    {"verb": "produce", "continuous": "produces"},
+    {"verb": "make", "continuous": "makes"},
+    {"verb": "create", "continuous": "creates"},
+    {"verb": "generate", "continuous": "generates"},
+    {"verb": "yield", "continuous": "yields"},
+    {"verb": "harvest", "continuous": "harvests"},
+    {"verb": "collect", "continuous": "collects"},
+    {"verb": "gather", "continuous": "gathers"},
+    {"verb": "bake", "continuous": "bakes"},
+    {"verb": "grow", "continuous": "grows"}
+  ],
+  "production_garden": [
+    {"verb": "produce", "continuous": "produces"},
+    {"verb": "yield", "continuous": "yields"},
+    {"verb": "grow", "continuous": "grows"}
+  ],
+  "production_factory": [
+    {"verb": "produce", "continuous": "produces"},
+    {"verb": "make", "continuous": "makes"},
+    {"verb": "manufacture", "continuous": "manufactures"},
+    {"verb": "generate", "continuous": "generates"},
+    {"verb": "assemble", "continuous": "assembles"}
+  ],
+  "consumption_personal": [
+    {"base": "eat", "s": "eats", "rest": "for breakfast"},
+    {"base": "keep", "s": "keeps", "rest": "for personal use"},
+    {"base": "use", "s": "uses", "rest": "at home"},
+    {"base": "save", "s": "saves", "rest": "for later"},
+    {"base": "set", "s": "sets", "rest": "aside"},
+    {"base": "consume", "s": "consumes", "rest": ""},
+    {"base": "eat", "s": "eats", "rest": ""},
+    {"base": "keep", "s": "keeps", "rest": ""}
+  ],
+  "consumption_giving": [
+    {"base": "give", "s": "gives", "rest": "to neighbors"},
+    {"base": "donate", "s": "donates", "rest": "to charity"},
+    {"base": "share", "s": "shares", "rest": "with friends"},
+    {"base": "give", "s": "gives", "rest": "away"},
+    {"base": "give", "s": "gives", "rest": "to coworkers"},
+    {"base": "donate", "s": "donates", "rest": ""},
+    {"base": "use", "s": "uses", "rest": "for baking"},
+    {"base": "use", "s": "uses", "rest": "for cooking"}
+  ],
+  "selling": [
+    {"base": "sell", "s": "sells", "rest": "the rest at $${price} each"},
+    {"base": "sell", "s": "sells", "rest": "the remainder for $${price} per item"},
+    {"base": "get", "s": "gets", "rest": "$${price} for each remaining one"},
+    {"base": "sell", "s": "sells", "rest": "what's left at $${price} apiece"},
+    {"base": "sell", "s": "sells", "rest": "the leftovers for $${price} each"}
+  ],
+  "revenue_query": [
+    "How much money is made daily?",
+    "What is the daily income?",
+    "How much does she earn daily?",
+    "What is the daily revenue?",
+    "How much in dollars does she make every day?"
+  ],
+  "time_per": [
+    "per day", "each day", "every day", "daily",
+    "per week", "each week", "every week", "weekly",
+    "per hour", "each hour", "every hour", "hourly"
+  ],
+  "activities": [
+    {"verb": "run", "continuous": "runs", "noun": "laps"},
+    {"verb": "swim", "continuous": "swims", "noun": "laps"},
+    {"verb": "cycle", "continuous": "cycles", "noun": "miles"},
+    {"verb": "walk", "continuous": "walks", "noun": "miles"},
+    {"verb": "jog", "continuous": "jogs", "noun": "miles"},
+    {"verb": "practice", "continuous": "practices", "noun": "sessions"}
+  ],
+  "skills": [
+    "piano", "guitar", "violin", "drums", "coding", "writing",
+    "drawing", "painting", "singing", "dancing", "yoga", "meditation"
+  ],
+  "distance_units": [
+    "miles", "laps", "kilometers", "meters", "rounds", "blocks"
+  ],
+  "time_units": [
+    "days", "weeks", "hours", "sessions", "months"
+  ],
+  "care_subjects": [
+    "dogs", "cats", "plants", "patients", "clients", "tasks", "children", "students"
+  ],
+  "batch_words": [
+    "batches", "sets", "groups", "rounds", "sessions", "cycles"
+  ],
+  "expense_categories": [
+    "lunch", "dinner", "breakfast", "food", "groceries",
+    "transport", "gas", "fuel", "bus fare",
+    "supplies", "materials", "equipment",
+    "entertainment", "movies", "games",
+    "clothing", "shoes", "accessories",
+    "snacks", "coffee", "drinks"
+  ],
+  "group_terms": [
+    "friends", "coworkers", "siblings", "teammates", "partners", "students", "members"
+  ],
+  "worker_types": [
+    "machine", "team", "worker", "factory", "workshop", "assembly line", "robot", "printer"
+  ],
+  "multiplier_words": {
+    "2": ["doubled", "tripled"],
+    "3": ["tripled", "grew 3 times"],
+    "4": ["quadrupled", "grew 4 times"],
+    "5": ["grew 5 times", "increased 5-fold"]
+  },
+  "fee_types": [
+    "shipping", "handling", "delivery", "tax", "processing", "insurance"
+  ],
+  "gift_recipients": [
+    "neighbors", "friends", "coworkers", "family", "charity", "the local shelter", "relatives"
+  ],
+  "investment_phrases": [
+    "invests their share and earns",
+    "puts it in savings and gets",
+    "invests and receives",
+    "doubles down and earns"
+  ],
+  "distribution_targets": [
+    {"plural": "trucks", "singular": "truck"},
+    {"plural": "boxes", "singular": "box"},
+    {"plural": "containers", "singular": "container"},
+    {"plural": "workers", "singular": "worker"},
+    {"plural": "teams", "singular": "team"},
+    {"plural": "bins", "singular": "bin"},
+    {"plural": "shelves", "singular": "shelf"}
+  ],
+  "machine_names": [
+    {"first": "Machine A", "second": "Machine B"},
+    {"first": "Line 1", "second": "Line 2"},
+    {"first": "Unit A", "second": "Unit B"},
+    {"first": "Station 1", "second": "Station 2"}
+  ],
+  "rate_units": [
+    "items/hour", "units/hour", "pieces/hour", "products/hour", "widgets/hour"
+  ],
+  "remaining_query": [
+    "How much do you have left?",
+    "What's left over?",
+    "How much remains?",
+    "What do you have remaining?"
+  ]
+}

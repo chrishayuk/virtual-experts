@@ -1,11 +1,13 @@
-"""Percentage problem generator - typed TraceExample models."""
+"""Percentage problem generator - typed TraceExample models.
+
+All patterns are strictly 4-step: init, init, domain_op, query.
+One template per pattern.
+"""
 
 import random
 
 from chuk_virtual_expert.trace_example import TraceExample
 from chuk_virtual_expert.trace_models import (
-    ComputeOp,
-    ComputeStep,
     InitStep,
     PercentIncreaseStep,
     PercentOffStep,
@@ -29,9 +31,9 @@ def generate_percent_off() -> TraceExample:
         query=question,
         trace=[
             InitStep(var="price", value=price),
-            InitStep(var="discount_rate", value=percent),
-            PercentOffStep(base="price", rate="discount_rate", var="sale_price"),
-            QueryStep(var="sale_price"),
+            InitStep(var="rate", value=percent),
+            PercentOffStep(base="price", rate="rate", var="result"),
+            QueryStep(var="result"),
         ],
         answer=final,
         expected_operation="execute_trace",
@@ -44,22 +46,16 @@ def generate_percent_increase() -> TraceExample:
     percent = random.choice([10, 15, 20, 25, 50])
     final = base * (100 + percent) / 100
 
-    scenarios = [
-        f"A stock worth ${base} increases by {percent}%. What's the new value?",
-        f"Rent of ${base} goes up {percent}%. What's the new rent?",
-        f"A salary of ${base} gets a {percent}% raise. What's the new salary?",
-    ]
-
-    question = random.choice(scenarios)
+    question = f"A stock worth ${base} increases by {percent}%. What's the new value?"
 
     return TraceExample(
         expert="percentage",
         query=question,
         trace=[
             InitStep(var="base", value=base),
-            InitStep(var="increase_rate", value=percent),
-            PercentIncreaseStep(base="base", rate="increase_rate", var="final"),
-            QueryStep(var="final"),
+            InitStep(var="rate", value=percent),
+            PercentIncreaseStep(base="base", rate="rate", var="result"),
+            QueryStep(var="result"),
         ],
         answer=final,
         expected_operation="execute_trace",
@@ -67,25 +63,23 @@ def generate_percent_increase() -> TraceExample:
 
 
 def generate_tip_calculation() -> TraceExample:
-    """Calculate tip on a bill."""
+    """Calculate tip amount on a bill."""
     bill = random.randint(20, 100)
     tip_percent = random.choice([15, 18, 20, 25])
     tip = bill * tip_percent / 100
-    total = bill + tip
 
-    question = f"Your bill is ${bill}. You want to leave a {tip_percent}% tip. What's the total including tip?"
+    question = f"Your bill is ${bill}. You leave a {tip_percent}% tip. How much is the tip?"
 
     return TraceExample(
         expert="percentage",
         query=question,
         trace=[
             InitStep(var="bill", value=bill),
-            InitStep(var="tip_rate", value=tip_percent),
-            PercentOfStep(base="bill", rate="tip_rate", var="tip"),
-            ComputeStep(compute_op=ComputeOp.ADD, args=["bill", "tip"], var="total"),
-            QueryStep(var="total"),
+            InitStep(var="rate", value=tip_percent),
+            PercentOfStep(base="bill", rate="rate", var="result"),
+            QueryStep(var="result"),
         ],
-        answer=total,
+        answer=tip,
         expected_operation="execute_trace",
     )
 
@@ -103,8 +97,8 @@ def generate_simple_percent() -> TraceExample:
         query=question,
         trace=[
             InitStep(var="whole", value=whole),
-            InitStep(var="percent", value=percent),
-            PercentOfStep(base="whole", rate="percent", var="result"),
+            InitStep(var="rate", value=percent),
+            PercentOfStep(base="whole", rate="rate", var="result"),
             QueryStep(var="result"),
         ],
         answer=part,

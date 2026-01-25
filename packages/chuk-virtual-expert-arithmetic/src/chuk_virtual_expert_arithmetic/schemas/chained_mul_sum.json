@@ -1,0 +1,32 @@
+{
+  "name": "chained_mul_sum",
+  "description": "Chained multiplications then sum (Toulouse's sheep pattern)",
+  "pattern": "chained_mul_sum",
+  "variant": "cities",
+  "variables": {
+    "count1": {"type": "int", "min": 5, "max": 30},
+    "factor1": {"type": "int", "min": 2, "max": 5},
+    "factor2": {"type": "int", "min": 2, "max": 4}
+  },
+  "vocab": {
+    "places": {"path": "places.cities", "sample": 3},
+    "animal": {"path": "animals.farm_animals"}
+  },
+  "template_vars": {
+    "place1": "places.0",
+    "place2": "places.1",
+    "place3": "places.2",
+    "animals": "animal.name"
+  },
+  "trace": [
+    {"op": "init", "var": "city1", "value": "count1"},
+    {"op": "init", "var": "factor1", "value": "factor1"},
+    {"op": "compute", "compute_op": "mul", "args": ["city1", "factor1"], "var": "city2"},
+    {"op": "init", "var": "factor2", "value": "factor2"},
+    {"op": "compute", "compute_op": "mul", "args": ["city2", "factor2"], "var": "city3"},
+    {"op": "compute", "compute_op": "add", "args": ["city1", "city2"], "var": "partial"},
+    {"op": "compute", "compute_op": "add", "args": ["partial", "city3"], "var": "total"},
+    {"op": "query", "var": "total"}
+  ],
+  "answer": "count1 + count1 * factor1 + count1 * factor1 * factor2"
+}

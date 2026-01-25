@@ -47,6 +47,7 @@ class InitStep(BaseTraceStep):
     op: Literal["init"] = "init"
     var: str
     value: float | int | str | dict[str, Any] = Field(default=0)
+    source: str | None = Field(default=None)  # "prev.result" for composition wiring
 
 
 class GivenStep(BaseTraceStep):

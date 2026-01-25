@@ -1,0 +1,37 @@
+{
+  "name": "work_rate",
+  "description": "Rate × time ÷ workers distribution",
+  "pattern": "work_rate",
+  "variables": {
+    "workers": {"type": "int", "min": 2, "max": 5},
+    "time": {"type": "int", "min": 2, "max": 6},
+    "rate_multiplier": {"type": "int", "min": 3, "max": 8}
+  },
+  "derived": {
+    "rate": "workers * rate_multiplier"
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "items": {"path": "items.manufactured"},
+    "target": {"path": "phrases.distribution_targets"},
+    "worker": {"path": "phrases.worker_types"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subject": "person.subject",
+    "his_her": "person.possessive",
+    "targets": "target.plural",
+    "target_singular": "target.singular",
+    "a_worker": "worker|with_article",
+    "A_worker": "worker|with_article|capitalize"
+  },
+  "trace": [
+    {"op": "init", "var": "rate", "value": "rate"},
+    {"op": "init", "var": "time", "value": "time"},
+    {"op": "init", "var": "workers", "value": "workers"},
+    {"op": "compute", "compute_op": "mul", "args": ["rate", "time"], "var": "total"},
+    {"op": "compute", "compute_op": "div", "args": ["total", "workers"], "var": "per_worker"},
+    {"op": "query", "var": "per_worker"}
+  ],
+  "answer": "(rate * time) / workers"
+}

@@ -1,0 +1,10 @@
+{
+  "templates": [
+    "${name} is busy organizing a big party for all of ${his_her} friends and needs to buy ${count} ${items}. Each ${item_singular} costs $${price} at the party supply store. ${subj} also has to pay an additional $${extra} for ${fee}. How much does ${name} spend in total on these party supplies?",
+    "For ${his_her} upcoming class project on science that is due next week, ${name} needs to buy ${count} ${items} at $${price} each from the school supply store. There's also a $${extra} ${fee} fee that must be paid. What is the total cost ${subject} will need to spend?",
+    "${name} decided to order ${count} ${items} from an online store to have them delivered to ${his_her} home. Each one costs $${price}, and the ${fee} charge comes to $${extra}. How much did ${subject} pay altogether for this online order?",
+    "At the local store near ${his_her} house, ${name} picked up ${count} ${items} priced at $${price} each for an upcoming event. With an additional ${fee} charge of $${extra}, how much did ${subject} end up spending on this shopping trip?",
+    "${name} wants to surprise ${his_her} family with a thoughtful gift of ${count} ${items} that ${subject} found at a specialty store. At $${price} each, plus $${extra} for ${fee}, how much will ${subject} need to pay in total for this gift?",
+    "While shopping for school supplies at the beginning of the semester, ${name} bought ${count} ${items} at $${price} each and paid an additional $${extra} for ${fee}. What was the total cost of ${his_her} school supply shopping?"
+  ]
+}

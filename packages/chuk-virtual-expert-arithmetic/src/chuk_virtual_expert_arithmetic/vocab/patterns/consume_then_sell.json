@@ -1,0 +1,26 @@
+{
+  "animal_farm": [
+    "${name}'s ${animals} ${verb} ${produced} ${product} every day without fail. ${subj} keeps ${use1} for ${his_her} family to eat and gives ${use2} to neighbors. ${subj} sells the rest at the farmer's market for $${price} each. How much money does ${name} make daily from selling ${product}?",
+    "Every day, ${name}'s ${animals} ${verb} ${produced} ${product}. ${subj} eats ${use1} for breakfast and donates ${use2} to charity. ${subj} sells the remaining ${product} for $${price} each at the local market. How much does ${subject} earn per day?",
+    "${name} has ${animals} that ${verb} ${produced} ${product} per day. After keeping ${use1} for personal use and giving ${use2} to friends, ${subject} sells the rest for $${price} each at the farmers market. What is ${name}'s daily income from ${product} sales?",
+    "The ${animals} on ${name}'s farm ${verb} ${produced} ${product} daily. ${name} uses ${use1} at home and shares ${use2} with coworkers. ${subj} sells what's left for $${price} per ${product_singular}. How much does ${subject} make each day?"
+  ],
+  "garden": [
+    "${name}'s garden produces ${produced} ${items} every day during the growing season. ${subj} keeps ${use1} for ${his_her} family and donates ${use2} to the food bank. ${subj} sells the rest for $${price} each at a roadside stand. How much does ${name} earn daily?",
+    "Each day, ${name} harvests ${produced} ${items} from ${his_her} garden. After keeping ${use1} and giving away ${use2}, ${subject} sells the rest at $${price} each. What is ${his_her} daily income from garden sales?",
+    "${name} grows ${items} in ${his_her} backyard garden. ${subj} picks ${produced} every day, eats ${use1}, shares ${use2} with neighbors, and sells the rest for $${price} each. How much money does ${subject} make daily?",
+    "From ${his_her} garden, ${name} gets ${produced} ${items} daily. ${subj} uses ${use1} at home, gives ${use2} to friends, and sells the remaining ${items} at $${price} each. What are ${his_her} daily earnings?"
+  ],
+  "factory": [
+    "${name}'s factory produces ${produced} ${items} per day at full capacity. Of these, ${use1} are used for quality testing and ${use2} are kept as backup inventory. The rest are sold for $${price} each to retailers. What is the daily revenue from sales?",
+    "A factory produces ${produced} ${items} daily. ${use1} are set aside for testing and ${use2} are stored as reserves. The remaining ${items} are sold at $${price} each. How much money does the factory make per day?",
+    "Each day, ${name}'s factory manufactures ${produced} ${items}. After keeping ${use1} for testing and ${use2} for inventory, the rest are sold at $${price} per ${item_singular}. What is the daily revenue?",
+    "The production line makes ${produced} ${items} per day. ${use1} go to quality control and ${use2} to storage. The rest are sold for $${price} each. How much revenue is generated daily?"
+  ],
+  "bakery": [
+    "${name} bakes ${produced} ${items} every morning before the shop opens. ${subj} eats ${use1} for breakfast and gives ${use2} to ${his_her} coworkers. ${subj} sells the remaining ${items} for $${price} each to customers. How much does ${name} earn daily?",
+    "Every day, ${name} makes ${produced} ${items} at ${his_her} bakery. ${subj} keeps ${use1} for ${his_her} family and gives ${use2} to friends. The rest are sold for $${price} each. What is ${his_her} daily income from the bakery?",
+    "${name}'s bakery produces ${produced} ${items} each day. After setting aside ${use1} for samples and ${use2} for staff, ${subject} sells the rest at $${price} each. How much does ${name} make per day?",
+    "Each morning, ${name} bakes ${produced} fresh ${items}. ${subj} saves ${use1} for later, gives ${use2} to neighbors, and sells the rest for $${price} each. What are ${his_her} daily earnings from the bakery?"
+  ]
+}

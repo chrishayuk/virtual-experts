@@ -105,6 +105,7 @@ from chuk_virtual_expert.trace_models import (
 )
 
 # Trace execution
+from chuk_virtual_expert.composition_solver import CompositionSolver
 from chuk_virtual_expert.trace_solver import TraceSolverExpert
 from chuk_virtual_expert.trace_verifier import TraceVerifier
 
@@ -162,6 +163,7 @@ __all__ = [
     # Expert base classes
     "VirtualExpert",
     "TraceSolverExpert",
+    "CompositionSolver",
     "MCPExpert",
     "MCPTransportType",
     # Trace verification

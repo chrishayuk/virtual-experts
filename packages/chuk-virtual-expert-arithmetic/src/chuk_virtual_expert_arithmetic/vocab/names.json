@@ -1,0 +1,24 @@
+{
+  "people": [
+    "Alex", "Sam", "Jordan", "Casey", "James", "Emma", "Mike", "Sarah",
+    "John", "Lisa", "Mary", "Tom", "Alice", "Bob", "Carol", "Dan",
+    "Grace", "Henry", "Janet", "Kevin", "Laura", "Mark", "Nancy", "Oscar",
+    "Paula", "Quinn", "Ryan", "Sophie", "Tyler", "Uma", "Victor", "Wendy"
+  ],
+  "male": [
+    "James", "Mike", "John", "Tom", "Bob", "Dan", "Henry", "Kevin",
+    "Mark", "Oscar", "Ryan", "Tyler", "Victor", "David", "Peter", "Frank"
+  ],
+  "female": [
+    "Emma", "Sarah", "Lisa", "Mary", "Alice", "Carol", "Grace", "Janet",
+    "Laura", "Nancy", "Paula", "Sophie", "Uma", "Wendy", "Rachel", "Helen"
+  ],
+  "neutral": [
+    "Alex", "Sam", "Jordan", "Casey", "Quinn", "Taylor", "Morgan", "Riley"
+  ],
+  "pronouns": {
+    "male": {"subject": "he", "object": "him", "possessive": "his", "reflexive": "himself"},
+    "female": {"subject": "she", "object": "her", "possessive": "her", "reflexive": "herself"},
+    "neutral": {"subject": "they", "object": "them", "possessive": "their", "reflexive": "themselves"}
+  }
+}

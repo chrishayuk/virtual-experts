@@ -1,0 +1,8 @@
+{
+  "templates": [
+    "${name} and ${his_her} ${count_minus_one} ${group} entered a contest together and were thrilled when they won a prize of $${total}. They decided to split the prize money equally among themselves. Each person then invested their share wisely in the stock market and earned ${multiplier} times as much over the year. How much money does each person have now after their investment grew?",
+    "A group of ${divisor} ${group} unexpectedly inherited $${total} from a distant relative they barely knew. They divided the inheritance equally among themselves. Each one invested wisely in mutual funds and ended up with ${multiplier} times their original share after a few years. How much does each ${group_singular} have now?",
+    "${name} decided to split $${total} equally among ${divisor} ${group} as a generous reward for all their hard work throughout the year. Later, each person's share grew to ${multiplier} times the original amount through smart investments in the market. How much does each ${group_singular} have now after the growth?",
+    "When ${divisor} ${group} shared $${total} prize money equally after winning a local competition, each person got the same amount. They all invested their winnings wisely, and each ended up with ${multiplier} times what they started with after several months. What is each person's final amount?"
+  ]
+}

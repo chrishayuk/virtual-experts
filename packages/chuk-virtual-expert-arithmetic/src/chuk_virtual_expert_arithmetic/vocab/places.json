@@ -1,0 +1,15 @@
+{
+  "cities": [
+    "Seattle", "Boston", "Denver", "Charleston", "Austin", "Portland",
+    "Memphis", "Phoenix", "Atlanta", "Chicago", "Miami", "Dallas",
+    "Houston", "Detroit", "Baltimore", "Cleveland", "Nashville", "Orlando"
+  ],
+  "farms": [
+    "Green Valley Farm", "Sunny Meadows", "Oak Hill Ranch", "Happy Acres",
+    "Blue Sky Farm", "Riverside Ranch", "Mountain View Farm"
+  ],
+  "stores": [
+    "downtown store", "main branch", "north location",
+    "flagship store", "outlet", "warehouse", "corner shop", "electronics store"
+  ]
+}

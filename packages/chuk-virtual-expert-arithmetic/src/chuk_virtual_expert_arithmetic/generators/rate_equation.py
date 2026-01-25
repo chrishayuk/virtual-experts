@@ -1,4 +1,8 @@
-"""Rate/equation problem generator - typed TraceExample models."""
+"""Rate/equation problem generator - typed TraceExample models.
+
+All patterns are strictly 4-step: init(rate), init(time), compute(mul), query(result).
+The model routes and structures; the expert computes. No shape variance.
+"""
 
 import random
 
@@ -12,19 +16,19 @@ from chuk_virtual_expert.trace_models import (
 
 
 def generate_rate_time_quantity() -> TraceExample:
-    """Rate x time = quantity."""
+    """Rate x time = quantity (production/output)."""
     rate = random.randint(5, 50)
     time = random.randint(2, 12)
     result = rate * time
 
     scenarios = [
-        (f"A printer prints {rate} pages per minute. How many pages in {time} minutes?", "pages"),
-        (f"A factory makes {rate} widgets per hour. How many in {time} hours?", "widgets"),
-        (f"A runner covers {rate} meters per minute. How far in {time} minutes?", "meters"),
-        (f"A machine produces {rate} items per day. How many in {time} days?", "items"),
+        f"A printer prints {rate} pages per minute. How many pages in {time} minutes?",
+        f"A factory makes {rate} widgets per hour. How many in {time} hours?",
+        f"A machine produces {rate} items per day. How many in {time} days?",
+        f"A bakery bakes {rate} loaves per hour. How many loaves in {time} hours?",
     ]
 
-    question, unit = random.choice(scenarios)
+    question = random.choice(scenarios)
 
     return TraceExample(
         expert="rate_equation",
@@ -41,12 +45,18 @@ def generate_rate_time_quantity() -> TraceExample:
 
 
 def generate_distance_speed_time() -> TraceExample:
-    """Distance = speed x time."""
+    """Distance = speed x time (travel)."""
     speed = random.randint(30, 80)
     time = random.randint(2, 8)
     distance = speed * time
 
-    question = f"A car travels at {speed} km/h. How far does it go in {time} hours?"
+    scenarios = [
+        f"A car travels at {speed} km/h. How far does it go in {time} hours?",
+        f"A train moves at {speed} mph. What distance does it cover in {time} hours?",
+        f"A cyclist rides at {speed} km/h. How many km in {time} hours?",
+    ]
+
+    question = random.choice(scenarios)
 
     return TraceExample(
         expert="rate_equation",
@@ -62,16 +72,19 @@ def generate_distance_speed_time() -> TraceExample:
     )
 
 
-def generate_work_rate() -> TraceExample:
-    """Work = rate x time, then divide."""
-    workers = random.randint(2, 5)
-    time = random.randint(2, 6)
-    # Make rate a multiple of workers so total_work divides evenly
-    rate = workers * random.randint(3, 8)
-    total_work = rate * time
-    per_worker = total_work // workers
+def generate_consumption_rate() -> TraceExample:
+    """Consumption = rate x time (usage)."""
+    rate = random.randint(2, 20)
+    time = random.randint(2, 10)
+    total = rate * time
 
-    question = f"A team does {rate} tasks per hour. After {time} hours, they split the work among {workers} people. How many tasks per person?"
+    scenarios = [
+        f"A car uses {rate} liters of fuel per hour. How many liters in {time} hours?",
+        f"A heater burns {rate} units of gas per hour. How much gas in {time} hours?",
+        f"A pool loses {rate} gallons per day to evaporation. How many gallons lost in {time} days?",
+    ]
+
+    question = random.choice(scenarios)
 
     return TraceExample(
         expert="rate_equation",
@@ -79,35 +92,35 @@ def generate_work_rate() -> TraceExample:
         trace=[
             InitStep(var="rate", value=rate),
             InitStep(var="time", value=time),
-            InitStep(var="workers", value=workers),
             ComputeStep(compute_op=ComputeOp.MUL, args=["rate", "time"], var="total"),
-            ComputeStep(compute_op=ComputeOp.DIV, args=["total", "workers"], var="per_worker"),
-            QueryStep(var="per_worker"),
+            QueryStep(var="total"),
         ],
-        answer=per_worker,
+        answer=total,
         expected_operation="execute_trace",
     )
 
 
-def generate_combined_rate() -> TraceExample:
-    """Two rates combined."""
-    rate1 = random.randint(5, 20)
-    rate2 = random.randint(5, 20)
-    time = random.randint(2, 6)
+def generate_earning_rate() -> TraceExample:
+    """Earnings = rate x time (income)."""
+    rate = random.randint(8, 50)
+    time = random.randint(2, 10)
+    total = rate * time
 
-    total = (rate1 + rate2) * time
+    scenarios = [
+        f"A worker earns ${rate} per hour. How much in {time} hours?",
+        f"A freelancer charges ${rate} per task. How much for {time} tasks?",
+        f"A store sells {rate} items per day. How many items in {time} days?",
+    ]
 
-    question = f"Machine A produces {rate1} items/hour. Machine B produces {rate2} items/hour. How many total in {time} hours?"
+    question = random.choice(scenarios)
 
     return TraceExample(
         expert="rate_equation",
         query=question,
         trace=[
-            InitStep(var="rate_a", value=rate1),
-            InitStep(var="rate_b", value=rate2),
+            InitStep(var="rate", value=rate),
             InitStep(var="time", value=time),
-            ComputeStep(compute_op=ComputeOp.ADD, args=["rate_a", "rate_b"], var="combined_rate"),
-            ComputeStep(compute_op=ComputeOp.MUL, args=["combined_rate", "time"], var="total"),
+            ComputeStep(compute_op=ComputeOp.MUL, args=["rate", "time"], var="total"),
             QueryStep(var="total"),
         ],
         answer=total,
@@ -118,8 +131,8 @@ def generate_combined_rate() -> TraceExample:
 GENERATORS = [
     generate_rate_time_quantity,
     generate_distance_speed_time,
-    generate_work_rate,
-    generate_combined_rate,
+    generate_consumption_rate,
+    generate_earning_rate,
 ]
 
 

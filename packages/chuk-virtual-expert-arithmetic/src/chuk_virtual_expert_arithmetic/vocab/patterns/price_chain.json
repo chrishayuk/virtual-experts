@@ -1,0 +1,10 @@
+{
+  "templates": [
+    "${name} is shopping for ${his_her} upcoming birthday party and has been looking everywhere for the perfect gift. ${subj} finally found ${a_item} that costs $${base} at the ${store}. The store charges $${tax} for sales tax and an additional $${shipping} for ${fee}. How much does ${name} need to pay in total to complete the purchase?",
+    "${name} has been saving up for several months and finally decided to treat ${reflexive} to something special. ${subj} found ${a_item} online for $${base}. After adding $${tax} in tax and $${shipping} for ${fee}, how much will ${subject} spend altogether on this purchase?",
+    "While browsing through different stores in the mall looking for deals, ${name} finally picks out ${a_item} priced at $${base} at the ${store}. With $${tax} in tax and $${shipping} for ${fee} added to the bill, what is the total cost ${subject} will have to pay?",
+    "The ${item} that ${name} has been wanting for a long time is finally on sale for $${base}. ${subj} also ${has_have} to pay $${tax} in sales tax and $${shipping} for ${fee} to complete the order. How much money does ${subject} need in total to buy it?",
+    "${name} decided to treat ${reflexive} after a long week of hard work and wants to buy ${a_item} for $${base} from ${his_her} favorite store. Including $${tax} for tax and $${shipping} for ${fee}, what is the total amount ${subject} will need to pay at checkout?",
+    "After comparing prices at several different stores around town, ${name} found the best deal on ${a_item} for $${base} at the ${store}. With $${tax} in sales tax and $${shipping} for ${fee} fees, how much does ${subject} spend in total?"
+  ]
+}

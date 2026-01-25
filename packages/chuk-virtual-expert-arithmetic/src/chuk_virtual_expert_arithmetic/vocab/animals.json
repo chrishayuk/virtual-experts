@@ -1,0 +1,22 @@
+{
+  "farm_animals": [
+    {"name": "ducks", "singular": "duck", "produces": "eggs", "verb": "lay"},
+    {"name": "chickens", "singular": "chicken", "produces": "eggs", "verb": "lay"},
+    {"name": "hens", "singular": "hen", "produces": "eggs", "verb": "lay"},
+    {"name": "geese", "singular": "goose", "produces": "eggs", "verb": "lay"},
+    {"name": "cows", "singular": "cow", "produces": "milk", "verb": "produce"},
+    {"name": "goats", "singular": "goat", "produces": "milk", "verb": "produce"},
+    {"name": "sheep", "singular": "sheep", "produces": "wool", "verb": "produce"}
+  ],
+  "pets": [
+    {"name": "dogs", "singular": "dog"},
+    {"name": "cats", "singular": "cat"},
+    {"name": "birds", "singular": "bird"},
+    {"name": "fish", "singular": "fish"},
+    {"name": "rabbits", "singular": "rabbit"},
+    {"name": "hamsters", "singular": "hamster"}
+  ],
+  "care_activities": [
+    "walk", "feed", "groom", "clean up after", "exercise", "train", "care for"
+  ]
+}

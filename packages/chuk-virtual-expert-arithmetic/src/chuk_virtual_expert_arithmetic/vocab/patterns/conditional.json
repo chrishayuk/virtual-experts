@@ -1,0 +1,16 @@
+{
+  "if_then": [
+    "If ${name} reads ${rate} pages of ${his_her} favorite book per hour while relaxing at home, how many pages will ${subject} read in ${time} hours of reading time?",
+    "If ${name} earns $${rate} per hour at ${his_her} part-time job at the local store, how much will ${subject} earn after working ${time} hours this week?",
+    "If ${name} can make ${rate} ${items} every hour at ${his_her} craft workshop, how many ${items} will ${subject} make in ${time} hours of work?",
+    "If each ${item} costs $${price} at the store and ${name} decides to buy ${count} of them for a party, how much does ${subject} spend in total?",
+    "If ${name} saves $${rate} every week from ${his_her} allowance, how much will ${subject} have saved after ${time} weeks of saving?",
+    "If ${name} walks ${rate} miles per day as part of ${his_her} exercise routine, how many miles will ${subject} walk in ${time} days?"
+  ],
+  "when_scenario": [
+    "When ${name} goes to the gym for a workout, ${subject} runs ${rate} laps around the track. If ${subject} goes to the gym ${time} times this week, how many laps will ${subject} run in total?",
+    "When ${name} practices piano at home, ${subject} plays for ${rate} minutes each session. If ${subject} practices ${time} times this week, how many minutes will ${subject} have practiced altogether?",
+    "When ${name} works overtime at ${his_her} job, ${subject} earns $${rate} extra per hour. If ${subject} works ${time} overtime hours this week, how much extra will ${subject} earn?",
+    "When ${name} volunteers at the animal shelter on weekends, ${subject} helps ${rate} animals per shift. After volunteering for ${time} shifts this month, how many animals will ${name} have helped?"
+  ]
+}

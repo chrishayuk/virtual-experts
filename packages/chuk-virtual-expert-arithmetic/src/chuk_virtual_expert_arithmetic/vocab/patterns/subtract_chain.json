@@ -1,0 +1,10 @@
+{
+  "templates": [
+    "${name} has been working hard at ${his_her} part-time job for several weeks and managed to save up $${start}. Excited about ${his_her} savings, ${subject} decides to spend $${sub1} on ${exp1}, $${sub2} on ${exp2}, and $${sub3} on ${exp3}. After all these purchases, how much money does ${subject} have left in ${his_her} savings?",
+    "For ${his_her} birthday celebration this year, ${name} received $${start} as a gift from ${his_her} loving grandparents. ${subj} was thrilled and decided to buy ${exp1} for $${sub1}, ${exp2} for $${sub2}, and ${exp3} for $${sub3} at the local mall. How much of ${his_her} birthday money is left after all these purchases?",
+    "After working all summer long at a local store to earn extra money, ${name} managed to save $${start}. Over the following week, ${subject} spent $${sub1} on ${exp1}, $${sub2} on ${exp2}, and $${sub3} on ${exp3}. How much of ${his_her} hard-earned money does ${subject} have remaining?",
+    "${name} started the week with $${start} cash in ${his_her} wallet from ${his_her} allowance. On Monday, ${subject} spent $${sub1} on ${exp1}. On Wednesday, ${subject} bought ${exp2} for $${sub2}. On Friday, ${subject} paid $${sub3} for ${exp3}. After all these expenses throughout the week, how much money does ${name} have left?",
+    "${name} was lucky enough to win $${start} in the school raffle last week. Excited about the unexpected prize, ${subject} went shopping and spent $${sub1} on ${exp1}, $${sub2} on ${exp2}, and $${sub3} on ${exp3}. How much of the prize money remains after all these purchases?",
+    "When ${name} checked ${his_her} bank account balance this morning, there was $${start} available. Over the next few days, ${subject} spent $${sub1} on ${exp1}, $${sub2} on ${exp2}, and $${sub3} on ${exp3} for various needs. What is ${name}'s remaining balance after all these transactions?"
+  ]
+}
