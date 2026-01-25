@@ -13,11 +13,12 @@ Usage (schema-based - data-driven approach):
     examples = gen.generate_batch(n=50)  # Generate batch from all schemas
 """
 
+from typing import Any
+
 from chuk_virtual_expert.trace_example import TraceExample
 
 from chuk_virtual_expert_arithmetic.generators import composition
 from chuk_virtual_expert_arithmetic.generators.schema_generator import SchemaGenerator
-
 
 # ============================================================================
 # ARITHMETIC SCHEMA GROUPS
@@ -50,18 +51,15 @@ GAP_CLOSING_SCHEMAS = [
     "fraction_simple",
     "shopping_spree",
     # GSM-8K style patterns
-    "material_half",      # "X and half that much" pattern
-    "material_twice",     # "X and twice that much" pattern
+    "material_half",  # "X and half that much" pattern
+    "material_twice",  # "X and twice that much" pattern
     "decimal_rate_week",  # Decimal rates like "0.5 hours per day"
-    "weekly_sprints",     # "X sprints Y times/week, Z meters each"
+    "weekly_sprints",  # "X sprints Y times/week, Z meters each"
     "total_minus_given",  # "Need X total, given Y and Z, remainder?"
 ]
 
 ALL_ARITHMETIC_SCHEMAS = (
-    SEQUENTIAL_SCHEMAS
-    + INTERLEAVED_SCHEMAS
-    + LONG_CHAIN_SCHEMAS
-    + GAP_CLOSING_SCHEMAS
+    SEQUENTIAL_SCHEMAS + INTERLEAVED_SCHEMAS + LONG_CHAIN_SCHEMAS + GAP_CLOSING_SCHEMAS
 )
 
 # ============================================================================
@@ -132,9 +130,7 @@ class TraceGenerator:
         self._rng = random.Random(seed)
         self._schema_gen = SchemaGenerator()
 
-    def _seeded_schema_generate(
-        self, schemas: list[str], n: int
-    ) -> list[TraceExample]:
+    def _seeded_schema_generate(self, schemas: list[str], n: int) -> list[TraceExample]:
         """Generate from schemas with seeded random."""
         import random
 
@@ -197,7 +193,7 @@ class TraceGenerator:
         """Generate percentage examples from schemas."""
         return self._seeded_schema_generate(PERCENTAGE_SCHEMAS, n)
 
-    def generate_composition(self, n: int = 10) -> list[dict]:
+    def generate_composition(self, n: int = 10) -> list[dict[str, Any]]:
         """Generate compositional (multi-expert) examples."""
         import random as _random
 
@@ -222,12 +218,16 @@ class TraceGenerator:
     def generate_balanced(
         self,
         n: int = 250,
-        include_composition: bool = True,
+        include_composition: bool = False,
         interleaved_ratio: float = 0.3,
         long_chain_ratio: float = 0.1,
         gap_closing_ratio: float = 0.25,
-    ) -> list:
+    ) -> list[TraceExample]:
         """Generate examples with balanced distribution weighted by complexity.
+
+        Distribution (without composition — default):
+            entity_track:  25%, arithmetic: 35%, rate_equation: 10%,
+            comparison: 18%, percentage: 12%
 
         Distribution (with composition):
             entity_track:  20% (5 schema-based patterns)
@@ -237,18 +237,18 @@ class TraceGenerator:
             percentage:    10% (4 schema-based patterns)
             composition:   15% (4 patterns, multi-expert)
 
-        Distribution (without composition — backward compatible):
-            entity_track:  25%, arithmetic: 35%, rate_equation: 10%,
-            comparison: 18%, percentage: 12%
-
         Args:
             n: Total number of examples
-            include_composition: Include multi-expert composition examples
+            include_composition: Include multi-expert composition examples.
+                When True, returns mixed list of TraceExample and dict.
+                When False (default), returns only TraceExample objects.
             interleaved_ratio: Fraction of arithmetic from interleaved patterns
             long_chain_ratio: Fraction of arithmetic from long chain patterns
             gap_closing_ratio: Fraction of arithmetic from gap-closing patterns
 
-        Returns list of TraceExample (single-expert) and dict (composed).
+        Returns:
+            List of TraceExample objects (when include_composition=False).
+            Mixed list of TraceExample and dict (when include_composition=True).
         """
         if include_composition:
             n_entity = max(1, int(n * 0.20))
@@ -265,14 +265,16 @@ class TraceGenerator:
             n_pct = max(1, int(n * 0.12))
             n_composed = 0
 
-        examples: list = []
+        examples: list[Any] = []
         examples.extend(self.generate_entity_track(n_entity))
-        examples.extend(self.generate_arithmetic(
-            n_arith,
-            interleaved_ratio=interleaved_ratio,
-            long_chain_ratio=long_chain_ratio,
-            gap_closing_ratio=gap_closing_ratio,
-        ))
+        examples.extend(
+            self.generate_arithmetic(
+                n_arith,
+                interleaved_ratio=interleaved_ratio,
+                long_chain_ratio=long_chain_ratio,
+                gap_closing_ratio=gap_closing_ratio,
+            )
+        )
         examples.extend(self.generate_rate_equation(n_rate))
         examples.extend(self.generate_comparison(n_comp))
         examples.extend(self.generate_percentage(n_pct))
@@ -281,7 +283,7 @@ class TraceGenerator:
         self._shuffle(examples)
         return examples
 
-    def _shuffle(self, examples: list) -> None:
+    def _shuffle(self, examples: list[Any]) -> None:
         import random
 
         state = random.getstate()

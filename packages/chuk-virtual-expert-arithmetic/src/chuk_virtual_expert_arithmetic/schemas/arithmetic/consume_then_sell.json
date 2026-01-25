@@ -30,11 +30,11 @@
     {"op": "init", "var": "produced", "value": "produced"},
     {"op": "init", "var": "use1", "value": "use1"},
     {"op": "init", "var": "use2", "value": "use2"},
-    {"op": "compute", "compute_op": "sub", "args": ["produced", "use1"], "var": "after1"},
-    {"op": "compute", "compute_op": "sub", "args": ["after1", "use2"], "var": "remainder"},
+    {"op": "compute", "compute_op": "sub", "args": ["produced", "use1"], "var": "step1"},
+    {"op": "compute", "compute_op": "sub", "args": ["step1", "use2"], "var": "step2"},
     {"op": "init", "var": "price", "value": "price"},
-    {"op": "compute", "compute_op": "mul", "args": ["remainder", "price"], "var": "revenue"},
-    {"op": "query", "var": "revenue"}
+    {"op": "compute", "compute_op": "mul", "args": ["step2", "price"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "(produced - use1 - use2) * price"
 }

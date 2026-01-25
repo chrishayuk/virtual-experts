@@ -29,12 +29,12 @@
   "trace": [
     {"op": "init", "var": "count", "value": "count"},
     {"op": "init", "var": "per_unit", "value": "per_unit"},
-    {"op": "compute", "compute_op": "mul", "args": ["count", "per_unit"], "var": "produced"},
+    {"op": "compute", "compute_op": "mul", "args": ["count", "per_unit"], "var": "step1"},
     {"op": "init", "var": "gift1", "value": "gift1"},
     {"op": "init", "var": "gift2", "value": "gift2"},
-    {"op": "compute", "compute_op": "add", "args": ["gift1", "gift2"], "var": "gifted"},
-    {"op": "compute", "compute_op": "sub", "args": ["produced", "gifted"], "var": "remaining"},
-    {"op": "query", "var": "remaining"}
+    {"op": "compute", "compute_op": "add", "args": ["gift1", "gift2"], "var": "step2"},
+    {"op": "compute", "compute_op": "sub", "args": ["step1", "step2"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "count * per_unit - gift1 - gift2"
 }

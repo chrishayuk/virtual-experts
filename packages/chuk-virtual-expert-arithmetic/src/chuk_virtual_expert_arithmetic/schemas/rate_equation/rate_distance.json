@@ -20,10 +20,10 @@
     "distance_unit": "distance_unit.plural"
   },
   "trace": [
-    {"op": "init", "var": "speed", "value": "speed"},
+    {"op": "init", "var": "rate", "value": "speed"},
     {"op": "init", "var": "time", "value": "time"},
-    {"op": "compute", "compute_op": "mul", "args": ["speed", "time"], "var": "distance"},
-    {"op": "query", "var": "distance"}
+    {"op": "compute", "compute_op": "mul", "args": ["rate", "time"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "speed * time"
 }

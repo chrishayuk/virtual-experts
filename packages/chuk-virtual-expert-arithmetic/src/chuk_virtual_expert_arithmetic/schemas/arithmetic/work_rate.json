@@ -29,9 +29,9 @@
     {"op": "init", "var": "rate", "value": "rate"},
     {"op": "init", "var": "time", "value": "time"},
     {"op": "init", "var": "workers", "value": "workers"},
-    {"op": "compute", "compute_op": "mul", "args": ["rate", "time"], "var": "total"},
-    {"op": "compute", "compute_op": "div", "args": ["total", "workers"], "var": "per_worker"},
-    {"op": "query", "var": "per_worker"}
+    {"op": "compute", "compute_op": "mul", "args": ["rate", "time"], "var": "step1"},
+    {"op": "compute", "compute_op": "div", "args": ["step1", "workers"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "(rate * time) / workers"
 }

@@ -1,0 +1,48 @@
+{
+  "name": "feed_remainder_scattered",
+  "expert": "arithmetic",
+  "description": "Scattered numbers: cups per animal, morning amount, afternoon amount, animal count - GSM-8K Wendi pattern",
+  "pattern": "remainder_patterns",
+  "variant": "scattered_numbers",
+  "variables": {
+    "cups_per": {"type": "int", "min": 2, "max": 5},
+    "morning": {"type": "int", "min": 10, "max": 25},
+    "afternoon": {"type": "int", "min": 15, "max": 30},
+    "count": {"type": "int", "min": 15, "max": 25}
+  },
+  "derived": {
+    "total_needed": "cups_per * count",
+    "total_given": "morning + afternoon",
+    "remainder": "total_needed - total_given"
+  },
+  "constraints": {
+    "total_needed - morning - afternoon": {"min": 5}
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "animal": {"path": "animals.farm_animals"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subject": "person.subject",
+    "his_her": "person.possessive",
+    "subj": "person.subject|capitalize",
+    "animals": "animal.name"
+  },
+  "templates": [
+    "Every day, {name} feeds each of {his_her} {animals} {cups_per} cups of feed. {subject} gives the {animals} their feed in three separate meals. In the morning, {subject} gives {his_her} flock {morning} cups of feed. In the afternoon, {subject} gives {his_her} {animals} another {afternoon} cups of feed. How many cups of feed does {subject} need to give {his_her} {animals} in the final meal of the day if the size of {name}'s flock is {count} {animals}?",
+    "{name} has {count} {animals} that each need {cups_per} cups of feed daily. In the morning, {subject} gives them {morning} cups. In the afternoon, {subject} gives them {afternoon} cups. How many cups are needed in the evening meal?",
+    "Each of {name}'s {count} {animals} requires {cups_per} cups of feed per day. {subject} has already given {morning} cups in the morning and {afternoon} cups in the afternoon. How many cups remain for the final feeding?"
+  ],
+  "trace": [
+    {"op": "init", "var": "cups_per", "value": "cups_per"},
+    {"op": "init", "var": "count", "value": "count"},
+    {"op": "compute", "compute_op": "mul", "args": ["cups_per", "count"], "var": "step1"},
+    {"op": "init", "var": "morning", "value": "morning"},
+    {"op": "init", "var": "afternoon", "value": "afternoon"},
+    {"op": "compute", "compute_op": "add", "args": ["morning", "afternoon"], "var": "step2"},
+    {"op": "compute", "compute_op": "sub", "args": ["step1", "step2"], "var": "result"},
+    {"op": "query", "var": "result"}
+  ],
+  "answer": "remainder"
+}

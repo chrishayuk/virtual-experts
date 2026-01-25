@@ -23,8 +23,8 @@
   "trace": [
     {"op": "init", "var": "rate", "value": "rate"},
     {"op": "init", "var": "time", "value": "time"},
-    {"op": "compute", "compute_op": "mul", "args": ["rate", "time"], "var": "total"},
-    {"op": "query", "var": "total"}
+    {"op": "compute", "compute_op": "mul", "args": ["rate", "time"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "rate * time"
 }

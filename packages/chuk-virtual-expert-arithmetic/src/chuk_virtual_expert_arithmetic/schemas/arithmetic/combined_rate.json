@@ -22,12 +22,12 @@
     "item": "rate_unit.split('/')[0]"
   },
   "trace": [
-    {"op": "init", "var": "rate_a", "value": "rate1"},
-    {"op": "init", "var": "rate_b", "value": "rate2"},
+    {"op": "init", "var": "rate1", "value": "rate1"},
+    {"op": "init", "var": "rate2", "value": "rate2"},
     {"op": "init", "var": "time", "value": "time"},
-    {"op": "compute", "compute_op": "add", "args": ["rate_a", "rate_b"], "var": "combined_rate"},
-    {"op": "compute", "compute_op": "mul", "args": ["combined_rate", "time"], "var": "total"},
-    {"op": "query", "var": "total"}
+    {"op": "compute", "compute_op": "add", "args": ["rate1", "rate2"], "var": "step1"},
+    {"op": "compute", "compute_op": "mul", "args": ["step1", "time"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "(rate1 + rate2) * time"
 }

@@ -24,11 +24,11 @@
     "c2": "'the second ' + containers"
   },
   "trace": [
-    {"op": "init", "var": "first", "value": "base"},
+    {"op": "init", "var": "base", "value": "base"},
     {"op": "init", "var": "divisor", "value": 2},
-    {"op": "compute", "compute_op": "div", "args": ["first", "divisor"], "var": "second"},
-    {"op": "compute", "compute_op": "add", "args": ["first", "second"], "var": "total"},
-    {"op": "query", "var": "total"}
+    {"op": "compute", "compute_op": "div", "args": ["base", "divisor"], "var": "step1"},
+    {"op": "compute", "compute_op": "add", "args": ["base", "step1"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "base + base // 2"
 }

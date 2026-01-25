@@ -22,14 +22,14 @@
     "exp3": "expenses.2"
   },
   "trace": [
-    {"op": "init", "var": "money", "value": "start"},
-    {"op": "init", "var": "exp1", "value": "sub1"},
-    {"op": "init", "var": "exp2", "value": "sub2"},
-    {"op": "init", "var": "exp3", "value": "sub3"},
-    {"op": "compute", "compute_op": "sub", "args": ["money", "exp1"], "var": "after1"},
-    {"op": "compute", "compute_op": "sub", "args": ["after1", "exp2"], "var": "after2"},
-    {"op": "compute", "compute_op": "sub", "args": ["after2", "exp3"], "var": "remaining"},
-    {"op": "query", "var": "remaining"}
+    {"op": "init", "var": "start", "value": "start"},
+    {"op": "init", "var": "sub1", "value": "sub1"},
+    {"op": "init", "var": "sub2", "value": "sub2"},
+    {"op": "init", "var": "sub3", "value": "sub3"},
+    {"op": "compute", "compute_op": "sub", "args": ["start", "sub1"], "var": "step1"},
+    {"op": "compute", "compute_op": "sub", "args": ["step1", "sub2"], "var": "step2"},
+    {"op": "compute", "compute_op": "sub", "args": ["step2", "sub3"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "start - sub1 - sub2 - sub3"
 }

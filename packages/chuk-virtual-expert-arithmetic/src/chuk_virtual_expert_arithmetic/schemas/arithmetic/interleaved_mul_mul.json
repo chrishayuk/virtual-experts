@@ -21,10 +21,10 @@
   "trace": [
     {"op": "init", "var": "sessions", "value": "sessions"},
     {"op": "init", "var": "per_session", "value": "per_session"},
-    {"op": "compute", "compute_op": "mul", "args": ["sessions", "per_session"], "var": "daily"},
+    {"op": "compute", "compute_op": "mul", "args": ["sessions", "per_session"], "var": "step1"},
     {"op": "init", "var": "days", "value": "days"},
-    {"op": "compute", "compute_op": "mul", "args": ["daily", "days"], "var": "total"},
-    {"op": "query", "var": "total"}
+    {"op": "compute", "compute_op": "mul", "args": ["step1", "days"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "sessions * per_session * days"
 }

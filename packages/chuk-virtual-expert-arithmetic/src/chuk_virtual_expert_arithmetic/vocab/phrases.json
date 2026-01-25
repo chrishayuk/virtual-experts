@@ -180,11 +180,11 @@
     "loses", "drops", "misplaces", "accidentally loses"
   ],
   "producers": [
-    {"name": "printer", "verb": "prints"},
-    {"name": "factory", "verb": "makes"},
-    {"name": "machine", "verb": "produces"},
-    {"name": "bakery", "verb": "bakes"},
-    {"name": "workshop", "verb": "crafts"}
+    {"name": "printer", "verb": "prints", "subject": "it"},
+    {"name": "factory", "verb": "makes", "subject": "it"},
+    {"name": "machine", "verb": "produces", "subject": "it"},
+    {"name": "bakery", "verb": "bakes", "subject": "it"},
+    {"name": "workshop", "verb": "crafts", "subject": "it"}
   ],
   "vehicles": [
     {"name": "car", "article": "a"},

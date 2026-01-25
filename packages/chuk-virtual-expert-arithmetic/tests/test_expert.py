@@ -522,6 +522,24 @@ trace:
 
     @pytest.mark.asyncio
     async def test_wrong_answer_reward(self) -> None:
+        # Test a valid trace that computes a wrong answer
+        yaml_str = """
+expert: arithmetic
+trace:
+  - {op: init, var: x, value: 10}
+  - {op: compute, compute_op: add, args: [x, 5], var: result}
+  - {op: query, var: result}
+"""
+        # Correct answer would be 15, but we expect 99
+        result = await self.verifier.verify(yaml_str, expected_answer=99)
+        assert result.trace_valid
+        assert result.computed_answer == 15
+        assert not result.answer_correct
+        assert result.reward == 0.7
+
+    @pytest.mark.asyncio
+    async def test_init_only_trace_is_invalid(self) -> None:
+        # Querying an init variable without computation is invalid for arithmetic
         yaml_str = """
 expert: arithmetic
 trace:
@@ -529,8 +547,8 @@ trace:
   - {op: query, var: x}
 """
         result = await self.verifier.verify(yaml_str, expected_answer=99)
-        assert not result.answer_correct
-        assert result.reward == 0.7
+        assert not result.trace_valid
+        assert result.reward == 0.5
 
     @pytest.mark.asyncio
     async def test_invalid_trace_reward(self) -> None:

@@ -15,16 +15,17 @@
   },
   "template_vars": {
     "a_producer": "producer.name|with_article",
-    "subj": "It",
+    "subj": "producer.subject|capitalize",
     "produce_verb": "producer.verb",
+    "items": "items",
     "time_unit": "time_unit.singular",
     "time_unit_plural": "time_unit.plural"
   },
   "trace": [
     {"op": "init", "var": "rate", "value": "rate"},
     {"op": "init", "var": "time", "value": "time"},
-    {"op": "compute", "compute_op": "mul", "args": ["rate", "time"], "var": "quantity"},
-    {"op": "query", "var": "quantity"}
+    {"op": "compute", "compute_op": "mul", "args": ["rate", "time"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "rate * time"
 }

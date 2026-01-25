@@ -21,12 +21,12 @@
     "subject": "person.subject"
   },
   "trace": [
-    {"op": "init", "var": "sprints", "value": "sprints_per_session"},
-    {"op": "init", "var": "sessions", "value": "sessions_per_week"},
-    {"op": "compute", "compute_op": "mul", "args": ["sprints", "sessions"], "var": "total_sprints"},
-    {"op": "init", "var": "meters", "value": "meters_per_sprint"},
-    {"op": "compute", "compute_op": "mul", "args": ["total_sprints", "meters"], "var": "total"},
-    {"op": "query", "var": "total"}
+    {"op": "init", "var": "sprints_per_session", "value": "sprints_per_session"},
+    {"op": "init", "var": "sessions_per_week", "value": "sessions_per_week"},
+    {"op": "compute", "compute_op": "mul", "args": ["sprints_per_session", "sessions_per_week"], "var": "step1"},
+    {"op": "init", "var": "meters_per_sprint", "value": "meters_per_sprint"},
+    {"op": "compute", "compute_op": "mul", "args": ["step1", "meters_per_sprint"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "total_meters"
 }

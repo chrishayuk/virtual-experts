@@ -22,10 +22,10 @@
   "trace": [
     {"op": "init", "var": "count", "value": "count"},
     {"op": "init", "var": "price", "value": "price"},
-    {"op": "init", "var": "wrapping", "value": "extra"},
-    {"op": "compute", "compute_op": "mul", "args": ["count", "price"], "var": "subtotal"},
-    {"op": "compute", "compute_op": "add", "args": ["subtotal", "wrapping"], "var": "total"},
-    {"op": "query", "var": "total"}
+    {"op": "init", "var": "extra", "value": "extra"},
+    {"op": "compute", "compute_op": "mul", "args": ["count", "price"], "var": "step1"},
+    {"op": "compute", "compute_op": "add", "args": ["step1", "extra"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "count * price + extra"
 }

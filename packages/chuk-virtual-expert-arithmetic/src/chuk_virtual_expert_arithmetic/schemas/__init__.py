@@ -37,7 +37,7 @@ EXPERT_DIRS = ["arithmetic", "entity_track", "rate_equation", "comparison", "per
 
 def list_schemas() -> list[str]:
     """List all available schema names from all subdirectories."""
-    schemas = []
+    schemas: list[str] = []
 
     # Root level (for backwards compatibility)
     schemas.extend(f.stem for f in SCHEMA_DIR.glob("*.json"))

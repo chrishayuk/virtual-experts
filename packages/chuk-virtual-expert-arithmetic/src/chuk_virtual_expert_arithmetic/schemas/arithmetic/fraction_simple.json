@@ -23,8 +23,8 @@
   "trace": [
     {"op": "init", "var": "total", "value": "total"},
     {"op": "init", "var": "fraction", "value": "fraction"},
-    {"op": "compute", "compute_op": "div", "args": ["total", "fraction"], "var": "part"},
-    {"op": "query", "var": "part"}
+    {"op": "compute", "compute_op": "div", "args": ["total", "fraction"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "total / fraction"
 }

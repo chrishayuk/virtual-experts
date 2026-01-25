@@ -37,11 +37,11 @@ from chuk_virtual_expert_arithmetic.vocab import get_vocab
 class SchemaGenerator:
     """Generates arithmetic problems from JSON schemas."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._vocab = get_vocab()
         self._schemas = self._load_schemas()
 
-    def _load_schemas(self) -> dict[str, dict]:
+    def _load_schemas(self) -> dict[str, dict[str, Any]]:
         """Load all schemas from the schemas directory and subdirectories."""
         schemas = {}
         schema_dir = Path(__file__).parent.parent / "schemas"
@@ -179,7 +179,7 @@ class SchemaGenerator:
 
         return examples
 
-    def _generate_variables(self, var_specs: dict[str, dict]) -> dict[str, Any]:
+    def _generate_variables(self, var_specs: dict[str, dict[str, Any]]) -> dict[str, Any]:
         """Generate random values for variables."""
         variables = {}
 
@@ -212,7 +212,7 @@ class SchemaGenerator:
 
             elif var_type == "choice":
                 options = spec.get("options", [])
-                variables[name] = random.choice(options) if options else None
+                variables[name] = random.choice(options) if options else 0
 
         return variables
 
@@ -231,7 +231,8 @@ class SchemaGenerator:
         for name, expr in derived_specs.items():
             try:
                 # Simple expression evaluation with combined context
-                value = eval(expr, {"__builtins__": {}}, context)
+                # nosec B307 - eval is safe here: expressions from controlled schema files, __builtins__ disabled
+                value = eval(expr, {"__builtins__": {}}, context)  # nosec B307
                 derived[name] = value
                 # Add to context so later expressions can reference it
                 context[name] = value
@@ -243,9 +244,9 @@ class SchemaGenerator:
 
     def _apply_constraints(
         self,
-        constraints: dict[str, dict],
+        constraints: dict[str, dict[str, Any]],
         variables: dict[str, Any],
-        schema: dict,
+        schema: dict[str, Any],
     ) -> dict[str, Any]:
         """Apply constraints, regenerating if needed."""
         max_attempts = 10
@@ -255,7 +256,7 @@ class SchemaGenerator:
 
             for expr, bounds in constraints.items():
                 try:
-                    value = eval(expr, {"__builtins__": {}}, variables)
+                    value = eval(expr, {"__builtins__": {}}, variables)  # nosec B307
                     min_val = bounds.get("min", float("-inf"))
                     max_val = bounds.get("max", float("inf"))
 
@@ -275,9 +276,9 @@ class SchemaGenerator:
 
         return variables
 
-    def _sample_vocab(self, vocab_specs: dict[str, dict]) -> dict[str, Any]:
+    def _sample_vocab(self, vocab_specs: dict[str, dict[str, Any]]) -> dict[str, Any]:
         """Sample vocabulary items."""
-        items = {}
+        items: dict[str, Any] = {}
 
         for name, spec in vocab_specs.items():
             if spec.get("type") == "person_with_pronouns":
@@ -374,10 +375,10 @@ class SchemaGenerator:
         return value
 
     def _build_trace(
-        self, trace_specs: list[dict], variables: dict[str, Any]
-    ) -> list:
+        self, trace_specs: list[dict[str, Any]], variables: dict[str, Any]
+    ) -> list[Any]:
         """Build trace steps from specs."""
-        trace = []
+        trace: list[Any] = []
 
         for spec in trace_specs:
             op = spec["op"]
@@ -395,12 +396,12 @@ class SchemaGenerator:
             elif op == "compute":
                 compute_op = ComputeOp(spec["compute_op"])
                 # Handle args that can be variable names or literal values
-                args = []
+                args: list[str | int | float] = []
                 for arg in spec["args"]:
                     if isinstance(arg, (int, float)):
                         args.append(arg)
                     else:
-                        args.append(arg)  # Keep var name as-is for solver
+                        args.append(str(arg))  # Keep var name as-is for solver
                 var_name = spec["var"]
                 trace.append(ComputeStep(compute_op=compute_op, args=args, var=var_name))
 
@@ -414,7 +415,9 @@ class SchemaGenerator:
                 to_entity = spec["to_entity"]
                 amount_ref = spec["amount"]
                 amount = variables.get(amount_ref, 0) if isinstance(amount_ref, str) else amount_ref
-                trace.append(TransferStep(from_entity=from_entity, to_entity=to_entity, amount=amount))
+                trace.append(
+                    TransferStep(from_entity=from_entity, to_entity=to_entity, amount=amount)
+                )
 
             elif op == "consume":
                 entity = spec["entity"]
@@ -452,9 +455,10 @@ class SchemaGenerator:
     def _compute_answer(self, expr: str, variables: dict[str, Any]) -> float:
         """Compute answer from expression."""
         try:
-            return eval(expr, {"__builtins__": {}}, variables)
+            result = eval(expr, {"__builtins__": {}}, variables)  # nosec B307
+            return float(result)
         except Exception:
-            return 0
+            return 0.0
 
 
 # Convenience function

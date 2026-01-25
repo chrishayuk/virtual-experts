@@ -23,12 +23,12 @@
     "a_item": "item|with_article"
   },
   "trace": [
-    {"op": "init", "var": "price", "value": "base"},
+    {"op": "init", "var": "base", "value": "base"},
     {"op": "init", "var": "tax", "value": "tax"},
     {"op": "init", "var": "shipping", "value": "shipping"},
-    {"op": "compute", "compute_op": "add", "args": ["price", "tax"], "var": "with_tax"},
-    {"op": "compute", "compute_op": "add", "args": ["with_tax", "shipping"], "var": "total"},
-    {"op": "query", "var": "total"}
+    {"op": "compute", "compute_op": "add", "args": ["base", "tax"], "var": "step1"},
+    {"op": "compute", "compute_op": "add", "args": ["step1", "shipping"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "base + tax + shipping"
 }

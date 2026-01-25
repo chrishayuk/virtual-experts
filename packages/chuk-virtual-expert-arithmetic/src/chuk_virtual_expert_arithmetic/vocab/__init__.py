@@ -80,7 +80,7 @@ class Vocab:
             The vocabulary list or dict at that path
         """
         parts = path.split(".")
-        data = self._cache
+        data: Any = self._cache
         for part in parts:
             if isinstance(data, dict):
                 data = data.get(part)
@@ -119,7 +119,7 @@ class Vocab:
             return random.sample(items, min(k, len(items)))
         return []
 
-    def substitute(self, template: str, **kwargs) -> str:
+    def substitute(self, template: str, **kwargs: Any) -> str:
         """Substitute variables in a template string.
 
         Args:
@@ -138,7 +138,7 @@ class Vocab:
             result = result.replace(f"${{{key}}}", str(value))
         return result
 
-    def pattern(self, pattern_name: str, variant: str | None = None, **kwargs) -> str:
+    def pattern(self, pattern_name: str, variant: str | None = None, **kwargs: Any) -> str:
         """Get a random pattern template and substitute variables.
 
         Args:
@@ -244,7 +244,7 @@ class Vocab:
             letter = pair.get("first", "A") if pair else "A"
             return f"{container.capitalize()} {letter}"
 
-    def container_pair(self, use_words: bool = None) -> tuple[str, str]:
+    def container_pair(self, use_words: bool | None = None) -> tuple[str, str]:
         """Generate a pair of contrasting containers.
 
         Args:
@@ -266,7 +266,10 @@ class Vocab:
         else:
             pair = self.random("ordinals.letter_pairs")
             if pair:
-                return f"{container.capitalize()} {pair['first']}", f"{container.capitalize()} {pair['second']}"
+                return (
+                    f"{container.capitalize()} {pair['first']}",
+                    f"{container.capitalize()} {pair['second']}",
+                )
             return f"{container.capitalize()} A", f"{container.capitalize()} B"
 
     def material_pair(self, material_type: str = "fabrics") -> tuple[str, str]:
@@ -282,18 +285,18 @@ class Vocab:
             return f"{colors[0]} {material}", f"{colors[1]} {material}"
         return f"type A {material}", f"type B {material}"
 
-    def farm_animal_context(self) -> dict:
+    def farm_animal_context(self) -> dict[str, Any]:
         """Get a farm animal with its production context.
 
         Returns:
             Dict with name, singular, produces, verb
         """
         animal = self.random("animals.farm_animals")
-        if animal:
-            return animal
+        if animal and isinstance(animal, dict):
+            return dict(animal)  # Ensure proper typing
         return {"name": "chickens", "singular": "chicken", "produces": "eggs", "verb": "lay"}
 
-    def conjugate(self, verb_data: dict, use_singular: bool, **kwargs) -> str:
+    def conjugate(self, verb_data: dict[str, Any] | None, use_singular: bool, **kwargs: Any) -> str:
         """Conjugate a verb phrase based on singular/plural.
 
         Args:
@@ -315,7 +318,7 @@ class Vocab:
 
         return f"{verb} {rest}".strip() if rest else verb
 
-    def person_with_pronouns(self) -> dict:
+    def person_with_pronouns(self) -> dict[str, Any]:
         """Get a random person name with matching pronouns.
 
         Returns:
@@ -324,10 +327,7 @@ class Vocab:
                       "possessive": "her", "reflexive": "herself", "verb_s": "s"}
         """
         # Randomly pick gender (weighted toward gendered for GSM-8K compatibility)
-        gender = random.choices(
-            ["male", "female", "neutral"],
-            weights=[0.45, 0.45, 0.10]
-        )[0]
+        gender = random.choices(["male", "female", "neutral"], weights=[0.45, 0.45, 0.10])[0]
 
         name = self.random(f"names.{gender}")
         pronouns = self.get(f"names.pronouns.{gender}")
@@ -352,15 +352,15 @@ class Vocab:
             "verb_s": "" if gender == "neutral" else "s",  # "she eats" vs "they eat"
         }
 
-    def activity_context(self) -> dict:
+    def activity_context(self) -> dict[str, Any]:
         """Get an activity with verb forms.
 
         Returns:
             Dict with verb, continuous, noun
         """
         activity = self.random("phrases.activities")
-        if activity:
-            return activity
+        if activity and isinstance(activity, dict):
+            return dict(activity)  # Ensure proper typing
         return {"verb": "run", "continuous": "runs", "noun": "laps"}
 
     def a_an(self, word: str) -> str:

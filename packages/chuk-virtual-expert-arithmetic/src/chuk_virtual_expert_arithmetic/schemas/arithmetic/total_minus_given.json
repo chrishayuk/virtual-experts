@@ -30,12 +30,12 @@
   "trace": [
     {"op": "init", "var": "units", "value": "units"},
     {"op": "init", "var": "per_unit", "value": "per_unit"},
-    {"op": "compute", "compute_op": "mul", "args": ["units", "per_unit"], "var": "total_needed"},
+    {"op": "compute", "compute_op": "mul", "args": ["units", "per_unit"], "var": "step1"},
     {"op": "init", "var": "given1", "value": "given1"},
     {"op": "init", "var": "given2", "value": "given2"},
-    {"op": "compute", "compute_op": "add", "args": ["given1", "given2"], "var": "total_given"},
-    {"op": "compute", "compute_op": "sub", "args": ["total_needed", "total_given"], "var": "remainder"},
-    {"op": "query", "var": "remainder"}
+    {"op": "compute", "compute_op": "add", "args": ["given1", "given2"], "var": "step2"},
+    {"op": "compute", "compute_op": "sub", "args": ["step1", "step2"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "remainder"
 }

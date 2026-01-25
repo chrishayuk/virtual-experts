@@ -1,0 +1,36 @@
+{
+  "name": "weekly_sprints_same",
+  "expert": "arithmetic",
+  "description": "N sprints N times per week (same number), M meters each - forces positional disambiguation",
+  "pattern": "activity_patterns",
+  "variant": "repeated_value",
+  "variables": {
+    "count": {"type": "int", "min": 2, "max": 5},
+    "meters": {"type": "int", "min": 40, "max": 100, "multiple_of": 10}
+  },
+  "derived": {
+    "total_sprints": "count * count",
+    "total_meters": "total_sprints * meters"
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subject": "person.subject"
+  },
+  "templates": [
+    "{name} decides to run {count} sprints {count} times a week. {subject} runs {meters} meters each sprint. How many total meters does {subject} run a week?",
+    "{name} does {count} sprints {count} times weekly. Each sprint is {meters} meters. What's the total distance per week?",
+    "Every week, {name} practices sprinting {count} times, doing {count} sprints each session. If each sprint covers {meters} meters, what is {subject} weekly total?"
+  ],
+  "trace": [
+    {"op": "init", "var": "sprints_per_session", "value": "count"},
+    {"op": "init", "var": "sessions_per_week", "value": "count"},
+    {"op": "compute", "compute_op": "mul", "args": ["sprints_per_session", "sessions_per_week"], "var": "step1"},
+    {"op": "init", "var": "meters_per_sprint", "value": "meters"},
+    {"op": "compute", "compute_op": "mul", "args": ["step1", "meters_per_sprint"], "var": "result"},
+    {"op": "query", "var": "result"}
+  ],
+  "answer": "total_meters"
+}

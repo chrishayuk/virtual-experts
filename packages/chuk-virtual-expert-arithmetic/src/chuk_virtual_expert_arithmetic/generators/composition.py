@@ -7,14 +7,16 @@ All patterns produce exactly 2 sub-traces.
 One template per pattern.
 """
 
-import random
+from __future__ import annotations
 
+import random
+from typing import Any
 
 ITEMS = ["shirt", "jacket", "bag", "book", "toy"]
 NAMES = ["Alice", "Bob", "Carol", "Dan", "Emma"]
 
 
-def generate_percent_off_plus_extra() -> dict:
+def generate_percent_off_plus_extra() -> dict[str, Any]:
     """X% off a price, plus extra cost (shipping/tax)."""
     price = random.randint(40, 200)
     percent = random.choice([10, 15, 20, 25, 30])
@@ -24,7 +26,9 @@ def generate_percent_off_plus_extra() -> dict:
     sale_price = price * (100 - percent) / 100
     total = sale_price + extra
 
-    question = f"A {item} costs ${price}. It's {percent}% off. Plus ${extra} shipping. What's the total?"
+    question = (
+        f"A {item} costs ${price}. It's {percent}% off. Plus ${extra} shipping. What's the total?"
+    )
 
     return {
         "query": question,
@@ -44,7 +48,12 @@ def generate_percent_off_plus_extra() -> dict:
                 "trace": [
                     {"op": "init", "var": "prev", "source": "prev.result"},
                     {"op": "init", "var": "factor", "value": extra},
-                    {"op": "compute", "compute_op": "add", "args": ["prev", "factor"], "var": "result"},
+                    {
+                        "op": "compute",
+                        "compute_op": "add",
+                        "args": ["prev", "factor"],
+                        "var": "result",
+                    },
                     {"op": "query", "var": "result"},
                 ],
             },
@@ -53,7 +62,7 @@ def generate_percent_off_plus_extra() -> dict:
     }
 
 
-def generate_percent_increase_minus_cost() -> dict:
+def generate_percent_increase_minus_cost() -> dict[str, Any]:
     """Stock increases by X%, subtract original to find gain."""
     original = random.randint(50, 200)
     percent = random.choice([10, 20, 25, 50])
@@ -81,7 +90,12 @@ def generate_percent_increase_minus_cost() -> dict:
                 "trace": [
                     {"op": "init", "var": "prev", "source": "prev.result"},
                     {"op": "init", "var": "factor", "value": original},
-                    {"op": "compute", "compute_op": "sub", "args": ["prev", "factor"], "var": "result"},
+                    {
+                        "op": "compute",
+                        "compute_op": "sub",
+                        "args": ["prev", "factor"],
+                        "var": "result",
+                    },
                     {"op": "query", "var": "result"},
                 ],
             },
@@ -90,7 +104,7 @@ def generate_percent_increase_minus_cost() -> dict:
     }
 
 
-def generate_percent_of_then_multiply() -> dict:
+def generate_percent_of_then_multiply() -> dict[str, Any]:
     """X% of Y gives a unit cost, multiply by quantity."""
     whole = random.randint(50, 200)
     percent = random.choice([10, 20, 25, 50])
@@ -100,7 +114,9 @@ def generate_percent_of_then_multiply() -> dict:
     total = unit * quantity
 
     item = random.choice(ITEMS)
-    question = f"A {item} is priced at {percent}% of ${whole}. You buy {quantity}. What's the total?"
+    question = (
+        f"A {item} is priced at {percent}% of ${whole}. You buy {quantity}. What's the total?"
+    )
 
     return {
         "query": question,
@@ -120,7 +136,12 @@ def generate_percent_of_then_multiply() -> dict:
                 "trace": [
                     {"op": "init", "var": "prev", "source": "prev.result"},
                     {"op": "init", "var": "factor", "value": quantity},
-                    {"op": "compute", "compute_op": "mul", "args": ["prev", "factor"], "var": "result"},
+                    {
+                        "op": "compute",
+                        "compute_op": "mul",
+                        "args": ["prev", "factor"],
+                        "var": "result",
+                    },
                     {"op": "query", "var": "result"},
                 ],
             },
@@ -129,7 +150,7 @@ def generate_percent_of_then_multiply() -> dict:
     }
 
 
-def generate_rate_then_subtract() -> dict:
+def generate_rate_then_subtract() -> dict[str, Any]:
     """Rate x time gives total, subtract defective/used."""
     rate = random.randint(5, 30)
     time = random.randint(2, 10)
@@ -149,8 +170,13 @@ def generate_rate_then_subtract() -> dict:
                 "trace": [
                     {"op": "init", "var": "rate", "value": rate},
                     {"op": "init", "var": "time", "value": time},
-                    {"op": "compute", "compute_op": "mul", "args": ["rate", "time"], "var": "quantity"},
-                    {"op": "query", "var": "quantity"},
+                    {
+                        "op": "compute",
+                        "compute_op": "mul",
+                        "args": ["rate", "time"],
+                        "var": "result",
+                    },
+                    {"op": "query", "var": "result"},
                 ],
             },
             {
@@ -158,7 +184,12 @@ def generate_rate_then_subtract() -> dict:
                 "trace": [
                     {"op": "init", "var": "prev", "source": "prev.result"},
                     {"op": "init", "var": "factor", "value": defective},
-                    {"op": "compute", "compute_op": "sub", "args": ["prev", "factor"], "var": "result"},
+                    {
+                        "op": "compute",
+                        "compute_op": "sub",
+                        "args": ["prev", "factor"],
+                        "var": "result",
+                    },
                     {"op": "query", "var": "result"},
                 ],
             },
@@ -172,7 +203,7 @@ def generate_rate_then_subtract() -> dict:
 # =============================================================================
 
 
-def generate_value_increase_profit() -> dict:
+def generate_value_increase_profit() -> dict[str, Any]:
     """Asset value increase: buy + improvement, value increases by X%, calculate profit.
 
     Pattern: Purchase price + improvement cost, value increases by percentage,
@@ -216,9 +247,19 @@ def generate_value_increase_profit() -> dict:
                     {"op": "init", "var": "new_value", "source": "prev.result"},
                     {"op": "init", "var": "original", "value": original},
                     {"op": "init", "var": "repairs", "value": repairs},
-                    {"op": "compute", "compute_op": "add", "args": ["original", "repairs"], "var": "total_cost"},
-                    {"op": "compute", "compute_op": "sub", "args": ["new_value", "total_cost"], "var": "profit"},
-                    {"op": "query", "var": "profit"},
+                    {
+                        "op": "compute",
+                        "compute_op": "add",
+                        "args": ["original", "repairs"],
+                        "var": "step1",
+                    },
+                    {
+                        "op": "compute",
+                        "compute_op": "sub",
+                        "args": ["new_value", "step1"],
+                        "var": "result",
+                    },
+                    {"op": "query", "var": "result"},
                 ],
             },
         ],
@@ -226,7 +267,7 @@ def generate_value_increase_profit() -> dict:
     }
 
 
-def generate_paired_discount() -> dict:
+def generate_paired_discount() -> dict[str, Any]:
     """Every second item discounted: full price + discounted price per pair.
 
     Pattern: First item full price, second item at X% of price.
@@ -275,9 +316,19 @@ def generate_paired_discount() -> dict:
                     {"op": "init", "var": "discounted", "source": "prev.result"},
                     {"op": "init", "var": "full_price", "value": full_price},
                     {"op": "init", "var": "pairs", "value": pairs},
-                    {"op": "compute", "compute_op": "add", "args": ["full_price", "discounted"], "var": "pair_cost"},
-                    {"op": "compute", "compute_op": "mul", "args": ["pair_cost", "pairs"], "var": "total"},
-                    {"op": "query", "var": "total"},
+                    {
+                        "op": "compute",
+                        "compute_op": "add",
+                        "args": ["full_price", "discounted"],
+                        "var": "step1",
+                    },
+                    {
+                        "op": "compute",
+                        "compute_op": "mul",
+                        "args": ["step1", "pairs"],
+                        "var": "result",
+                    },
+                    {"op": "query", "var": "result"},
                 ],
             },
         ],
@@ -285,7 +336,7 @@ def generate_paired_discount() -> dict:
     }
 
 
-def generate_interrupted_rate() -> dict:
+def generate_interrupted_rate() -> dict[str, Any]:
     """Interrupted process: partial progress, delay, then restart from beginning.
 
     Pattern: Processing X units at Y units/time. After Z% progress, interruption
@@ -332,11 +383,31 @@ def generate_interrupted_rate() -> dict:
                     {"op": "init", "var": "speed", "value": rate},
                     {"op": "init", "var": "delay", "value": delay},
                     {"op": "init", "var": "total_size", "value": total_size},
-                    {"op": "compute", "compute_op": "div", "args": ["partial_size", "speed"], "var": "partial_time"},
-                    {"op": "compute", "compute_op": "div", "args": ["total_size", "speed"], "var": "full_time"},
-                    {"op": "compute", "compute_op": "add", "args": ["partial_time", "delay"], "var": "temp"},
-                    {"op": "compute", "compute_op": "add", "args": ["temp", "full_time"], "var": "total"},
-                    {"op": "query", "var": "total"},
+                    {
+                        "op": "compute",
+                        "compute_op": "div",
+                        "args": ["partial_size", "speed"],
+                        "var": "step1",
+                    },
+                    {
+                        "op": "compute",
+                        "compute_op": "div",
+                        "args": ["total_size", "speed"],
+                        "var": "step2",
+                    },
+                    {
+                        "op": "compute",
+                        "compute_op": "add",
+                        "args": ["step1", "delay"],
+                        "var": "step3",
+                    },
+                    {
+                        "op": "compute",
+                        "compute_op": "add",
+                        "args": ["step3", "step2"],
+                        "var": "result",
+                    },
+                    {"op": "query", "var": "result"},
                 ],
             },
         ],
@@ -344,7 +415,7 @@ def generate_interrupted_rate() -> dict:
     }
 
 
-def generate_consume_then_sell() -> dict:
+def generate_consume_then_sell() -> dict[str, Any]:
     """Consume some items, sell remainder at a price.
 
     GSM-8K pattern: "Janet's ducks lay 16 eggs. She eats 3, bakes with 4,
@@ -389,8 +460,13 @@ def generate_consume_then_sell() -> dict:
                 "trace": [
                     {"op": "init", "var": "remaining", "source": "prev.result"},
                     {"op": "init", "var": "price", "value": price},
-                    {"op": "compute", "compute_op": "mul", "args": ["remaining", "price"], "var": "revenue"},
-                    {"op": "query", "var": "revenue"},
+                    {
+                        "op": "compute",
+                        "compute_op": "mul",
+                        "args": ["remaining", "price"],
+                        "var": "result",
+                    },
+                    {"op": "query", "var": "result"},
                 ],
             },
         ],
@@ -403,7 +479,7 @@ def generate_consume_then_sell() -> dict:
 # =============================================================================
 
 
-def generate_cost_increase_profit() -> dict:
+def generate_cost_increase_profit() -> dict[str, Any]:
     """Full profit calculation: cost calculation + value increase + profit.
 
     3-expert chain with multi-value wiring:
@@ -434,8 +510,13 @@ def generate_cost_increase_profit() -> dict:
                 "trace": [
                     {"op": "init", "var": "purchase", "value": purchase},
                     {"op": "init", "var": "repairs", "value": repairs},
-                    {"op": "compute", "compute_op": "add", "args": ["purchase", "repairs"], "var": "cost"},
-                    {"op": "query", "var": "cost"},
+                    {
+                        "op": "compute",
+                        "compute_op": "add",
+                        "args": ["purchase", "repairs"],
+                        "var": "result",
+                    },
+                    {"op": "query", "var": "result"},
                 ],
             },
             {
@@ -452,8 +533,13 @@ def generate_cost_increase_profit() -> dict:
                 "trace": [
                     {"op": "init", "var": "new_value", "source": "prev.result"},
                     {"op": "init", "var": "cost", "source": "sub0.result"},
-                    {"op": "compute", "compute_op": "sub", "args": ["new_value", "cost"], "var": "profit"},
-                    {"op": "query", "var": "profit"},
+                    {
+                        "op": "compute",
+                        "compute_op": "sub",
+                        "args": ["new_value", "cost"],
+                        "var": "result",
+                    },
+                    {"op": "query", "var": "result"},
                 ],
             },
         ],
@@ -461,13 +547,15 @@ def generate_cost_increase_profit() -> dict:
     }
 
 
-def generate_comparison_then_total() -> dict:
+def generate_comparison_then_total() -> dict[str, Any]:
     """Comparison chain then sum: A has X, B has N times A, C has M times B. Total?
 
     GSM-8K pattern: "Toulouse has twice as many sheep as Charleston.
     Charleston has 4× Seattle's. Seattle has 20. Total together?"
 
     Solution: seattle=20, charleston=4*20=80, toulouse=2*80=160, total=260
+
+    Simplified to single arithmetic trace with interleaved inits (was 3-expert, now 1-expert).
     """
     base = random.randint(10, 30)
     mult1 = random.choice([2, 3, 4, 5])
@@ -487,51 +575,33 @@ def generate_comparison_then_total() -> dict:
         f"{name_base} has {base} sheep. How many sheep do they have together?"
     )
 
+    # Single arithmetic trace with interleaved computation
     return {
         "query": question,
-        "composed": True,
-        "steps": [
-            {
-                "expert": "comparison",
-                "trace": [
-                    {"op": "init", "var": "base", "value": base},
-                    {"op": "init", "var": "factor", "value": mult1},
-                    {"op": "compute", "compute_op": "mul", "args": ["base", "factor"], "var": "result"},
-                    {"op": "query", "var": "result"},
-                ],
-            },
-            {
-                "expert": "comparison",
-                "trace": [
-                    {"op": "init", "var": "base", "source": "prev.result"},
-                    {"op": "init", "var": "factor", "value": mult2},
-                    {"op": "compute", "compute_op": "mul", "args": ["base", "factor"], "var": "result"},
-                    {"op": "query", "var": "result"},
-                ],
-            },
-            {
-                "expert": "arithmetic",
-                "trace": [
-                    {"op": "init", "var": "top", "source": "prev.result"},
-                    {"op": "init", "var": "mid", "source": "sub0.result"},
-                    {"op": "init", "var": "base", "value": base},
-                    {"op": "compute", "compute_op": "add", "args": ["base", "mid"], "var": "step1"},
-                    {"op": "compute", "compute_op": "add", "args": ["step1", "top"], "var": "total"},
-                    {"op": "query", "var": "total"},
-                ],
-            },
+        "expert": "arithmetic",
+        "trace": [
+            {"op": "init", "var": "base", "value": base},
+            {"op": "init", "var": "mult1", "value": mult1},
+            {"op": "compute", "compute_op": "mul", "args": ["base", "mult1"], "var": "step1"},
+            {"op": "init", "var": "mult2", "value": mult2},  # interleaved init
+            {"op": "compute", "compute_op": "mul", "args": ["step1", "mult2"], "var": "step2"},
+            {"op": "compute", "compute_op": "add", "args": ["base", "step1"], "var": "step3"},
+            {"op": "compute", "compute_op": "add", "args": ["step3", "step2"], "var": "result"},
+            {"op": "query", "var": "result"},
         ],
         "answer": total,
     }
 
 
-def generate_rate_comparison_total() -> dict:
+def generate_rate_comparison_total() -> dict[str, Any]:
     """Rate calculation then comparison: A produces X/hr, B produces N times A. Total in T hours?
 
     Pattern: "Machine A makes 10 widgets/hour. Machine B makes 3× as many.
     How many widgets total in 5 hours?"
 
     Solution: A=10*5=50, B=3*10*5=150, total=200
+
+    Simplified to single arithmetic trace with interleaved inits (was 3-expert, now 1-expert).
     """
     rate_a = random.randint(5, 20)
     multiplier = random.choice([2, 3, 4])
@@ -547,45 +617,25 @@ def generate_rate_comparison_total() -> dict:
         f"How many items do both machines produce together in {hours} hours?"
     )
 
+    # Single arithmetic trace: rate_a*hours + (rate_a*mult)*hours
     return {
         "query": question,
-        "composed": True,
-        "steps": [
-            {
-                "expert": "rate_equation",
-                "trace": [
-                    {"op": "init", "var": "rate", "value": rate_a},
-                    {"op": "init", "var": "time", "value": hours},
-                    {"op": "compute", "compute_op": "mul", "args": ["rate", "time"], "var": "quantity"},
-                    {"op": "query", "var": "quantity"},
-                ],
-            },
-            {
-                "expert": "rate_equation",
-                "trace": [
-                    {"op": "init", "var": "base_rate", "value": rate_a},
-                    {"op": "init", "var": "multiplier", "value": multiplier},
-                    {"op": "compute", "compute_op": "mul", "args": ["base_rate", "multiplier"], "var": "rate_b"},
-                    {"op": "init", "var": "time", "value": hours},
-                    {"op": "compute", "compute_op": "mul", "args": ["rate_b", "time"], "var": "quantity"},
-                    {"op": "query", "var": "quantity"},
-                ],
-            },
-            {
-                "expert": "arithmetic",
-                "trace": [
-                    {"op": "init", "var": "output_b", "source": "prev.result"},
-                    {"op": "init", "var": "output_a", "source": "sub0.result"},
-                    {"op": "compute", "compute_op": "add", "args": ["output_a", "output_b"], "var": "total"},
-                    {"op": "query", "var": "total"},
-                ],
-            },
+        "expert": "arithmetic",
+        "trace": [
+            {"op": "init", "var": "rate_a", "value": rate_a},
+            {"op": "init", "var": "hours", "value": hours},
+            {"op": "compute", "compute_op": "mul", "args": ["rate_a", "hours"], "var": "step1"},
+            {"op": "init", "var": "multiplier", "value": multiplier},  # interleaved init
+            {"op": "compute", "compute_op": "mul", "args": ["rate_a", "multiplier"], "var": "step2"},
+            {"op": "compute", "compute_op": "mul", "args": ["step2", "hours"], "var": "step3"},
+            {"op": "compute", "compute_op": "add", "args": ["step1", "step3"], "var": "result"},
+            {"op": "query", "var": "result"},
         ],
         "answer": total,
     }
 
 
-def generate_discount_tax_total() -> dict:
+def generate_discount_tax_total() -> dict[str, Any]:
     """Discount then tax: original price → discounted → with tax added.
 
     Pattern: "A $100 item is 20% off. Then 10% tax is added. Final price?"
@@ -633,8 +683,13 @@ def generate_discount_tax_total() -> dict:
                 "trace": [
                     {"op": "init", "var": "tax", "source": "prev.result"},
                     {"op": "init", "var": "discounted", "source": "sub0.result"},
-                    {"op": "compute", "compute_op": "add", "args": ["discounted", "tax"], "var": "final"},
-                    {"op": "query", "var": "final"},
+                    {
+                        "op": "compute",
+                        "compute_op": "add",
+                        "args": ["discounted", "tax"],
+                        "var": "result",
+                    },
+                    {"op": "query", "var": "result"},
                 ],
             },
         ],
@@ -661,7 +716,7 @@ GENERATORS = [
 ]
 
 
-def generate(n: int = 40) -> list[dict]:
+def generate(n: int = 40) -> list[dict[str, Any]]:
     """Generate n compositional examples."""
     examples = []
     for _ in range(n):

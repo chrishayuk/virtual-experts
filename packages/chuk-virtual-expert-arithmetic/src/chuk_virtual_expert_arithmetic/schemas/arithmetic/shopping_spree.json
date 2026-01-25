@@ -30,10 +30,10 @@
     {"op": "init", "var": "cost1", "value": "cost1"},
     {"op": "init", "var": "cost2", "value": "cost2"},
     {"op": "init", "var": "cost3", "value": "cost3"},
-    {"op": "compute", "compute_op": "sub", "args": ["start", "cost1"], "var": "after1"},
-    {"op": "compute", "compute_op": "sub", "args": ["after1", "cost2"], "var": "after2"},
-    {"op": "compute", "compute_op": "sub", "args": ["after2", "cost3"], "var": "remaining"},
-    {"op": "query", "var": "remaining"}
+    {"op": "compute", "compute_op": "sub", "args": ["start", "cost1"], "var": "step1"},
+    {"op": "compute", "compute_op": "sub", "args": ["step1", "cost2"], "var": "step2"},
+    {"op": "compute", "compute_op": "sub", "args": ["step2", "cost3"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "start - cost1 - cost2 - cost3"
 }

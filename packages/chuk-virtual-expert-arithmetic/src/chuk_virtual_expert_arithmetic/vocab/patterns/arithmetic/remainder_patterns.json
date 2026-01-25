@@ -4,5 +4,11 @@
     "${name} has ${units} plants that each need ${per_unit} cups of water daily. ${subject} waters them ${given1} cups in the morning and ${given2} cups at noon. How many cups are needed in the evening?",
     "A classroom has ${units} students who each need ${per_unit} pencils. The teacher hands out ${given1} pencils first, then ${given2} more. How many pencils are still needed?",
     "${name} needs to give ${units} dogs ${per_unit} treats each. ${subject} has already given out ${given1} treats, then ${given2} more. How many treats are left to give?"
+  ],
+  "scattered_numbers": [
+    "Every day, ${name} feeds each of ${his_her} ${animals} ${cups_per} cups of mixed feed, containing seeds, vegetables and nutrients to help keep them healthy. ${subj} gives the ${animals} their feed in three separate meals. In the morning, ${subject} gives ${his_her} flock ${morning} cups of feed. In the afternoon, ${subject} gives ${his_her} ${animals} another ${afternoon} cups of feed. How many cups of feed does ${subject} need to give ${his_her} ${animals} in the final meal of the day if the size of ${name}'s flock is ${count} ${animals}?",
+    "${name} has ${count} ${animals} that each need ${cups_per} cups of feed daily. In the morning, ${subject} gives them ${morning} cups. In the afternoon, ${subject} gives them ${afternoon} cups. How many cups are needed in the evening meal?",
+    "Each of ${name}'s ${count} ${animals} requires ${cups_per} cups of feed per day. ${subj} has already given ${morning} cups in the morning and ${afternoon} cups in the afternoon. How many cups remain for the final feeding?",
+    "${name} cares for ${count} ${animals}. Each one needs ${cups_per} cups of feed daily. So far today, ${subject} has given ${morning} cups at breakfast and ${afternoon} cups at lunch. How many cups are still needed?"
   ]
 }

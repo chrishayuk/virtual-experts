@@ -1,8 +1,8 @@
 {
   "templates": [
-    "${name} started with $${start} in savings that ${subject} had been building up for months by working part-time. ${subj} spent $${exp1} on ${cat1}, $${exp2} on ${cat2}, and $${exp3} on ${cat3}. Then ${subject} invested what was left and ${mult_word} ${his_her} money through smart investments. How much does ${name} have now?",
-    "After receiving $${start} as a graduation gift from family and friends, ${name} decided to go shopping to celebrate. ${subj} bought ${cat1} for $${exp1}, ${cat2} for $${exp2}, and ${cat3} for $${exp3}. ${subj} then invested the rest wisely and ${mult_word} it over time. How much money does ${subject} have now?",
-    "${name} had saved up $${start} from ${his_her} part-time job over the summer. ${subj} spent $${exp1} on ${cat1}, then $${exp2} on ${cat2}, and finally $${exp3} on ${cat3}. With the remaining money, ${subject} made an investment that ${mult_word} ${his_her} funds over the following year. What is ${name}'s total now?",
-    "With $${start} to spend from a bonus at work, ${name} first paid $${exp1} for ${cat1} that ${subject} needed. Then ${subject} spent $${exp2} on ${cat2} and $${exp3} on ${cat3}. ${subj} invested the remainder and ${mult_word} it through careful planning. How much does ${name} have in the end?"
+    "${name} started with $${start} in savings. ${subj} spent $${exp1} on ${cat1}, $${exp2} on ${cat2}, and $${exp3} on ${cat3}. Then ${subject} invested what was left and multiplied ${his_her} money ${multiplier} times through smart investments. How much does ${name} have now?",
+    "After receiving $${start} as a gift, ${name} went shopping. ${subj} bought ${cat1} for $${exp1}, ${cat2} for $${exp2}, and ${cat3} for $${exp3}. ${subj} then invested the rest and it grew to ${multiplier} times its value. How much money does ${subject} have now?",
+    "${name} had saved up $${start} from ${his_her} part-time job. ${subj} spent $${exp1} on ${cat1}, then $${exp2} on ${cat2}, and finally $${exp3} on ${cat3}. ${subj} invested the remaining money and it grew ${multiplier}-fold. What is ${name}'s total now?",
+    "With $${start} to spend, ${name} first paid $${exp1} for ${cat1}. Then ${subject} spent $${exp2} on ${cat2} and $${exp3} on ${cat3}. ${subj} invested the remainder and it multiplied ${multiplier} times. How much does ${name} have in the end?"
   ]
 }

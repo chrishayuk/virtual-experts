@@ -13,11 +13,11 @@
     "item": {"path": "items.countable_singular"}
   },
   "trace": [
-    {"op": "init", "var": "material1", "value": "amount"},
+    {"op": "init", "var": "amount", "value": "amount"},
     {"op": "init", "var": "divisor", "value": 2},
-    {"op": "compute", "compute_op": "div", "args": ["material1", "divisor"], "var": "material2"},
-    {"op": "compute", "compute_op": "add", "args": ["material1", "material2"], "var": "total"},
-    {"op": "query", "var": "total"}
+    {"op": "compute", "compute_op": "div", "args": ["amount", "divisor"], "var": "step1"},
+    {"op": "compute", "compute_op": "add", "args": ["amount", "step1"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "amount + amount // 2"
 }

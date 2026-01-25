@@ -19,14 +19,14 @@
     "animals": "animal.name"
   },
   "trace": [
-    {"op": "init", "var": "city1", "value": "count1"},
+    {"op": "init", "var": "count1", "value": "count1"},
     {"op": "init", "var": "factor1", "value": "factor1"},
-    {"op": "compute", "compute_op": "mul", "args": ["city1", "factor1"], "var": "city2"},
+    {"op": "compute", "compute_op": "mul", "args": ["count1", "factor1"], "var": "step1"},
     {"op": "init", "var": "factor2", "value": "factor2"},
-    {"op": "compute", "compute_op": "mul", "args": ["city2", "factor2"], "var": "city3"},
-    {"op": "compute", "compute_op": "add", "args": ["city1", "city2"], "var": "partial"},
-    {"op": "compute", "compute_op": "add", "args": ["partial", "city3"], "var": "total"},
-    {"op": "query", "var": "total"}
+    {"op": "compute", "compute_op": "mul", "args": ["step1", "factor2"], "var": "step2"},
+    {"op": "compute", "compute_op": "add", "args": ["count1", "step1"], "var": "step3"},
+    {"op": "compute", "compute_op": "add", "args": ["step3", "step2"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "count1 + count1 * factor1 + count1 * factor1 * factor2"
 }

@@ -22,11 +22,11 @@
   },
   "trace": [
     {"op": "init", "var": "total", "value": "total"},
-    {"op": "init", "var": "people", "value": "divisor"},
+    {"op": "init", "var": "divisor", "value": "divisor"},
     {"op": "init", "var": "multiplier", "value": "multiplier"},
-    {"op": "compute", "compute_op": "div", "args": ["total", "people"], "var": "per_person"},
-    {"op": "compute", "compute_op": "mul", "args": ["per_person", "multiplier"], "var": "final"},
-    {"op": "query", "var": "final"}
+    {"op": "compute", "compute_op": "div", "args": ["total", "divisor"], "var": "step1"},
+    {"op": "compute", "compute_op": "mul", "args": ["step1", "multiplier"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "per_item * multiplier"
 }

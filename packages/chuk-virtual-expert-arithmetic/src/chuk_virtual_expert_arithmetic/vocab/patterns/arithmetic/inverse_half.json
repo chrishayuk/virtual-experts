@@ -1,0 +1,8 @@
+{
+  "twice_as_much": [
+    "${name} has two ${container}s. The first ${container} has twice as many ${items} as the second ${container}. If the first ${container} has ${first} ${items}, how many ${items} does ${name} have in total?",
+    "There are two ${container}s of ${items}. The first has twice as many as the second. The first ${container} contains ${first} ${items}. How many ${items} are there altogether?",
+    "${name}'s first ${container} has twice as many ${items} as the second. The first has ${first} ${items}. What is the total number of ${items}?",
+    "The first ${container} has twice as many ${items} as the second ${container}. If there are ${first} ${items} in the first ${container}, what is the total count?"
+  ]
+}

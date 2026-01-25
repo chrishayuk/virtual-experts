@@ -20,11 +20,11 @@
     "subject2": "person2.subject"
   },
   "trace": [
-    {"op": "init", "var": "person1", "value": "base"},
+    {"op": "init", "var": "base", "value": "base"},
     {"op": "init", "var": "divisor", "value": 2},
-    {"op": "compute", "compute_op": "div", "args": ["person1", "divisor"], "var": "person2"},
-    {"op": "compute", "compute_op": "add", "args": ["person1", "person2"], "var": "total"},
-    {"op": "query", "var": "total"}
+    {"op": "compute", "compute_op": "div", "args": ["base", "divisor"], "var": "step1"},
+    {"op": "compute", "compute_op": "add", "args": ["base", "step1"], "var": "result"},
+    {"op": "query", "var": "result"}
   ],
   "answer": "base + base // 2"
 }
