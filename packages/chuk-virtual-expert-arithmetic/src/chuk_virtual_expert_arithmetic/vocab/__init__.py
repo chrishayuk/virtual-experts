@@ -50,14 +50,24 @@ class Vocab:
             with open(json_file) as f:
                 self._cache[key] = json.load(f)
 
-        # Load patterns from patterns/ subdirectory
+        # Load patterns from patterns/ subdirectory (organized by expert type)
         patterns_dir = vocab_dir / "patterns"
         if patterns_dir.exists():
             patterns = {}
+            # Load from root (for backwards compatibility)
             for json_file in patterns_dir.glob("*.json"):
                 key = json_file.stem
                 with open(json_file) as f:
                     patterns[key] = json.load(f)
+
+            # Load from subdirectories (organized by expert type)
+            for subdir in patterns_dir.iterdir():
+                if subdir.is_dir():
+                    for json_file in subdir.glob("*.json"):
+                        key = json_file.stem
+                        with open(json_file) as f:
+                            patterns[key] = json.load(f)
+
             self._cache["patterns"] = patterns
 
     def get(self, path: str) -> Any:

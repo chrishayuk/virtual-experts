@@ -1,0 +1,34 @@
+{
+  "name": "entity_find_lose",
+  "expert": "entity_track",
+  "description": "Entity finds and loses items",
+  "pattern": "entity_track",
+  "variant": "find_and_lose",
+  "variables": {
+    "initial": {"type": "int", "min": 10, "max": 35},
+    "found": {"type": "int", "min": 3, "max": 12},
+    "lost": {"type": "int", "min": 2, "max": 8}
+  },
+  "constraints": {
+    "initial + found - lost": {"min": 5}
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "items": {"path": "items.countable"},
+    "find_verb": {"path": "phrases.find_verbs"},
+    "lose_verb": {"path": "phrases.lose_verbs"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subject": "person.subject",
+    "subj": "person.subject|capitalize",
+    "his_her": "person.possessive"
+  },
+  "trace": [
+    {"op": "init", "var": "items", "value": "initial"},
+    {"op": "add_entity", "entity": "items", "amount": "found"},
+    {"op": "consume", "entity": "items", "amount": "lost"},
+    {"op": "query", "var": "items"}
+  ],
+  "answer": "initial + found - lost"
+}

@@ -1,0 +1,35 @@
+{
+  "name": "entity_consume_sequence",
+  "expert": "entity_track",
+  "description": "Entity consumes items multiple times",
+  "pattern": "entity_track",
+  "variant": "consume_sequence",
+  "variables": {
+    "initial": {"type": "int", "min": 15, "max": 40},
+    "consume1": {"type": "int", "min": 2, "max": 8},
+    "consume2": {"type": "int", "min": 2, "max": 8}
+  },
+  "constraints": {
+    "initial - consume1 - consume2": {"min": 3}
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "items": {"path": "items.countable"},
+    "container": {"path": "containers.types"},
+    "eat_verb1": {"path": "phrases.eat_verbs"},
+    "eat_verb2": {"path": "phrases.eat_verbs"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subject": "person.subject",
+    "subj": "person.subject|capitalize",
+    "his_her": "person.possessive"
+  },
+  "trace": [
+    {"op": "init", "var": "items", "value": "initial"},
+    {"op": "consume", "entity": "items", "amount": "consume1"},
+    {"op": "consume", "entity": "items", "amount": "consume2"},
+    {"op": "query", "var": "items"}
+  ],
+  "answer": "initial - consume1 - consume2"
+}

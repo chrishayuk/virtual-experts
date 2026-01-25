@@ -116,17 +116,30 @@ print(result.data)     # TraceResult with answer=60
 ### Data Generation
 
 ```python
-from chuk_virtual_expert_arithmetic import TraceGenerator
+from chuk_virtual_expert_arithmetic.generators import TraceGenerator, SchemaGenerator
 
+# TraceGenerator - High-level API with balanced distribution
 gen = TraceGenerator(seed=42)
 
-# Generate 10 examples per expert type
-examples = gen.generate_all(n_per_type=10)
-print(len(examples))  # 50 (10 x 5 expert types)
+# Generate balanced examples across all expert types
+examples = gen.generate_balanced(n=100)
+# Distribution: arithmetic 30%, entity_track 20%, comparison 15%,
+#               composition 15%, percentage 10%, rate_equation 10%
 
-# Generate specific types
-entity_examples = gen.generate_entity_track(5)
-percentage_examples = gen.generate_percentage(5)
+# Generate specific expert types
+entity_examples = gen.generate_entity_track(10)
+arithmetic_examples = gen.generate_arithmetic(10)
+percentage_examples = gen.generate_percentage(10)
+
+# SchemaGenerator - Low-level schema-based generation
+schema_gen = SchemaGenerator()
+print(schema_gen.schema_names)  # List all 33 available schemas
+
+# Generate from specific schema
+example = schema_gen.generate("price_chain")
+print(example.query)   # The word problem
+print(example.trace)   # The structured trace steps
+print(example.answer)  # The computed answer
 ```
 
 ## Experts
@@ -207,23 +220,121 @@ All experts inherit from `TraceSolverExpert` and share:
 
 ### TraceGenerator
 
-Seed-based generator for training data.
+Seed-based generator for training data. All methods use schema-based generation internally.
 
 **Methods:**
-- `generate_entity_track(n) -> list[dict]` - Entity tracking examples
-- `generate_arithmetic(n) -> list[dict]` - Pure arithmetic examples
-- `generate_percentage(n) -> list[dict]` - Percentage examples
-- `generate_rate_equation(n) -> list[dict]` - Rate equation examples
-- `generate_comparison(n) -> list[dict]` - Comparison examples
-- `generate_all(n_per_type) -> list[dict]` - All types combined
+- `generate_entity_track(n) -> list[TraceExample]` - Entity tracking examples (5 schemas)
+- `generate_arithmetic(n) -> list[TraceExample]` - Pure arithmetic examples (16 schemas)
+- `generate_percentage(n) -> list[TraceExample]` - Percentage examples (4 schemas)
+- `generate_rate_equation(n) -> list[TraceExample]` - Rate equation examples (4 schemas)
+- `generate_comparison(n) -> list[TraceExample]` - Comparison examples (4 schemas)
+- `generate_composition(n) -> list[dict]` - Multi-expert composition examples
+- `generate_all(n_per_type) -> list[TraceExample]` - Equal distribution across types
+- `generate_balanced(n) -> list` - Weighted distribution (recommended for training)
+- `generate_from_schemas(n, schema_names) -> list[TraceExample]` - From specific schemas
+
+### SchemaGenerator
+
+Low-level schema-based generator.
+
+**Methods:**
+- `generate(schema_name) -> TraceExample` - Generate from a specific schema
+- `generate_batch(schema_names, n) -> list[TraceExample]` - Generate batch from schemas
+- `schema_names -> list[str]` - List available schema names (33 total)
 
 ## Package Structure
 
 ```
 src/chuk_virtual_expert_arithmetic/
-  experts/        # TraceSolverExpert subclasses (5 experts)
-  data/           # Training data (calibration, CoT examples, schema)
-  generators/     # Data generation utilities
+  experts/           # TraceSolverExpert subclasses (5 experts)
+  generators/        # Data generation (TraceGenerator, SchemaGenerator)
+  schemas/           # JSON schema definitions (organized by expert)
+    arithmetic/      # 16 arithmetic schemas
+    entity_track/    # 5 entity tracking schemas
+    rate_equation/   # 4 rate equation schemas
+    comparison/      # 4 comparison schemas
+    percentage/      # 4 percentage schemas
+  vocab/             # Vocabulary JSON files for template generation
+    patterns/        # Question templates (organized by expert)
+      arithmetic/
+      entity_track/
+      rate_equation/
+      comparison/
+      percentage/
+    names.json       # Person names and pronouns
+    items.json       # Countable items, products
+    places.json      # Stores, cities, locations
+    phrases.json     # Verbs, units, expressions
+    ...
+  data/              # Training data (calibration, CoT examples)
+```
+
+## Schema-Based Generation
+
+All data generation uses a **schema-driven approach** where patterns are defined in JSON files rather than hardcoded Python.
+
+### Schema Structure
+
+Each schema defines:
+- **Variables** - Random values with ranges and constraints
+- **Vocab** - Vocabulary items to sample (names, items, verbs)
+- **Pattern** - Template name for question generation
+- **Trace** - Structured trace steps to build
+- **Answer** - Expression to compute the answer
+
+Example schema (`schemas/arithmetic/price_chain.json`):
+```json
+{
+  "name": "price_chain",
+  "expert": "arithmetic",
+  "pattern": "price_chain",
+  "variables": {
+    "base": {"type": "int", "min": 10, "max": 100},
+    "tax": {"type": "float", "min": 1.0, "max": 10.0, "precision": 2},
+    "shipping": {"type": "int", "min": 2, "max": 15}
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "item": {"path": "items.countable_singular"},
+    "store": {"path": "places.stores"}
+  },
+  "trace": [
+    {"op": "init", "var": "price", "value": "base"},
+    {"op": "init", "var": "tax", "value": "tax"},
+    {"op": "init", "var": "shipping", "value": "shipping"},
+    {"op": "compute", "compute_op": "add", "args": ["price", "tax"], "var": "with_tax"},
+    {"op": "compute", "compute_op": "add", "args": ["with_tax", "shipping"], "var": "total"},
+    {"op": "query", "var": "total"}
+  ],
+  "answer": "base + tax + shipping"
+}
+```
+
+### Pattern Templates
+
+Patterns define question templates with variable substitution:
+
+```json
+{
+  "templates": [
+    "${name} bought ${a_item} at ${store} for $${base}. With $${tax} tax and $${shipping} ${fee}, what's the total?",
+    "At ${store}, ${name} found ${a_item} for $${base}. After adding $${tax} tax and $${shipping} shipping, how much did ${subject} pay?"
+  ]
+}
+```
+
+### Adding New Schemas
+
+1. Create a JSON file in the appropriate `schemas/{expert}/` directory
+2. Create a pattern file in `vocab/patterns/{expert}/` if needed
+3. The schema will be automatically loaded by `SchemaGenerator`
+
+```python
+# Your new schema is immediately available
+from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+gen = SchemaGenerator()
+example = gen.generate("my_new_schema")
 ```
 
 ## Development

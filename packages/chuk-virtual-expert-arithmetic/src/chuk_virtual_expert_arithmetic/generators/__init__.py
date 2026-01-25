@@ -13,22 +13,16 @@ Usage (schema-based - data-driven approach):
     examples = gen.generate_batch(n=50)  # Generate batch from all schemas
 """
 
-import types
-
 from chuk_virtual_expert.trace_example import TraceExample
 
-from chuk_virtual_expert_arithmetic.generators import (
-    comparison,
-    composition,
-    entity_track,
-    percentage,
-    rate_equation,
-)
+from chuk_virtual_expert_arithmetic.generators import composition
 from chuk_virtual_expert_arithmetic.generators.schema_generator import SchemaGenerator
 
 
-# Schema groups for balanced distribution
-# These map to the old pattern categories for compatibility
+# ============================================================================
+# ARITHMETIC SCHEMA GROUPS
+# ============================================================================
+
 SEQUENTIAL_SCHEMAS = [
     "price_chain",
     "subtract_chain",
@@ -55,6 +49,12 @@ GAP_CLOSING_SCHEMAS = [
     "conditional_rate",
     "fraction_simple",
     "shopping_spree",
+    # GSM-8K style patterns
+    "material_half",      # "X and half that much" pattern
+    "material_twice",     # "X and twice that much" pattern
+    "decimal_rate_week",  # Decimal rates like "0.5 hours per day"
+    "weekly_sprints",     # "X sprints Y times/week, Z meters each"
+    "total_minus_given",  # "Need X total, given Y and Z, remainder?"
 ]
 
 ALL_ARITHMETIC_SCHEMAS = (
@@ -64,12 +64,66 @@ ALL_ARITHMETIC_SCHEMAS = (
     + GAP_CLOSING_SCHEMAS
 )
 
+# ============================================================================
+# ENTITY TRACK SCHEMA GROUPS
+# ============================================================================
+
+ENTITY_TRACK_SCHEMAS = [
+    "entity_simple_transfer",
+    "entity_consume_sequence",
+    "entity_consume_multiply",
+    "entity_bidirectional",
+    "entity_find_lose",
+]
+
+# ============================================================================
+# RATE EQUATION SCHEMA GROUPS
+# ============================================================================
+
+RATE_EQUATION_SCHEMAS = [
+    "rate_production",
+    "rate_distance",
+    "rate_consumption",
+    "rate_earning",
+]
+
+# ============================================================================
+# COMPARISON SCHEMA GROUPS
+# ============================================================================
+
+COMPARISON_SCHEMAS = [
+    "comparison_times_more",
+    "comparison_sum_diff",
+    "comparison_more_less",
+    "comparison_half",
+]
+
+# ============================================================================
+# PERCENTAGE SCHEMA GROUPS
+# ============================================================================
+
+PERCENTAGE_SCHEMAS = [
+    "percent_off",
+    "percent_increase",
+    "percent_tip",
+    "percent_simple",
+]
+
+# All schemas
+ALL_SCHEMAS = (
+    ALL_ARITHMETIC_SCHEMAS
+    + ENTITY_TRACK_SCHEMAS
+    + RATE_EQUATION_SCHEMAS
+    + COMPARISON_SCHEMAS
+    + PERCENTAGE_SCHEMAS
+)
+
 
 class TraceGenerator:
     """Convenience wrapper for trace generation.
 
     Provides seed-based determinism and unified generate methods.
-    Uses SchemaGenerator for arithmetic patterns (data-driven).
+    Uses SchemaGenerator for all expert types (data-driven).
     """
 
     def __init__(self, seed: int | None = None) -> None:
@@ -77,18 +131,6 @@ class TraceGenerator:
 
         self._rng = random.Random(seed)
         self._schema_gen = SchemaGenerator()
-
-    def _seeded_generate(self, module: types.ModuleType, n: int) -> list[TraceExample]:
-        """Generate with temporarily seeded global random."""
-        import random
-
-        state = random.getstate()
-        random.seed(self._rng.randint(0, 2**32 - 1))
-        try:
-            result: list[TraceExample] = module.generate(n)
-            return result
-        finally:
-            random.setstate(state)
 
     def _seeded_schema_generate(
         self, schemas: list[str], n: int
@@ -104,7 +146,8 @@ class TraceGenerator:
             random.setstate(state)
 
     def generate_entity_track(self, n: int = 10) -> list[TraceExample]:
-        return self._seeded_generate(entity_track, n)
+        """Generate entity tracking examples from schemas."""
+        return self._seeded_schema_generate(ENTITY_TRACK_SCHEMAS, n)
 
     def generate_arithmetic(
         self,
@@ -143,13 +186,16 @@ class TraceGenerator:
             random.setstate(state)
 
     def generate_rate_equation(self, n: int = 10) -> list[TraceExample]:
-        return self._seeded_generate(rate_equation, n)
+        """Generate rate equation examples from schemas."""
+        return self._seeded_schema_generate(RATE_EQUATION_SCHEMAS, n)
 
     def generate_comparison(self, n: int = 10) -> list[TraceExample]:
-        return self._seeded_generate(comparison, n)
+        """Generate comparison examples from schemas."""
+        return self._seeded_schema_generate(COMPARISON_SCHEMAS, n)
 
     def generate_percentage(self, n: int = 10) -> list[TraceExample]:
-        return self._seeded_generate(percentage, n)
+        """Generate percentage examples from schemas."""
+        return self._seeded_schema_generate(PERCENTAGE_SCHEMAS, n)
 
     def generate_composition(self, n: int = 10) -> list[dict]:
         """Generate compositional (multi-expert) examples."""
@@ -184,11 +230,11 @@ class TraceGenerator:
         """Generate examples with balanced distribution weighted by complexity.
 
         Distribution (with composition):
-            entity_track:  20% (5 patterns)
+            entity_track:  20% (5 schema-based patterns)
             arithmetic:    30% (16 schema-based patterns)
-            rate_equation: 10% (4 patterns)
-            comparison:    15% (4 patterns)
-            percentage:    10% (4 patterns, domain ops)
+            rate_equation: 10% (4 schema-based patterns)
+            comparison:    15% (4 schema-based patterns)
+            percentage:    10% (4 schema-based patterns)
             composition:   15% (4 patterns, multi-expert)
 
         Distribution (without composition — backward compatible):
@@ -258,19 +304,20 @@ class TraceGenerator:
             List of TraceExamples generated from schemas
         """
         if schema_names is None:
-            schema_names = ALL_ARITHMETIC_SCHEMAS
+            schema_names = ALL_SCHEMAS
         return self._seeded_schema_generate(schema_names, n)
 
 
 __all__ = [
     "TraceGenerator",
     "SchemaGenerator",
-    "entity_track",
-    "rate_equation",
-    "comparison",
-    "percentage",
     "composition",
+    "ALL_SCHEMAS",
     "ALL_ARITHMETIC_SCHEMAS",
+    "ENTITY_TRACK_SCHEMAS",
+    "RATE_EQUATION_SCHEMAS",
+    "COMPARISON_SCHEMAS",
+    "PERCENTAGE_SCHEMAS",
     "SEQUENTIAL_SCHEMAS",
     "INTERLEAVED_SCHEMAS",
     "LONG_CHAIN_SCHEMAS",

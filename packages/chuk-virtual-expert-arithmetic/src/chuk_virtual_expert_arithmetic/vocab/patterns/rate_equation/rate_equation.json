@@ -1,0 +1,26 @@
+{
+  "rate_time_quantity": [
+    "${a_producer} ${produce_verb} ${rate} ${items} per ${time_unit}. How many ${items} will it produce in ${time} ${time_unit_plural}?",
+    "If ${a_producer} makes ${rate} ${items} every ${time_unit}, how many ${items} does it make in ${time} ${time_unit_plural}?",
+    "${subj} ${produce_verb} ${rate} ${items} each ${time_unit}. After ${time} ${time_unit_plural}, how many ${items} will there be?",
+    "At a rate of ${rate} ${items} per ${time_unit}, how many ${items} are produced in ${time} ${time_unit_plural}?"
+  ],
+  "distance_speed_time": [
+    "${a_vehicle} travels at ${speed} ${distance_unit} per ${time_unit}. How far does it go in ${time} ${time_unit_plural}?",
+    "Moving at ${speed} ${distance_unit}/${time_unit}, ${a_vehicle} travels for ${time} ${time_unit_plural}. What distance does it cover?",
+    "If ${a_vehicle} maintains a speed of ${speed} ${distance_unit} per ${time_unit}, how many ${distance_unit} does it travel in ${time} ${time_unit_plural}?",
+    "At ${speed} ${distance_unit} per ${time_unit}, what distance will ${a_vehicle} cover in ${time} ${time_unit_plural}?"
+  ],
+  "consumption_rate": [
+    "${a_consumer} uses ${rate} ${unit_plural} of ${resource} per ${time_unit}. How many ${unit_plural} will it use in ${time} ${time_unit_plural}?",
+    "If ${a_consumer} consumes ${rate} ${unit_plural} of ${resource} every ${time_unit}, how much ${resource} is used in ${time} ${time_unit_plural}?",
+    "${a_consumer} burns through ${rate} ${unit_plural} of ${resource} each ${time_unit}. What is the total usage over ${time} ${time_unit_plural}?",
+    "At a rate of ${rate} ${unit_plural} per ${time_unit}, how much ${resource} does ${a_consumer} use in ${time} ${time_unit_plural}?"
+  ],
+  "earning_rate": [
+    "${name} earns $${rate} per ${time_unit} at ${his_her} job. How much does ${subject} make in ${time} ${time_unit_plural}?",
+    "Working at $${rate} per ${time_unit}, ${name} puts in ${time} ${time_unit_plural}. What are ${his_her} total earnings?",
+    "If ${name} makes $${rate} every ${time_unit}, how much will ${subject} earn after ${time} ${time_unit_plural}?",
+    "${name} charges $${rate} for each ${time_unit} of work. After ${time} ${time_unit_plural}, how much does ${subject} earn?"
+  ]
+}

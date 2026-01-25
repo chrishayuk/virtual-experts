@@ -1,0 +1,29 @@
+{
+  "name": "rate_distance",
+  "expert": "rate_equation",
+  "description": "Distance = speed x time (travel)",
+  "pattern": "rate_equation",
+  "variant": "distance_speed_time",
+  "variables": {
+    "speed": {"type": "int", "min": 30, "max": 80},
+    "time": {"type": "int", "min": 2, "max": 8}
+  },
+  "vocab": {
+    "vehicle": {"path": "phrases.vehicles"},
+    "time_unit": {"path": "phrases.time_unit_pairs"},
+    "distance_unit": {"path": "phrases.distance_unit_pairs"}
+  },
+  "template_vars": {
+    "a_vehicle": "vehicle.name|with_article",
+    "time_unit": "time_unit.singular",
+    "time_unit_plural": "time_unit.plural",
+    "distance_unit": "distance_unit.plural"
+  },
+  "trace": [
+    {"op": "init", "var": "speed", "value": "speed"},
+    {"op": "init", "var": "time", "value": "time"},
+    {"op": "compute", "compute_op": "mul", "args": ["speed", "time"], "var": "distance"},
+    {"op": "query", "var": "distance"}
+  ],
+  "answer": "speed * time"
+}

@@ -1,0 +1,32 @@
+{
+  "name": "comparison_more_less",
+  "expert": "comparison",
+  "description": "A has X more than B. Total?",
+  "pattern": "comparison",
+  "variant": "more_less",
+  "variables": {
+    "base": {"type": "int", "min": 10, "max": 35},
+    "more": {"type": "int", "min": 5, "max": 18}
+  },
+  "derived": {
+    "amount1": "base + more",
+    "total": "amount1 + base"
+  },
+  "vocab": {
+    "person1": {"type": "person_with_pronouns"},
+    "person2": {"type": "person_with_pronouns"},
+    "items": {"path": "items.countable"}
+  },
+  "template_vars": {
+    "name1": "person1.name",
+    "name2": "person2.name"
+  },
+  "trace": [
+    {"op": "init", "var": "base", "value": "base"},
+    {"op": "init", "var": "factor", "value": "more"},
+    {"op": "compute", "compute_op": "add", "args": ["base", "factor"], "var": "step1"},
+    {"op": "compute", "compute_op": "add", "args": ["step1", "base"], "var": "result"},
+    {"op": "query", "var": "result"}
+  ],
+  "answer": "total"
+}

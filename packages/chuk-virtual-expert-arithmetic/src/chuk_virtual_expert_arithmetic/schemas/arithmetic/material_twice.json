@@ -1,0 +1,23 @@
+{
+  "name": "material_twice",
+  "expert": "arithmetic",
+  "description": "X units of material A and twice that much of material B",
+  "pattern": "material_patterns",
+  "variant": "twice_that_much",
+  "variables": {
+    "amount": {"type": "int", "min": 2, "max": 15}
+  },
+  "vocab": {
+    "material1": {"path": "materials.fabrics"},
+    "material2": {"path": "materials.fabrics"},
+    "item": {"path": "items.countable_singular"}
+  },
+  "trace": [
+    {"op": "init", "var": "material1", "value": "amount"},
+    {"op": "init", "var": "multiplier", "value": 2},
+    {"op": "compute", "compute_op": "mul", "args": ["material1", "multiplier"], "var": "material2"},
+    {"op": "compute", "compute_op": "add", "args": ["material1", "material2"], "var": "total"},
+    {"op": "query", "var": "total"}
+  ],
+  "answer": "amount + amount * 2"
+}

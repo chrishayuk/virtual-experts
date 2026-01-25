@@ -1,0 +1,12 @@
+{
+  "weekly_sprints": [
+    "${name} decides to run ${sprints_per_session} sprints ${sessions_per_week} times a week. ${subject} runs ${meters_per_sprint} meters each sprint. How many total meters does ${subject} run a week?",
+    "${name} does ${sprints_per_session} sprints ${sessions_per_week} times weekly. Each sprint is ${meters_per_sprint} meters. What's the total distance per week?",
+    "Every week, ${name} runs ${sprints_per_session} sprints ${sessions_per_week} times. Each sprint covers ${meters_per_sprint} meters. How many meters in total?",
+    "${name} practices sprinting ${sessions_per_week} times a week, doing ${sprints_per_session} sprints each time. If each sprint is ${meters_per_sprint} meters, what is the weekly total?"
+  ],
+  "weekly_laps": [
+    "${name} swims ${laps_per_session} laps ${sessions_per_week} times a week. Each lap is ${meters_per_lap} meters. How many meters does ${subject} swim weekly?",
+    "Every week, ${name} goes to the pool ${sessions_per_week} times and swims ${laps_per_session} laps each visit. If a lap is ${meters_per_lap} meters, what's the total distance?"
+  ]
+}

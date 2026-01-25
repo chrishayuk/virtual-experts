@@ -1,0 +1,41 @@
+{
+  "name": "total_minus_given",
+  "expert": "arithmetic",
+  "description": "Calculate total needed, subtract what's already given, find remainder",
+  "pattern": "remainder_patterns",
+  "variant": "feed_remainder",
+  "variables": {
+    "units": {"type": "int", "min": 15, "max": 25},
+    "per_unit": {"type": "int", "min": 2, "max": 5},
+    "given1": {"type": "int", "min": 10, "max": 20},
+    "given2": {"type": "int", "min": 15, "max": 30}
+  },
+  "derived": {
+    "total_needed": "units * per_unit",
+    "total_given": "given1 + given2",
+    "remainder": "total_needed - total_given"
+  },
+  "constraints": {
+    "total_needed - given1 - given2": {"min": 5}
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "items": {"path": "items.countable"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subject": "person.subject",
+    "his_her": "person.possessive"
+  },
+  "trace": [
+    {"op": "init", "var": "units", "value": "units"},
+    {"op": "init", "var": "per_unit", "value": "per_unit"},
+    {"op": "compute", "compute_op": "mul", "args": ["units", "per_unit"], "var": "total_needed"},
+    {"op": "init", "var": "given1", "value": "given1"},
+    {"op": "init", "var": "given2", "value": "given2"},
+    {"op": "compute", "compute_op": "add", "args": ["given1", "given2"], "var": "total_given"},
+    {"op": "compute", "compute_op": "sub", "args": ["total_needed", "total_given"], "var": "remainder"},
+    {"op": "query", "var": "remainder"}
+  ],
+  "answer": "remainder"
+}

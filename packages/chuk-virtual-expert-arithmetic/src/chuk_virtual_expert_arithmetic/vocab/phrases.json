@@ -166,5 +166,58 @@
     "What's left over?",
     "How much remains?",
     "What do you have remaining?"
+  ],
+  "give_verbs": [
+    "gives", "hands", "passes", "transfers", "shares"
+  ],
+  "eat_verbs": [
+    "eats", "consumes", "uses", "takes"
+  ],
+  "find_verbs": [
+    "finds", "discovers", "picks up", "comes across"
+  ],
+  "lose_verbs": [
+    "loses", "drops", "misplaces", "accidentally loses"
+  ],
+  "producers": [
+    {"name": "printer", "verb": "prints"},
+    {"name": "factory", "verb": "makes"},
+    {"name": "machine", "verb": "produces"},
+    {"name": "bakery", "verb": "bakes"},
+    {"name": "workshop", "verb": "crafts"}
+  ],
+  "vehicles": [
+    {"name": "car", "article": "a"},
+    {"name": "train", "article": "a"},
+    {"name": "bus", "article": "a"},
+    {"name": "cyclist", "article": "a"},
+    {"name": "airplane", "article": "an"}
+  ],
+  "consumers": [
+    {"name": "car", "article": "a"},
+    {"name": "heater", "article": "a"},
+    {"name": "generator", "article": "a"},
+    {"name": "machine", "article": "a"},
+    {"name": "pool", "article": "a"}
+  ],
+  "resources": [
+    {"name": "fuel", "unit": "liters"},
+    {"name": "gas", "unit": "units"},
+    {"name": "water", "unit": "gallons"},
+    {"name": "electricity", "unit": "kilowatts"}
+  ],
+  "restaurants": [
+    "restaurant", "cafe", "diner", "bistro", "pizzeria"
+  ],
+  "time_unit_pairs": [
+    {"singular": "minute", "plural": "minutes"},
+    {"singular": "hour", "plural": "hours"},
+    {"singular": "day", "plural": "days"},
+    {"singular": "week", "plural": "weeks"}
+  ],
+  "distance_unit_pairs": [
+    {"singular": "km", "plural": "km"},
+    {"singular": "mile", "plural": "miles"},
+    {"singular": "meter", "plural": "meters"}
   ]
 }

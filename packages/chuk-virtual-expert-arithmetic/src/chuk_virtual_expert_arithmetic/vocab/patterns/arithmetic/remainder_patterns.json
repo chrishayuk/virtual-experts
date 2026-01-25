@@ -1,0 +1,8 @@
+{
+  "feed_remainder": [
+    "Every day, ${name} feeds each of ${his_her} ${units} chickens ${per_unit} cups of feed. In the morning, ${subject} gives them ${given1} cups. In the afternoon, ${subject} gives them ${given2} cups. How many cups does ${subject} need for the final meal?",
+    "${name} has ${units} plants that each need ${per_unit} cups of water daily. ${subject} waters them ${given1} cups in the morning and ${given2} cups at noon. How many cups are needed in the evening?",
+    "A classroom has ${units} students who each need ${per_unit} pencils. The teacher hands out ${given1} pencils first, then ${given2} more. How many pencils are still needed?",
+    "${name} needs to give ${units} dogs ${per_unit} treats each. ${subject} has already given out ${given1} treats, then ${given2} more. How many treats are left to give?"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "times_more": [
+    "${name1} has ${multiplier} times as many ${items} as ${name2}. If ${name2} has ${base} ${items}, how many more ${items} does ${name1} have than ${name2}?",
+    "With ${multiplier} times the number of ${items} that ${name2} has, ${name1} has quite a collection. ${name2} has ${base} ${items}. How many more does ${name1} have?",
+    "${name2} owns ${base} ${items}. ${name1} owns ${multiplier} times as many. What is the difference between their collections?",
+    "If ${name1} has ${multiplier} times as many ${items} as ${name2}, and ${name2} has ${base}, how many more ${items} does ${name1} have?"
+  ],
+  "sum_and_difference": [
+    "${name1} and ${name2} have ${total} ${items} together. ${name1} has ${diff} more than ${name2}. How many ${items} does ${name1} have?",
+    "Between ${name1} and ${name2}, there are ${total} ${items} in total. If ${name1} has ${diff} more than ${name2}, how many does ${name1} have?",
+    "The combined collection of ${name1} and ${name2} is ${total} ${items}. ${name1}'s collection is ${diff} larger than ${name2}'s. How many ${items} does ${name1} have?",
+    "Together, ${name1} and ${name2} own ${total} ${items}. ${name1} has ${diff} more. What is ${name1}'s count?"
+  ],
+  "more_less": [
+    "${name1} has ${more} more ${items} than ${name2}. ${name2} has ${base} ${items}. How many ${items} do they have together?",
+    "With ${more} more ${items} than ${name2}, ${name1} has quite a few. ${name2} has ${base}. What is their combined total?",
+    "${name2} owns ${base} ${items}. ${name1} owns ${more} more than ${name2}. How many ${items} do they have in total?",
+    "If ${name2} has ${base} ${items} and ${name1} has ${more} more, what is the total number of ${items} between them?"
+  ],
+  "half_as_many": [
+    "${name1} has half as many ${items} as ${name2}. ${name2} has ${base} ${items}. How many more ${items} does ${name2} have than ${name1}?",
+    "With only half the ${items} that ${name2} has, ${name1} has fewer. ${name2} has ${base}. What is the difference?",
+    "${name2} owns ${base} ${items}. ${name1} owns half as many. How many more does ${name2} have?",
+    "If ${name1} has half of what ${name2} has, and ${name2} has ${base} ${items}, how many more ${items} does ${name2} have?"
+  ]
+}

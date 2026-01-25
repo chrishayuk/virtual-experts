@@ -1,0 +1,26 @@
+{
+  "percent_off": [
+    "${a_item} costs $${price} at the ${store}. It's currently ${percent}% off for the sale. What is the sale price?",
+    "The regular price of ${a_item} is $${price}. With a ${percent}% discount, what does it cost now?",
+    "At ${store}, ${a_item} that normally costs $${price} is on sale for ${percent}% off. What's the new price?",
+    "During the sale at ${store}, ${a_item} priced at $${price} is ${percent}% off. How much does it cost?"
+  ],
+  "percent_increase": [
+    "A stock worth $${base} increases by ${percent}%. What is its new value?",
+    "An investment of $${base} grows by ${percent}%. What is it worth now?",
+    "If something valued at $${base} increases by ${percent}%, what is the new value?",
+    "After a ${percent}% increase, what is the value of something that was worth $${base}?"
+  ],
+  "tip_calculation": [
+    "Your bill at the ${restaurant} is $${bill}. You want to leave a ${percent}% tip. How much is the tip?",
+    "After a meal costing $${bill}, you decide to tip ${percent}%. How much tip do you leave?",
+    "The total bill at ${restaurant} comes to $${bill}. If you tip ${percent}%, how much is the tip?",
+    "At ${restaurant}, your bill is $${bill}. You leave a ${percent}% tip. What is the tip amount?"
+  ],
+  "simple_percent": [
+    "What is ${percent}% of ${whole}?",
+    "Calculate ${percent}% of ${whole}.",
+    "Find ${percent}% of ${whole}.",
+    "If you take ${percent}% of ${whole}, what do you get?"
+  ]
+}

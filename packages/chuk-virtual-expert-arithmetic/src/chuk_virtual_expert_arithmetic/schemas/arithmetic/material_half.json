@@ -1,0 +1,23 @@
+{
+  "name": "material_half",
+  "expert": "arithmetic",
+  "description": "X units of material A and half that much of material B",
+  "pattern": "material_patterns",
+  "variant": "half_that_much",
+  "variables": {
+    "amount": {"type": "int", "min": 2, "max": 20, "multiple_of": 2}
+  },
+  "vocab": {
+    "material1": {"path": "materials.fabrics"},
+    "material2": {"path": "materials.fabrics"},
+    "item": {"path": "items.countable_singular"}
+  },
+  "trace": [
+    {"op": "init", "var": "material1", "value": "amount"},
+    {"op": "init", "var": "divisor", "value": 2},
+    {"op": "compute", "compute_op": "div", "args": ["material1", "divisor"], "var": "material2"},
+    {"op": "compute", "compute_op": "add", "args": ["material1", "material2"], "var": "total"},
+    {"op": "query", "var": "total"}
+  ],
+  "answer": "amount + amount // 2"
+}

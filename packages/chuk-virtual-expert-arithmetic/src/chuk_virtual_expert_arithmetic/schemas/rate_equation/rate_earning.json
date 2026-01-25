@@ -1,0 +1,29 @@
+{
+  "name": "rate_earning",
+  "expert": "rate_equation",
+  "description": "Earnings = rate x time (income)",
+  "pattern": "rate_equation",
+  "variant": "earning_rate",
+  "variables": {
+    "rate": {"type": "int", "min": 10, "max": 50},
+    "time": {"type": "int", "min": 2, "max": 10}
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "time_unit": {"path": "phrases.time_unit_pairs"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subject": "person.subject",
+    "his_her": "person.possessive",
+    "time_unit": "time_unit.singular",
+    "time_unit_plural": "time_unit.plural"
+  },
+  "trace": [
+    {"op": "init", "var": "rate", "value": "rate"},
+    {"op": "init", "var": "time", "value": "time"},
+    {"op": "compute", "compute_op": "mul", "args": ["rate", "time"], "var": "total"},
+    {"op": "query", "var": "total"}
+  ],
+  "answer": "rate * time"
+}

@@ -1,0 +1,32 @@
+{
+  "name": "comparison_sum_diff",
+  "expert": "comparison",
+  "description": "Together X, A has Y more. How many does A have?",
+  "pattern": "comparison",
+  "variant": "sum_and_difference",
+  "variables": {
+    "b": {"type": "int", "min": 10, "max": 30},
+    "diff": {"type": "int", "min": 5, "max": 15}
+  },
+  "derived": {
+    "a": "b + diff",
+    "total": "a + b"
+  },
+  "vocab": {
+    "person1": {"type": "person_with_pronouns"},
+    "person2": {"type": "person_with_pronouns"},
+    "items": {"path": "items.countable"}
+  },
+  "template_vars": {
+    "name1": "person1.name",
+    "name2": "person2.name"
+  },
+  "trace": [
+    {"op": "init", "var": "total", "value": "total"},
+    {"op": "init", "var": "factor", "value": "diff"},
+    {"op": "compute", "compute_op": "add", "args": ["total", "factor"], "var": "step1"},
+    {"op": "compute", "compute_op": "div", "args": ["step1", 2], "var": "result"},
+    {"op": "query", "var": "result"}
+  ],
+  "answer": "a"
+}

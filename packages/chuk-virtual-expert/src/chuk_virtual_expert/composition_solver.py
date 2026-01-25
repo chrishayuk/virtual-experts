@@ -10,8 +10,9 @@ Format:
         {"expert": "arithmetic", "trace": [...]},
     ]
 
-Wiring: InitStep with source="prev.result" gets the previous sub-trace's
-query result substituted as its value before execution.
+Wiring: InitStep with source field gets a previous sub-trace's result:
+  - "prev.result": The immediately previous sub-trace's query result
+  - "sub0.result", "sub1.result", etc.: Specific sub-trace by index
 """
 
 from __future__ import annotations
@@ -43,7 +44,8 @@ class CompositionSolver:
                 expert="composed",
             )
 
-        prev_result: Any = None
+        # Track all sub-trace results for multi-value wiring
+        all_results: list[Any] = []
 
         for i, sub in enumerate(sub_traces):
             expert_name = sub.get("expert", "unknown")
@@ -68,8 +70,8 @@ class CompositionSolver:
                     steps_executed=i,
                 )
 
-            # Resolve source references
-            steps = self._resolve_sources(steps, prev_result)
+            # Resolve source references (prev.result, sub0.result, sub1.result, etc.)
+            steps = self._resolve_sources(steps, all_results)
 
             # Get expert
             expert = self._registry.get(expert_name)
@@ -99,24 +101,40 @@ class CompositionSolver:
                     steps_executed=i,
                 )
 
-            prev_result = result.answer
+            all_results.append(result.answer)
 
         return TraceResult(
             success=True,
-            answer=prev_result,
+            answer=all_results[-1] if all_results else None,
             expert="composed",
             steps_executed=len(sub_traces),
         )
 
-    def _resolve_sources(self, steps: list, prev_result: Any) -> list:
-        """Replace source references with resolved values."""
+    def _resolve_sources(self, steps: list, all_results: list[Any]) -> list:
+        """Replace source references with resolved values.
+
+        Supports:
+          - "prev.result": The immediately previous sub-trace's result
+          - "sub0.result", "sub1.result", etc.: Specific sub-trace by index
+        """
+        import re
+
         resolved = []
         for step in steps:
-            if isinstance(step, InitStep) and step.source == "prev.result":
-                if prev_result is None:
-                    resolved.append(InitStep(var=step.var, value=0))
-                else:
-                    resolved.append(InitStep(var=step.var, value=prev_result))
+            if isinstance(step, InitStep) and step.source:
+                value = 0  # Default if source can't be resolved
+
+                if step.source == "prev.result":
+                    # Previous sub-trace result
+                    if all_results:
+                        value = all_results[-1]
+                elif m := re.match(r"sub(\d+)\.result", step.source):
+                    # Specific sub-trace by index (sub0.result, sub1.result, etc.)
+                    idx = int(m.group(1))
+                    if 0 <= idx < len(all_results):
+                        value = all_results[idx]
+
+                resolved.append(InitStep(var=step.var, value=value))
             else:
                 resolved.append(step)
         return resolved

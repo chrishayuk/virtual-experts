@@ -1,0 +1,32 @@
+{
+  "name": "weekly_sprints",
+  "expert": "arithmetic",
+  "description": "X sprints Y times per week, Z meters each sprint",
+  "pattern": "activity_patterns",
+  "variant": "weekly_sprints",
+  "variables": {
+    "sprints_per_session": {"type": "int", "min": 2, "max": 5},
+    "sessions_per_week": {"type": "int", "min": 2, "max": 5},
+    "meters_per_sprint": {"type": "int", "min": 40, "max": 100, "multiple_of": 10}
+  },
+  "derived": {
+    "total_sprints": "sprints_per_session * sessions_per_week",
+    "total_meters": "total_sprints * meters_per_sprint"
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subject": "person.subject"
+  },
+  "trace": [
+    {"op": "init", "var": "sprints", "value": "sprints_per_session"},
+    {"op": "init", "var": "sessions", "value": "sessions_per_week"},
+    {"op": "compute", "compute_op": "mul", "args": ["sprints", "sessions"], "var": "total_sprints"},
+    {"op": "init", "var": "meters", "value": "meters_per_sprint"},
+    {"op": "compute", "compute_op": "mul", "args": ["total_sprints", "meters"], "var": "total"},
+    {"op": "query", "var": "total"}
+  ],
+  "answer": "total_meters"
+}

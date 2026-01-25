@@ -1,0 +1,30 @@
+{
+  "name": "comparison_half",
+  "expert": "comparison",
+  "description": "A has half as many as B. How many more does B have?",
+  "pattern": "comparison",
+  "variant": "half_as_many",
+  "variables": {
+    "base": {"type": "int", "min": 10, "max": 50, "multiple_of": 2}
+  },
+  "derived": {
+    "half": "base // 2"
+  },
+  "vocab": {
+    "person1": {"type": "person_with_pronouns"},
+    "person2": {"type": "person_with_pronouns"},
+    "items": {"path": "items.countable"}
+  },
+  "template_vars": {
+    "name1": "person1.name",
+    "name2": "person2.name"
+  },
+  "trace": [
+    {"op": "init", "var": "base", "value": "base"},
+    {"op": "init", "var": "factor", "value": 2},
+    {"op": "compute", "compute_op": "div", "args": ["base", "factor"], "var": "step1"},
+    {"op": "compute", "compute_op": "sub", "args": ["base", "step1"], "var": "result"},
+    {"op": "query", "var": "result"}
+  ],
+  "answer": "half"
+}

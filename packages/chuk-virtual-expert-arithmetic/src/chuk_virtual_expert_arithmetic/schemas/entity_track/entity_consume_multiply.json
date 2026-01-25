@@ -1,0 +1,37 @@
+{
+  "name": "entity_consume_multiply",
+  "expert": "entity_track",
+  "description": "Consume items then sell remainder",
+  "pattern": "entity_track",
+  "variant": "consume_then_multiply",
+  "variables": {
+    "initial": {"type": "int", "min": 15, "max": 35},
+    "consume1": {"type": "int", "min": 2, "max": 6},
+    "consume2": {"type": "int", "min": 2, "max": 6},
+    "price": {"type": "int", "min": 2, "max": 8}
+  },
+  "constraints": {
+    "initial - consume1 - consume2": {"min": 5}
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "items": {"path": "items.countable"},
+    "eat_verb1": {"path": "phrases.eat_verbs"},
+    "eat_verb2": {"path": "phrases.eat_verbs"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subject": "person.subject",
+    "subj": "person.subject|capitalize",
+    "his_her": "person.possessive"
+  },
+  "trace": [
+    {"op": "init", "var": "items", "value": "initial"},
+    {"op": "consume", "entity": "items", "amount": "consume1"},
+    {"op": "consume", "entity": "items", "amount": "consume2"},
+    {"op": "init", "var": "price", "value": "price"},
+    {"op": "compute", "compute_op": "mul", "args": ["items", "price"], "var": "revenue"},
+    {"op": "query", "var": "revenue"}
+  ],
+  "answer": "(initial - consume1 - consume2) * price"
+}

@@ -1,0 +1,32 @@
+{
+  "simple_transfer": [
+    "${name1} has ${initial} ${items} that ${subject1} has been collecting for a while. ${name1} ${give_verb} ${transfer} of them to ${name2} as a gift. How many ${items} does ${name1} have now?",
+    "${name1} started the day with ${initial} ${items}. Later, ${subject1} ${give_verb} ${transfer} to ${name2}. How many ${items} does ${name1} have left?",
+    "After counting ${his_her1} collection, ${name1} has ${initial} ${items}. ${subj1} ${give_verb} ${transfer} to ${name2}. How many ${items} does ${name1} still have?",
+    "${name1} owns ${initial} ${items}. ${subj1} decides to ${give_verb} ${transfer} to ${name2}. How many ${items} does ${name1} have remaining?"
+  ],
+  "consume_sequence": [
+    "${name} has ${initial} ${items} in ${his_her} ${container}. ${subj} ${eat_verb1} ${consume1} in the morning and then ${eat_verb2} ${consume2} in the afternoon. How many ${items} does ${name} have left?",
+    "There are ${initial} ${items} on ${name}'s ${container}. ${subj} ${eat_verb1} ${consume1} before lunch and ${eat_verb2} ${consume2} after dinner. How many ${items} remain?",
+    "${name} bought ${initial} ${items} from the store. ${subj} ${eat_verb1} ${consume1} yesterday and ${eat_verb2} ${consume2} today. How many ${items} does ${subject} have now?",
+    "Starting with ${initial} ${items}, ${name} ${eat_verb1} ${consume1} and later ${eat_verb2} ${consume2}. How many ${items} are left?"
+  ],
+  "consume_then_multiply": [
+    "${name} has ${initial} ${items} that ${subject} collected. ${subj} ${eat_verb1} ${consume1} for a snack and ${eat_verb2} ${consume2} as a treat. ${subj} sells the rest for $${price} each at the market. How much money does ${name} make?",
+    "After gathering ${initial} ${items}, ${name} ${eat_verb1} ${consume1} and ${eat_verb2} ${consume2}. ${subj} then sells the remaining ${items} for $${price} each. What is ${name}'s total earnings?",
+    "${name} started with ${initial} ${items}. After eating ${consume1} and giving away ${consume2}, ${subject} sells each remaining one for $${price}. How much does ${name} earn?",
+    "With ${initial} ${items}, ${name} ${eat_verb1} ${consume1} and ${eat_verb2} ${consume2}. The rest are sold at $${price} each. How much money does ${subject} get?"
+  ],
+  "bidirectional_transfer": [
+    "${name1} has ${initial1} ${items} and ${name2} has ${initial2}. ${name1} ${give_verb1} ${transfer1} to ${name2}. Then ${name2} ${give_verb2} ${transfer2} back to ${name1}. How many ${items} does ${name1} have now?",
+    "Starting out, ${name1} has ${initial1} ${items} while ${name2} has ${initial2}. ${name1} shares ${transfer1} with ${name2}, but ${name2} returns ${transfer2}. How many ${items} does ${name1} end up with?",
+    "${name1} owns ${initial1} ${items} and ${name2} owns ${initial2}. First, ${name1} gives ${transfer1} to ${name2}. Then ${name2} gives back ${transfer2}. How many ${items} does ${name1} have in the end?",
+    "Between ${name1} with ${initial1} ${items} and ${name2} with ${initial2}, ${name1} ${give_verb1} ${transfer1} away. ${name2} ${give_verb2} ${transfer2} back. What is ${name1}'s final count?"
+  ],
+  "find_and_lose": [
+    "${name} has ${initial} ${items}. While walking in the park, ${subject} ${find_verb} ${found} more. Unfortunately, ${subject} later ${lose_verb} ${lost}. How many ${items} does ${name} have now?",
+    "Starting with ${initial} ${items}, ${name} ${find_verb} ${found} additional ones. But then ${subject} ${lose_verb} ${lost}. How many ${items} does ${name} end up with?",
+    "${name} counted ${initial} ${items} this morning. ${subj} ${find_verb} ${found} more during the day but ${lose_verb} ${lost}. How many ${items} does ${subject} have?",
+    "After having ${initial} ${items}, ${name} ${find_verb} ${found} and then ${lose_verb} ${lost}. What is ${name}'s total now?"
+  ]
+}

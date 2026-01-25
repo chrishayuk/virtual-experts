@@ -18,7 +18,18 @@ from pathlib import Path
 from typing import Any
 
 from chuk_virtual_expert.trace_example import TraceExample
-from chuk_virtual_expert.trace_models import ComputeOp, ComputeStep, InitStep, QueryStep
+from chuk_virtual_expert.trace_models import (
+    AddEntityStep,
+    ComputeOp,
+    ComputeStep,
+    ConsumeStep,
+    InitStep,
+    PercentIncreaseStep,
+    PercentOffStep,
+    PercentOfStep,
+    QueryStep,
+    TransferStep,
+)
 
 from chuk_virtual_expert_arithmetic.vocab import get_vocab
 
@@ -31,16 +42,26 @@ class SchemaGenerator:
         self._schemas = self._load_schemas()
 
     def _load_schemas(self) -> dict[str, dict]:
-        """Load all schemas from the schemas directory."""
+        """Load all schemas from the schemas directory and subdirectories."""
         schemas = {}
         schema_dir = Path(__file__).parent.parent / "schemas"
 
         if schema_dir.exists():
+            # Load from root (for backwards compatibility)
             for schema_file in schema_dir.glob("*.json"):
                 with open(schema_file) as f:
                     schema = json.load(f)
                     name = schema.get("name", schema_file.stem)
                     schemas[name] = schema
+
+            # Load from subdirectories (organized by expert type)
+            for subdir in schema_dir.iterdir():
+                if subdir.is_dir():
+                    for schema_file in subdir.glob("*.json"):
+                        with open(schema_file) as f:
+                            schema = json.load(f)
+                            name = schema.get("name", schema_file.stem)
+                            schemas[name] = schema
 
         return schemas
 
@@ -125,8 +146,11 @@ class SchemaGenerator:
         # Compute answer
         answer = self._compute_answer(schema.get("answer", "0"), variables)
 
+        # Get expert from schema, default to "arithmetic"
+        expert_name = schema.get("expert", "arithmetic")
+
         return TraceExample(
-            expert="arithmetic",
+            expert=expert_name,
             query=question,
             trace=trace,
             answer=answer,
@@ -195,15 +219,25 @@ class SchemaGenerator:
     def _compute_derived(
         self, derived_specs: dict[str, str], variables: dict[str, Any]
     ) -> dict[str, Any]:
-        """Compute derived variables from expressions."""
+        """Compute derived variables from expressions.
+
+        Expressions are evaluated in order, so later expressions can
+        reference earlier derived values.
+        """
         derived = {}
+        # Create a combined context that includes both base variables and derived
+        context = dict(variables)
 
         for name, expr in derived_specs.items():
             try:
-                # Simple expression evaluation with variables
-                derived[name] = eval(expr, {"__builtins__": {}}, variables)
+                # Simple expression evaluation with combined context
+                value = eval(expr, {"__builtins__": {}}, context)
+                derived[name] = value
+                # Add to context so later expressions can reference it
+                context[name] = value
             except Exception:
                 derived[name] = 0
+                context[name] = 0
 
         return derived
 
@@ -351,18 +385,67 @@ class SchemaGenerator:
             if op == "init":
                 var_name = spec["var"]
                 value_ref = spec["value"]
-                value = variables.get(value_ref, 0)
+                # Handle literal values vs variable references
+                if isinstance(value_ref, (int, float)):
+                    value = value_ref
+                else:
+                    value = variables.get(value_ref, 0)
                 trace.append(InitStep(var=var_name, value=value))
 
             elif op == "compute":
                 compute_op = ComputeOp(spec["compute_op"])
-                args = spec["args"]
+                # Handle args that can be variable names or literal values
+                args = []
+                for arg in spec["args"]:
+                    if isinstance(arg, (int, float)):
+                        args.append(arg)
+                    else:
+                        args.append(arg)  # Keep var name as-is for solver
                 var_name = spec["var"]
                 trace.append(ComputeStep(compute_op=compute_op, args=args, var=var_name))
 
             elif op == "query":
                 var_name = spec["var"]
                 trace.append(QueryStep(var=var_name))
+
+            # Entity tracking operations
+            elif op == "transfer":
+                from_entity = spec["from_entity"]
+                to_entity = spec["to_entity"]
+                amount_ref = spec["amount"]
+                amount = variables.get(amount_ref, 0) if isinstance(amount_ref, str) else amount_ref
+                trace.append(TransferStep(from_entity=from_entity, to_entity=to_entity, amount=amount))
+
+            elif op == "consume":
+                entity = spec["entity"]
+                amount_ref = spec["amount"]
+                amount = variables.get(amount_ref, 0) if isinstance(amount_ref, str) else amount_ref
+                trace.append(ConsumeStep(entity=entity, amount=amount))
+
+            elif op == "add_entity":
+                entity = spec["entity"]
+                amount_ref = spec["amount"]
+                amount = variables.get(amount_ref, 0) if isinstance(amount_ref, str) else amount_ref
+                trace.append(AddEntityStep(entity=entity, amount=amount))
+
+            # Percentage operations
+            elif op == "percent_off":
+                base = spec["base"]
+                rate = spec["rate"]
+                var_name = spec["var"]
+                trace.append(PercentOffStep(base=base, rate=rate, var=var_name))
+
+            elif op == "percent_increase":
+                base = spec["base"]
+                rate = spec["rate"]
+                var_name = spec["var"]
+                trace.append(PercentIncreaseStep(base=base, rate=rate, var=var_name))
+
+            elif op == "percent_of":
+                base = spec["base"]
+                rate = spec["rate"]
+                var_name = spec["var"]
+                trace.append(PercentOfStep(base=base, rate=rate, var=var_name))
 
         return trace
 

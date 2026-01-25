@@ -1,0 +1,30 @@
+{
+  "name": "rate_production",
+  "expert": "rate_equation",
+  "description": "Rate x time = quantity (production)",
+  "pattern": "rate_equation",
+  "variant": "rate_time_quantity",
+  "variables": {
+    "rate": {"type": "int", "min": 5, "max": 50},
+    "time": {"type": "int", "min": 2, "max": 12}
+  },
+  "vocab": {
+    "producer": {"path": "phrases.producers"},
+    "items": {"path": "items.manufactured"},
+    "time_unit": {"path": "phrases.time_unit_pairs"}
+  },
+  "template_vars": {
+    "a_producer": "producer.name|with_article",
+    "subj": "It",
+    "produce_verb": "producer.verb",
+    "time_unit": "time_unit.singular",
+    "time_unit_plural": "time_unit.plural"
+  },
+  "trace": [
+    {"op": "init", "var": "rate", "value": "rate"},
+    {"op": "init", "var": "time", "value": "time"},
+    {"op": "compute", "compute_op": "mul", "args": ["rate", "time"], "var": "quantity"},
+    {"op": "query", "var": "quantity"}
+  ],
+  "answer": "rate * time"
+}

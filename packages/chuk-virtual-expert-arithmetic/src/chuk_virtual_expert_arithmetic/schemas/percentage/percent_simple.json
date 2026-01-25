@@ -1,0 +1,20 @@
+{
+  "name": "percent_simple",
+  "expert": "percentage",
+  "description": "What is X% of Y?",
+  "pattern": "percentage",
+  "variant": "simple_percent",
+  "variables": {
+    "whole": {"type": "int", "min": 50, "max": 200},
+    "percent": {"type": "choice", "options": [10, 20, 25, 50, 75]}
+  },
+  "vocab": {},
+  "template_vars": {},
+  "trace": [
+    {"op": "init", "var": "whole", "value": "whole"},
+    {"op": "init", "var": "rate", "value": "percent"},
+    {"op": "percent_of", "base": "whole", "rate": "rate", "var": "result"},
+    {"op": "query", "var": "result"}
+  ],
+  "answer": "whole * percent / 100"
+}
