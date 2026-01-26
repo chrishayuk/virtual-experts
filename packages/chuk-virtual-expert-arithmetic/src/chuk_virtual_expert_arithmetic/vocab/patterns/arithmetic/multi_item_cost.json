@@ -1,0 +1,12 @@
+{
+  "templates": [
+    "One ${item1} costs $${price1} and one ${item2} costs $${price2}. How much do ${count1} ${item1_plural} and ${count2} ${item2_plural} cost?",
+    "${count1} ${item1_plural} at $${price1} each and ${count2} ${item2_plural} at $${price2} each. What is the total cost?",
+    "If ${item1_plural} cost $${price1} and ${item2_plural} cost $${price2}, how much for ${count1} ${item1_plural} and ${count2} ${item2_plural}?",
+    "At the store, ${item1_plural} are $${price1} each and ${item2_plural} are $${price2} each. How much does it cost to buy ${count1} ${item1_plural} and ${count2} ${item2_plural}?",
+    "For the party, we need ${count1} ${item1_plural} at $${price1} each and ${count2} ${item2_plural} at $${price2} each. What will be the total cost?",
+    "The ${item1_plural} cost $${price1} apiece and the ${item2_plural} cost $${price2} apiece. How much do ${count1} ${item1_plural} and ${count2} ${item2_plural} cost together?",
+    "Each ${item1} is priced at $${price1} and each ${item2} at $${price2}. If we buy ${count1} ${item1_plural} and ${count2} ${item2_plural}, what is the total?",
+    "A bakery sells ${item1_plural} for $${price1} and ${item2_plural} for $${price2}. How much for ${count1} ${item1_plural} and ${count2} ${item2_plural}?"
+  ]
+}

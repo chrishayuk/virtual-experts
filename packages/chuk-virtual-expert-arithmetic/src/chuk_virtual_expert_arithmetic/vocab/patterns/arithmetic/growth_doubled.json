@@ -1,0 +1,11 @@
+{
+  "templates": [
+    "${name} planted a beanstalk. After the first week, it was ${start} inches tall. It ${growth_word} in height the second week. It grew another ${extra} inches in the third week. How tall was the beanstalk after 3 weeks?",
+    "${name} had ${start} dollars. The investment ${growth_word} in value. Then ${subj} added ${extra} more dollars. How much does ${name} have now?",
+    "A tree was ${start} feet tall. It ${growth_word} in size over the summer. In fall, it grew ${extra} more feet. What is its height now?",
+    "${name}'s savings account had $${start}. The interest ${growth_word} the balance. ${subj} then deposited $${extra} more. How much is in the account now?",
+    "Last year, ${name}'s garden had ${start} plants. This year, the number ${growth_word}. ${subj} also planted ${extra} more. How many plants does ${name} have now?",
+    "${name} started with ${start} stickers. After trading, ${subj} ${growth_word} the collection. Then ${subj} found ${extra} more. How many stickers does ${name} have?",
+    "The population of the town was ${start} thousand. It ${growth_word} over the decade. Then ${extra} thousand more people moved in. What is the population now?"
+  ]
+}

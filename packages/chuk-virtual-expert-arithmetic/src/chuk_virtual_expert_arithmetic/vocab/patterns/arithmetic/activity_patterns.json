@@ -14,5 +14,11 @@
   "weekly_laps": [
     "${name} swims ${laps_per_session} laps ${sessions_per_week} times a week. Each lap is ${meters_per_lap} meters. How many meters does ${subject} swim weekly?",
     "Every week, ${name} goes to the pool ${sessions_per_week} times and swims ${laps_per_session} laps each visit. If a lap is ${meters_per_lap} meters, what's the total distance?"
+  ],
+  "gsm8k_style": [
+    "${name} decides to run ${sprints_per_session} sprints ${sessions_per_week} times a week. ${subj} runs ${meters_per_sprint} meters each sprint. How many total meters does ${subject} run a week?",
+    "${name} is training for a race and plans to do ${sprints_per_session} sprints ${sessions_per_week} times weekly. Each sprint covers ${meters_per_sprint} meters. What is the total distance ${subject} covers per week?",
+    "To stay in shape, ${name} jogs ${sprints_per_session} laps around the track ${sessions_per_week} days a week. Each lap is ${meters_per_sprint} meters. How many meters does ${subject} jog weekly?",
+    "${name} goes to the gym ${sessions_per_week} times a week. During each visit, ${subject} does ${sprints_per_session} sets of exercises that burn ${meters_per_sprint} calories each. How many calories does ${subject} burn per week at the gym?"
   ]
 }

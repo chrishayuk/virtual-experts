@@ -126,11 +126,16 @@
     "machine", "team", "worker", "factory", "workshop", "assembly line", "robot", "printer"
   ],
   "multiplier_words": {
-    "2": ["doubled", "tripled"],
-    "3": ["tripled", "grew 3 times"],
-    "4": ["quadrupled", "grew 4 times"],
-    "5": ["grew 5 times", "increased 5-fold"]
+    "2": ["doubled", "grew 2 times", "increased twofold"],
+    "3": ["tripled", "grew 3 times", "increased threefold"],
+    "4": ["quadrupled", "grew 4 times", "increased fourfold"],
+    "5": ["grew 5 times", "increased fivefold"]
   },
+  "growth_verbs": [
+    {"word": "doubled", "factor": 2},
+    {"word": "tripled", "factor": 3},
+    {"word": "quadrupled", "factor": 4}
+  ],
   "fee_types": [
     "shipping", "handling", "delivery", "tax", "processing", "insurance"
   ],

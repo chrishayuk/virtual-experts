@@ -1,0 +1,11 @@
+{
+  "templates": [
+    "${name1} has ${mult_word} as many ${item_plural} as ${name2}. If ${name2} has ${base_amount} ${item_plural}, how many does ${name1} have?",
+    "${name2} owns ${base_amount} ${item_plural}. ${name1} owns ${mult_word} as many. How many ${item_plural} does ${name1} own?",
+    "If ${name2} has ${base_amount} candies and ${name1} has ${mult_word} as many, how many candies does ${name1} have?",
+    "${name1} collected ${mult_word} as many ${item_plural} as ${name2} did. ${name2} collected ${base_amount} ${item_plural}. How many did ${name1} collect?",
+    "${name2} has ${base_amount} ${item_plural} in total. ${name1} has ${mult_word} that number. How many ${item_plural} does ${name1} have?",
+    "In their collection, ${name2} has ${base_amount} ${item_plural}. ${name1}'s collection is ${mult_word} as large. How many ${item_plural} does ${name1} have?",
+    "${name1} always collects ${mult_word} as many ${item_plural} as ${name2}. This week, ${name2} found ${base_amount} ${item_plural}. How many did ${name1} find?"
+  ]
+}

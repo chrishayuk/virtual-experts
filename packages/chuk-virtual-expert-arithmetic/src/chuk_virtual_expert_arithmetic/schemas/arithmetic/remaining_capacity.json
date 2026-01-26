@@ -1,0 +1,27 @@
+{
+  "name": "remaining_capacity",
+  "description": "Calculate how many items fit in remaining capacity: (limit - base) / per_unit",
+  "pattern": "remaining_capacity",
+  "variables": {
+    "limit": {"type": "int", "min": 100, "max": 500},
+    "base": {"type": "int", "min": 50, "max": 200},
+    "per_unit": {"type": "int", "min": 5, "max": 20}
+  },
+  "vocab": {
+    "container": {"type": "choice", "values": ["truck", "elevator", "bridge", "shelf", "boat"]}
+  },
+  "templates": [
+    "A ${container} can hold a maximum of ${limit} pounds. There is already ${base} pounds loaded. Each box weighs ${per_unit} pounds. How many boxes can still be added?",
+    "The ${container} has a weight limit of ${limit} kg. Currently ${base} kg is loaded. If each item weighs ${per_unit} kg, how many more items can fit?",
+    "A ${container} can carry no more than ${limit} pounds. The current load is ${base} pounds. Each package weighs ${per_unit} pounds. What is the maximum number of packages that can be added?"
+  ],
+  "trace": [
+    {"op": "init", "var": "limit", "value": "limit"},
+    {"op": "init", "var": "base", "value": "base"},
+    {"op": "compute", "compute_op": "sub", "args": ["limit", "base"], "var": "step1"},
+    {"op": "init", "var": "per_unit", "value": "per_unit"},
+    {"op": "compute", "compute_op": "div", "args": ["step1", "per_unit"], "var": "result"},
+    {"op": "query", "var": "result"}
+  ],
+  "answer": "(limit - base) / per_unit"
+}

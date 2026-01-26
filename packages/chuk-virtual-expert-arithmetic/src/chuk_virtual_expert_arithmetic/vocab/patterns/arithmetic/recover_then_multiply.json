@@ -1,0 +1,10 @@
+{
+  "templates": [
+    "${name1} had ${mult_word} as many ${item_plural} as ${name2}. Then ${name2} used ${consumed} ${item_plural}. Now ${name2} has ${current} ${item_plural} left. How many ${item_plural} does ${name1} have?",
+    "${name2} had some ${item_plural}, gave away ${consumed}, and has ${current} left. ${name1} has ${mult_word} as many as ${name2} originally had. How many does ${name1} have?",
+    "After giving away ${consumed} ${item_plural}, ${name2} has ${current} left. ${name1} has ${mult_word} what ${name2} started with. How many does ${name1} have?",
+    "${name2} started with some ${item_plural}. After using ${consumed}, ${name2} has ${current} remaining. ${name1} has ${mult_word} the original amount. How many does ${name1} have?",
+    "${name2} lost ${consumed} ${item_plural} and now has ${current}. ${name1} has ${mult_word} as many as ${name2} had before losing any. How many ${item_plural} does ${name1} have?",
+    "Before using ${consumed} ${item_plural}, ${name2} had more. Now ${name2} has ${current}. ${name1} owns ${mult_word} what ${name2} originally possessed. How many does ${name1} own?"
+  ]
+}

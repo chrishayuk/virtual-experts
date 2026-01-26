@@ -19,6 +19,7 @@
   "template_vars": {
     "name": "person.name",
     "subject": "person.subject",
+    "subj": "person.subject|capitalize",
     "possessive": "person.possessive"
   },
   "trace": [

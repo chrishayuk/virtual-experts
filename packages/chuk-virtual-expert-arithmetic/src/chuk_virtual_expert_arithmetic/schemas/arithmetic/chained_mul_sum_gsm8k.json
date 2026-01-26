@@ -1,0 +1,37 @@
+{
+  "name": "chained_mul_sum_gsm8k",
+  "description": "Chained multiplications then sum (GSM-8K people style)",
+  "pattern": "chained_mul_sum",
+  "variant": "gsm8k_style",
+  "variables": {
+    "count1": {"type": "int", "min": 5, "max": 30},
+    "factor1": {"type": "int", "min": 2, "max": 5},
+    "factor2": {"type": "int", "min": 2, "max": 4}
+  },
+  "vocab": {
+    "person1": {"type": "person_with_pronouns"},
+    "person2": {"type": "person_with_pronouns"},
+    "person3": {"type": "person_with_pronouns"},
+    "places": {"path": "places.cities", "sample": 3},
+    "animal": {"path": "animals.farm_animals"},
+    "item": {"path": "items.countable"}
+  },
+  "template_vars": {
+    "place1": "places.0",
+    "place2": "places.1",
+    "place3": "places.2",
+    "animals": "animal.name",
+    "items": "item"
+  },
+  "trace": [
+    {"op": "init", "var": "count1", "value": "count1"},
+    {"op": "init", "var": "factor1", "value": "factor1"},
+    {"op": "compute", "compute_op": "mul", "args": ["count1", "factor1"], "var": "step1"},
+    {"op": "init", "var": "factor2", "value": "factor2"},
+    {"op": "compute", "compute_op": "mul", "args": ["step1", "factor2"], "var": "step2"},
+    {"op": "compute", "compute_op": "add", "args": ["count1", "step1"], "var": "step3"},
+    {"op": "compute", "compute_op": "add", "args": ["step3", "step2"], "var": "result"},
+    {"op": "query", "var": "result"}
+  ],
+  "answer": "count1 + count1 * factor1 + count1 * factor1 * factor2"
+}

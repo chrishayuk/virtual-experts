@@ -1,0 +1,13 @@
+{
+  "templates": [
+    "There are ${groups} schools at a tournament. Each school sent ${subgroups} teams. Each team has ${per_subgroup} players. How many players are there in total?",
+    "A building has ${groups} floors. Each floor has ${subgroups} offices. Each office has ${per_subgroup} employees. How many employees work in the building?",
+    "${groups} buses each have ${subgroups} rows of seats. Each row has ${per_subgroup} seats. How many total seats are there?",
+    "A farm has ${groups} barns. Each barn has ${subgroups} pens. Each pen has ${per_subgroup} animals. How many animals in total?",
+    "The library has ${groups} sections. Each section has ${subgroups} shelves. Each shelf holds ${per_subgroup} books. How many books can the library hold?",
+    "A movie theater has ${groups} screening rooms. Each room has ${subgroups} rows of seats. Each row has ${per_subgroup} seats. What is the total seating capacity?",
+    "${groups} classrooms each have ${subgroups} tables. Each table seats ${per_subgroup} students. How many students can be seated?",
+    "The parking garage has ${groups} levels. Each level has ${subgroups} sections. Each section has ${per_subgroup} parking spots. How many cars can park in the garage?",
+    "A garden has ${groups} plots. Each plot contains ${subgroups} rows. Each row has ${per_subgroup} plants. How many plants are in the garden?"
+  ]
+}

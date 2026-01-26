@@ -1,0 +1,34 @@
+{
+  "name": "twice_relationship",
+  "description": "A has twice/triple what B has, find A: A = B * multiplier",
+  "pattern": "twice_relationship",
+  "variables": {
+    "base_amount": {"type": "int", "min": 5, "max": 50},
+    "multiplier": {"type": "choice", "values": [2, 3, 4]}
+  },
+  "vocab": {
+    "person1": {"type": "person_with_pronouns"},
+    "person2": {"type": "person_with_pronouns"},
+    "item": {"path": "items.countable_singular"}
+  },
+  "template_vars": {
+    "name1": "person1.name",
+    "name2": "person2.name"
+  },
+  "templates": [
+    "${name1} has ${mult_word} as many ${item}s as ${name2}. If ${name2} has ${base_amount} ${item}s, how many does ${name1} have?",
+    "${name2} owns ${base_amount} ${item}s. ${name1} owns ${mult_word} as many. How many ${item}s does ${name1} own?",
+    "If ${name2} has ${base_amount} candies and ${name1} has ${mult_word} as many, how many candies does ${name1} have?",
+    "${name1} collected ${mult_word} as many ${item}s as ${name2} did. ${name2} collected ${base_amount} ${item}s. How many did ${name1} collect?",
+    "${name2} has ${base_amount} ${item}s in total. ${name1} has ${mult_word} that number. How many ${item}s does ${name1} have?",
+    "In their collection, ${name2} has ${base_amount} ${item}s. ${name1}'s collection is ${mult_word} as large. How many ${item}s does ${name1} have?",
+    "${name1} always collects ${mult_word} as many ${item}s as ${name2}. This week, ${name2} found ${base_amount} ${item}s. How many did ${name1} find?"
+  ],
+  "trace": [
+    {"op": "init", "var": "base", "value": "base_amount"},
+    {"op": "init", "var": "multiplier", "value": "multiplier"},
+    {"op": "compute", "compute_op": "mul", "args": ["base", "multiplier"], "var": "result"},
+    {"op": "query", "var": "result"}
+  ],
+  "answer": "base_amount * multiplier"
+}

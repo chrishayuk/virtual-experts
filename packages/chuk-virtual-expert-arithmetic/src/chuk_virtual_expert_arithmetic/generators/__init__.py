@@ -38,8 +38,10 @@ INTERLEAVED_SCHEMAS = [
     "interleaved_mul_mul",
     "parallel_merge",
     "chained_mul_sum",
+    "chained_mul_sum_gsm8k",  # GSM-8K style phrasing with people
     "chained_mul_sum_inverted",  # GSM-8K style inverted phrasing (Toulouse)
     "consume_then_sell",
+    "consume_then_sell_gsm8k",  # GSM-8K style phrasing for consume_then_sell
     "rate_comparison_total",
 ]
 
@@ -72,10 +74,30 @@ GAP_CLOSING_SCHEMAS = [
     "school_supplies",  # School domain
     "school_supplies",  # Duplicate for higher frequency
     "classroom_groups",  # Classroom activities
+    # NEW: 100-sample eval gap-closing patterns
+    "growth_doubled",  # "doubled/tripled" → multiply pattern
+    "growth_doubled",  # Duplicate for higher frequency
+    "average_three",  # Average of three values
+    "remaining_capacity",  # (limit - base) / unit
+    "multi_item_cost",  # n1*p1 + n2*p2 multi-entity
+    "multi_item_cost",  # Duplicate for higher frequency
+    "ratio_split",  # total/(1+r)*r splits
+    "time_from_distance",  # time = distance / speed
+    "time_from_distance",  # Duplicate for higher frequency
+    "twice_relationship",  # "twice as many" → multiply
+    "twice_relationship",  # Duplicate - critical pattern
+    "twice_relationship",  # Triple for even higher frequency
+    "two_period_sum",  # r1*t1 + r2*t2
+    "recover_then_multiply",  # (current + consumed) * mult
+    "nested_groups",  # groups * subgroups * per
 ]
 
 ALL_ARITHMETIC_SCHEMAS = (
-    SEQUENTIAL_SCHEMAS + INTERLEAVED_SCHEMAS + LONG_CHAIN_SCHEMAS + DIVISION_CHAIN_SCHEMAS + GAP_CLOSING_SCHEMAS
+    SEQUENTIAL_SCHEMAS
+    + INTERLEAVED_SCHEMAS
+    + LONG_CHAIN_SCHEMAS
+    + DIVISION_CHAIN_SCHEMAS
+    + GAP_CLOSING_SCHEMAS
 )
 
 # ============================================================================

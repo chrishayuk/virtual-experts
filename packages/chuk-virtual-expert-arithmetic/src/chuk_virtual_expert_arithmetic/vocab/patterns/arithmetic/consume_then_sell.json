@@ -42,5 +42,11 @@
     "${name} makes ${produced} glasses of lemonade every afternoon. ${subj} drinks ${use1} and gives ${use2} to ${his_her} siblings. ${subj} sells the rest at the lemonade stand for $${price} each. How much does ${name} make?",
     "Every day, ${name} prepares ${produced} smoothies at ${his_her} juice bar. After drinking ${use1} and giving ${use2} to staff, ${subject} sells the rest for $${price} each. What are the daily earnings?",
     "The beverage cart makes ${produced} iced teas daily. ${use1} are given as samples and ${use2} are reserved for events. The rest sell for $${price} each. How much money is made per day?"
+  ],
+  "gsm8k_style": [
+    "${name}'s ${animals} ${verb} ${produced} ${product} per day. ${subj} eats ${use1} for breakfast every morning and bakes muffins for ${his_her} friends every day with ${use2}. ${subj} sells the remainder at the farmers' market daily for $${price} per fresh ${product_singular}. How much in dollars does ${subject} make every day at the farmers' market?",
+    "Every day, ${name}'s ${animals} ${verb} exactly ${produced} ${product}. ${subj} typically uses ${use1} for ${his_her} own breakfast and shares ${use2} with the neighbors who stop by. The rest ${subject} takes to market, where ${subject} sells each ${product_singular} for $${price}. What is ${his_her} daily income from the market?",
+    "${name} raises ${animals} on ${his_her} farm. The ${animals} ${verb} ${produced} ${product} daily without fail. ${subj} keeps ${use1} for personal use each morning and gives ${use2} to ${his_her} elderly neighbor. ${subj} sells whatever remains for $${price} per ${product_singular}. How much does ${name} earn daily?",
+    "${name} has a small farm where ${his_her} ${animals} ${verb} ${produced} ${product} each day. ${subj} eats ${use1} and donates ${use2} to the local shelter. The rest are sold at the roadside stand for $${price} apiece. What are ${his_her} daily earnings from ${product} sales?"
   ]
 }

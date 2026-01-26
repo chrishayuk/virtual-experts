@@ -12,15 +12,21 @@
     "The ${place1} has ${count1} ${items} in stock. The ${place2} has ${factor1} times as many, and the ${place3} has ${factor2} times what the ${place2} has. How many ${items} do all locations have combined in their inventory?"
   ],
   "people": [
-    "${person1} has ${count1} ${items} that ${subject1} collected over the years. ${person2} has ${factor1} times as many ${items} as ${person1}. ${person3} has ${factor2} times as many as ${person2}. How many ${items} do the three of them have altogether?",
-    "${person1} collected ${count1} ${items} over the summer vacation. ${person2} collected ${factor1} times as many as ${person1} because ${subject2} had more free time, and ${person3} collected ${factor2} times as many as ${person2}. What is the total number of ${items} they collected?",
-    "In a competition at school, ${person1} won ${count1} ${items} as prizes. ${person2} won ${factor1} times as many as ${person1} because ${subject2} competed more, and ${person3} won ${factor2} times as many as ${person2}. How many ${items} did they win in total?",
-    "${person1} owns ${count1} ${items}. ${his_her1} friend ${person2} owns ${factor1} times that many because ${subject2} has been collecting longer. Their friend ${person3} owns ${factor2} times what ${person2} has. Together, how many ${items} do they own?"
+    "${name1} has ${count1} ${items} that ${subject1} collected over the years. ${name2} has ${factor1} times as many ${items} as ${name1}. ${name3} has ${factor2} times as many as ${name2}. How many ${items} do the three of them have altogether?",
+    "${name1} collected ${count1} ${items} over the summer vacation. ${name2} collected ${factor1} times as many as ${name1} because ${subject2} had more free time, and ${name3} collected ${factor2} times as many as ${name2}. What is the total number of ${items} they collected?",
+    "In a competition at school, ${name1} won ${count1} ${items} as prizes. ${name2} won ${factor1} times as many as ${name1} because ${subject2} competed more, and ${name3} won ${factor2} times as many as ${name2}. How many ${items} did they win in total?",
+    "${name1} owns ${count1} ${items}. ${his_her1} friend ${name2} owns ${factor1} times that many because ${subject2} has been collecting longer. Their friend ${name3} owns ${factor2} times what ${name2} has. Together, how many ${items} do they own?"
   ],
   "inverted": [
     "${place3} has ${factor2} times as many ${animals} as ${place2}. ${place2} has ${factor1} times as many ${animals} as ${place1}. How many ${animals} do ${place3}, ${place2}, and ${place1} have together if ${place1} has ${count1} ${animals}?",
     "${place3}'s store sold ${factor2} times as many ${items} as ${place2}'s store. ${place2}'s store sold ${factor1} times as many ${items} as ${place1}'s store. How many ${items} did they sell altogether if ${place1}'s store sold ${count1}?",
     "${place3}'s zoo houses ${factor2} times as many ${animals} as ${place2}'s zoo. ${place2}'s zoo has ${factor1} times as many ${animals} as ${place1}'s zoo. If ${place1}'s zoo has ${count1} ${animals}, how many ${animals} are there in total across all three zoos?",
     "${place3} has ${factor2} times as many ${items} as ${place2}. ${place2} has ${factor1} times as many as ${place1}. ${place1} has ${count1} ${items}. How many ${items} are there in total?"
+  ],
+  "gsm8k_style": [
+    "${place3} has ${factor2} times as many ${animals} as ${place2}. ${place2} has ${factor1} times as many ${animals} as ${place1}. How many ${animals} do ${place3}, ${place2}, and ${place1} have together if ${place1} has ${count1} ${animals}?",
+    "${name3} has ${factor2} times as many ${items} as ${name2}. ${name2} has ${factor1} times as many ${items} as ${name1}. How many ${items} do the three of them have altogether if ${name1} has ${count1} ${items}?",
+    "${name1} collects ${items}. ${name2} has ${factor1} times as many ${items} as ${name1}, who has ${count1}. ${name3} has ${factor2} times as many ${items} as ${name2}. What is the total number of ${items} among all three collectors?",
+    "In a friendly competition, ${name1} caught ${count1} ${animals}. ${name2} caught ${factor1} times that many. ${name3} outdid them both by catching ${factor2} times as many as ${name2}. How many ${animals} did they catch in total?"
   ]
 }

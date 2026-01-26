@@ -1,0 +1,10 @@
+{
+  "templates": [
+    "${name} took three tests. ${subj} scored ${val1}, ${val2}, and ${val3}. What was the average score?",
+    "${name} ran three races. ${subj} finished in ${val1}, ${val2}, and ${val3} seconds. What is the average time?",
+    "Three boxes weigh ${val1}, ${val2}, and ${val3} pounds. What is their average weight?",
+    "${name} measured temperatures of ${val1}, ${val2}, and ${val3} degrees over three days. What is the average temperature?",
+    "Over three months, ${name} saved $${val1}, $${val2}, and $${val3}. What is the average amount saved per month?",
+    "${name} studied ${val1} minutes on Monday, ${val2} minutes on Tuesday, and ${val3} minutes on Wednesday. What is the average daily study time?"
+  ]
+}

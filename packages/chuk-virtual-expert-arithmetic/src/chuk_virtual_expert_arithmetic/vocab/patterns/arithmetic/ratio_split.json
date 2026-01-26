@@ -1,0 +1,9 @@
+{
+  "templates": [
+    "${name1} and ${name2} are dividing $${total} between them. ${name1} gets ${ratio} times as much as ${name2}. How much does ${name1} get?",
+    "Split $${total} between ${name1} and ${name2} where ${name1} receives ${ratio} times more than ${name2}. What does ${name1} get?",
+    "${name1} and ${name2} share $${total}. If ${name1}'s share is ${ratio} times ${name2}'s share, how much does ${name1} receive?",
+    "There are $${total} to divide. ${name1} will receive ${ratio} times as much as ${name2}. How much does ${name1} get?",
+    "${name1} and ${name2} split $${total} in a ${ratio}:1 ratio. What is ${name1}'s share?"
+  ]
+}

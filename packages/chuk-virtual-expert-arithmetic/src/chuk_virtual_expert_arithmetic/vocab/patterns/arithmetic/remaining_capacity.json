@@ -1,0 +1,9 @@
+{
+  "templates": [
+    "A ${container} can hold a maximum of ${limit} pounds. There is already ${base} pounds loaded. Each box weighs ${per_unit} pounds. How many boxes can still be added?",
+    "The ${container} has a weight limit of ${limit} kg. Currently ${base} kg is loaded. If each item weighs ${per_unit} kg, how many more items can fit?",
+    "A ${container} can carry no more than ${limit} pounds. The current load is ${base} pounds. Each package weighs ${per_unit} pounds. What is the maximum number of packages that can be added?",
+    "The maximum capacity is ${limit} pounds. With ${base} pounds already loaded, and each new item weighing ${per_unit} pounds, how many more items fit?",
+    "A ${container} supports up to ${limit} pounds. It currently has ${base} pounds of cargo. If each crate weighs ${per_unit} pounds, how many crates can be added?"
+  ]
+}

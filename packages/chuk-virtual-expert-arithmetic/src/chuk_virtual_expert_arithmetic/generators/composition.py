@@ -392,6 +392,13 @@ def generate_interrupted_rate() -> dict[str, Any]:
             f"{progress_percent}% through the download, the computer restarts, adding a {delay}-minute delay. "
             f"The download then restarts from scratch. What is the total download time?"
         ),
+        # GSM-8K style phrasing (Carla download)
+        (
+            f"{name} is downloading a {total_size} GB file. Normally they can download {rate} GB/minute, "
+            f"but {progress_percent}% of the way through the download, the system forces a restart "
+            f"to install updates, which takes {delay} minutes. Then {name} has to restart the download "
+            f"from the beginning. How long does it take to download the file?"
+        ),
         # Printing/copying scenarios
         (
             f"A printer is printing {total_size} pages at {rate} pages per minute. "
@@ -664,6 +671,176 @@ def generate_discount_tax_total() -> dict[str, Any]:
     }
 
 
+def generate_comparison_then_total() -> dict[str, Any]:
+    """Compare prices then calculate total: comparison → arithmetic → total.
+
+    Pattern: "Item A costs $X, Item B costs $Y more. Buy 3 of each. Total cost?"
+
+    3-expert chain:
+    Sub 0: comparison (find B's price = A + difference)
+    Sub 1: arithmetic (cost_A = A * qty)
+    Sub 2: arithmetic (total = cost_A + B_price * qty)
+    """
+    price_a = random.choice([10, 15, 20, 25, 30])
+    difference = random.choice([5, 8, 10, 12, 15])
+    quantity = random.choice([2, 3, 4, 5])
+
+    price_b = price_a + difference
+    cost_a = price_a * quantity
+    cost_b = price_b * quantity
+    total = cost_a + cost_b
+
+    item_a = random.choice(["shirt", "book", "toy"])
+    item_b = random.choice(["jacket", "bag", "game"])
+    name = random.choice(NAMES)
+
+    question = (
+        f"A {item_a} costs ${price_a}. A {item_b} costs ${difference} more than the {item_a}. "
+        f"{name} buys {quantity} of each. What's the total cost?"
+    )
+
+    return {
+        "query": question,
+        "composed": True,
+        "steps": [
+            {
+                "expert": "comparison",
+                "trace": [
+                    {"op": "init", "var": "price_a", "value": price_a},
+                    {"op": "init", "var": "difference", "value": difference},
+                    {
+                        "op": "compute",
+                        "compute_op": "add",
+                        "args": ["price_a", "difference"],
+                        "var": "result",
+                    },
+                    {"op": "query", "var": "result"},
+                ],
+            },
+            {
+                "expert": "arithmetic",
+                "trace": [
+                    {"op": "init", "var": "price_a", "value": price_a},
+                    {"op": "init", "var": "quantity", "value": quantity},
+                    {
+                        "op": "compute",
+                        "compute_op": "mul",
+                        "args": ["price_a", "quantity"],
+                        "var": "result",
+                    },
+                    {"op": "query", "var": "result"},
+                ],
+            },
+            {
+                "expert": "arithmetic",
+                "trace": [
+                    {"op": "init", "var": "cost_a", "source": "prev.result"},
+                    {"op": "init", "var": "price_b", "source": "sub0.result"},
+                    {"op": "init", "var": "quantity", "value": quantity},
+                    {
+                        "op": "compute",
+                        "compute_op": "mul",
+                        "args": ["price_b", "quantity"],
+                        "var": "step1",
+                    },
+                    {
+                        "op": "compute",
+                        "compute_op": "add",
+                        "args": ["cost_a", "step1"],
+                        "var": "result",
+                    },
+                    {"op": "query", "var": "result"},
+                ],
+            },
+        ],
+        "answer": total,
+    }
+
+
+def generate_rate_comparison_total() -> dict[str, Any]:
+    """Rate calculation then comparison then total.
+
+    Pattern: "Machine A makes X/hour. Machine B makes Y more/hour.
+    Both run for Z hours. Total items made?"
+
+    3-expert chain:
+    Sub 0: rate_equation (output_A = rate_A * time)
+    Sub 1: comparison (rate_B = rate_A + difference)
+    Sub 2: arithmetic (total = output_A + rate_B * time)
+    """
+    rate_a = random.choice([5, 8, 10, 12, 15])
+    difference = random.choice([2, 3, 4, 5])
+    hours = random.choice([3, 4, 5, 6, 8])
+
+    rate_b = rate_a + difference
+    output_a = rate_a * hours
+    output_b = rate_b * hours
+    total = output_a + output_b
+
+    question = (
+        f"Machine A produces {rate_a} items per hour. Machine B produces {difference} more "
+        f"items per hour than Machine A. Both machines run for {hours} hours. "
+        f"How many items are produced in total?"
+    )
+
+    return {
+        "query": question,
+        "composed": True,
+        "steps": [
+            {
+                "expert": "rate_equation",
+                "trace": [
+                    {"op": "init", "var": "rate", "value": rate_a},
+                    {"op": "init", "var": "time", "value": hours},
+                    {
+                        "op": "compute",
+                        "compute_op": "mul",
+                        "args": ["rate", "time"],
+                        "var": "result",
+                    },
+                    {"op": "query", "var": "result"},
+                ],
+            },
+            {
+                "expert": "comparison",
+                "trace": [
+                    {"op": "init", "var": "rate_a", "value": rate_a},
+                    {"op": "init", "var": "difference", "value": difference},
+                    {
+                        "op": "compute",
+                        "compute_op": "add",
+                        "args": ["rate_a", "difference"],
+                        "var": "result",
+                    },
+                    {"op": "query", "var": "result"},
+                ],
+            },
+            {
+                "expert": "arithmetic",
+                "trace": [
+                    {"op": "init", "var": "output_a", "source": "sub0.result"},
+                    {"op": "init", "var": "rate_b", "source": "prev.result"},
+                    {"op": "init", "var": "time", "value": hours},
+                    {
+                        "op": "compute",
+                        "compute_op": "mul",
+                        "args": ["rate_b", "time"],
+                        "var": "step1",
+                    },
+                    {
+                        "op": "compute",
+                        "compute_op": "add",
+                        "args": ["output_a", "step1"],
+                        "var": "result",
+                    },
+                    {"op": "query", "var": "result"},
+                ],
+            },
+        ],
+        "answer": total,
+    }
+
+
 GENERATORS = [
     # Basic 2-expert patterns (percentage → arithmetic)
     generate_percent_off_plus_extra,
@@ -678,6 +855,8 @@ GENERATORS = [
     # Complex 3-expert patterns with multi-value wiring
     generate_cost_increase_profit,  # Cost + value increase + profit (uses sub0.result)
     generate_discount_tax_total,  # Discount → tax → final price
+    generate_comparison_then_total,  # Compare prices → calculate totals
+    generate_rate_comparison_total,  # Rate calculation → comparison → total
 ]
 
 

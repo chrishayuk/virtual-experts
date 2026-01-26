@@ -1,0 +1,30 @@
+{
+  "name": "time_from_distance",
+  "description": "Calculate time from distance and speed: time = distance / speed",
+  "pattern": "time_from_distance",
+  "variables": {
+    "distance": {"type": "int", "min": 10, "max": 100},
+    "speed": {"type": "int", "min": 2, "max": 20}
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "vehicle": {"path": "phrases.vehicles"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subj": "person.subject|capitalize"
+  },
+  "templates": [
+    "${name} needs to travel ${distance} miles. ${subj} travels at ${speed} miles per hour. How many hours will the trip take?",
+    "The distance to the store is ${distance} km. ${name} walks at ${speed} km per hour. How long does it take?",
+    "A ${distance} mile journey at ${speed} miles per hour. What is the travel time in hours?",
+    "${name} drives ${distance} miles at a speed of ${speed} mph. How many hours is the drive?"
+  ],
+  "trace": [
+    {"op": "init", "var": "distance", "value": "distance"},
+    {"op": "init", "var": "speed", "value": "speed"},
+    {"op": "compute", "compute_op": "div", "args": ["distance", "speed"], "var": "result"},
+    {"op": "query", "var": "result"}
+  ],
+  "answer": "distance / speed"
+}

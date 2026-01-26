@@ -18,16 +18,6 @@ import re
 from pathlib import Path
 from typing import Any
 
-# Word number mappings
-WORD_NUMBERS = {
-    1: "one", 2: "two", 3: "three", 4: "four", 5: "five",
-    6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten",
-    11: "eleven", 12: "twelve", 13: "thirteen", 14: "fourteen", 15: "fifteen",
-    16: "sixteen", 17: "seventeen", 18: "eighteen", 19: "nineteen", 20: "twenty",
-    21: "twenty-one", 22: "twenty-two", 23: "twenty-three", 24: "twenty-four",
-    25: "twenty-five", 30: "thirty", 40: "forty", 50: "fifty",
-}
-
 from chuk_virtual_expert.trace_example import TraceExample
 from chuk_virtual_expert.trace_models import (
     AddEntityStep,
@@ -43,6 +33,38 @@ from chuk_virtual_expert.trace_models import (
 )
 
 from chuk_virtual_expert_arithmetic.vocab import get_vocab
+
+# Word number mappings
+WORD_NUMBERS = {
+    1: "one",
+    2: "two",
+    3: "three",
+    4: "four",
+    5: "five",
+    6: "six",
+    7: "seven",
+    8: "eight",
+    9: "nine",
+    10: "ten",
+    11: "eleven",
+    12: "twelve",
+    13: "thirteen",
+    14: "fourteen",
+    15: "fifteen",
+    16: "sixteen",
+    17: "seventeen",
+    18: "eighteen",
+    19: "nineteen",
+    20: "twenty",
+    21: "twenty-one",
+    22: "twenty-two",
+    23: "twenty-three",
+    24: "twenty-four",
+    25: "twenty-five",
+    30: "thirty",
+    40: "forty",
+    50: "fifty",
+}
 
 
 class SchemaGenerator:
@@ -121,6 +143,14 @@ class SchemaGenerator:
 
         # Add numeric variables directly to template vars
         template_vars.update(variables)
+
+        # Auto-add multiplier word mapping if multiplier variable exists
+        if "multiplier" in variables:
+            mult = variables["multiplier"]
+            mult_words = {2: "twice", 3: "three times", 4: "four times", 5: "five times"}
+            growth_words = {2: "doubled", 3: "tripled", 4: "quadrupled", 5: "quintupled"}
+            template_vars["mult_word"] = mult_words.get(mult, f"{mult} times")
+            template_vars["growth_word"] = growth_words.get(mult, f"multiplied by {mult}")
 
         # Add sampled vocab items
         for key, value in vocab_items.items():
@@ -232,7 +262,8 @@ class SchemaGenerator:
                 variables[name] = random.choice([True, False])
 
             elif var_type == "choice":
-                options = spec.get("options", [])
+                # Support both "options" and "values" for choice type
+                options = spec.get("options") or spec.get("values", [])
                 variables[name] = random.choice(options) if options else 0
 
         return variables
@@ -304,14 +335,31 @@ class SchemaGenerator:
         for name, spec in vocab_specs.items():
             if spec.get("type") == "person_with_pronouns":
                 items[name] = self._vocab.person_with_pronouns()
+            elif spec.get("type") == "choice":
+                # Handle choice type in vocab (e.g., growth_word, mult_word)
+                values = spec.get("values", [])
+                items[name] = random.choice(values) if values else ""
             elif "path" in spec:
                 path = spec["path"]
                 if "sample" in spec:
                     items[name] = self._vocab.sample(path, spec["sample"])
                 else:
-                    items[name] = self._vocab.random(path)
+                    value = self._vocab.random(path)
+                    items[name] = value
+                    # Auto-add plural form for countable_singular items
+                    if "countable_singular" in path and isinstance(value, str):
+                        items[f"{name}_plural"] = self._pluralize(value)
 
         return items
+
+    def _pluralize(self, word: str) -> str:
+        """Pluralize a word correctly."""
+        if word.endswith(("s", "x", "ch", "sh")):
+            return word + "es"
+        elif word.endswith("y") and len(word) > 1 and word[-2] not in "aeiou":
+            return word[:-1] + "ies"
+        else:
+            return word + "s"
 
     def _build_template_vars(
         self,
@@ -491,9 +539,9 @@ class SchemaGenerator:
         if self._word_number_prob <= 0:
             return text
 
-        def maybe_convert(match: re.Match) -> str:
+        def maybe_convert(match: re.Match[str]) -> str:
             # Get the full match and surrounding context
-            num_str = match.group(0)
+            num_str: str = match.group(0)
 
             # Skip if it's a price ($X)
             start = match.start()

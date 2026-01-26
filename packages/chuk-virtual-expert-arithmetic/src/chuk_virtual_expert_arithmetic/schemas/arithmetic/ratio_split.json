@@ -1,0 +1,32 @@
+{
+  "name": "ratio_split",
+  "description": "Split total where one gets N times as much: total / (1 + ratio) * ratio",
+  "pattern": "ratio_split",
+  "variables": {
+    "total": {"type": "int", "min": 50, "max": 200},
+    "ratio": {"type": "int", "min": 2, "max": 5}
+  },
+  "vocab": {
+    "person1": {"type": "person_with_pronouns"},
+    "person2": {"type": "person_with_pronouns"}
+  },
+  "template_vars": {
+    "name1": "person1.name",
+    "name2": "person2.name"
+  },
+  "templates": [
+    "${name1} and ${name2} are dividing $${total} between them. ${name1} gets ${ratio} times as much as ${name2}. How much does ${name1} get?",
+    "Split $${total} between ${name1} and ${name2} where ${name1} receives ${ratio} times more than ${name2}. What does ${name1} get?",
+    "${name1} and ${name2} share $${total}. If ${name1}'s share is ${ratio} times ${name2}'s share, how much does ${name1} receive?"
+  ],
+  "trace": [
+    {"op": "init", "var": "total", "value": "total"},
+    {"op": "init", "var": "ratio", "value": "ratio"},
+    {"op": "init", "var": "one", "value": 1},
+    {"op": "compute", "compute_op": "add", "args": ["ratio", "one"], "var": "parts"},
+    {"op": "compute", "compute_op": "div", "args": ["total", "parts"], "var": "step1"},
+    {"op": "compute", "compute_op": "mul", "args": ["step1", "ratio"], "var": "result"},
+    {"op": "query", "var": "result"}
+  ],
+  "answer": "total / (ratio + 1) * ratio"
+}

@@ -48,6 +48,8 @@ except ImportError:
     MCPTransportType = None  # type: ignore[assignment, misc]
 
 # Lazarus integration
+# Trace execution
+from chuk_virtual_expert.composition_solver import CompositionSolver
 from chuk_virtual_expert.lazarus import (
     LazarusAdapter,
     adapt_expert,
@@ -103,9 +105,6 @@ from chuk_virtual_expert.trace_models import (
     TraceStep,
     TransferStep,
 )
-
-# Trace execution
-from chuk_virtual_expert.composition_solver import CompositionSolver
 from chuk_virtual_expert.trace_solver import TraceSolverExpert
 from chuk_virtual_expert.trace_verifier import TraceVerifier
 

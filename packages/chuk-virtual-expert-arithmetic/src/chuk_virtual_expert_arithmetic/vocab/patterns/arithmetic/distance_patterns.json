@@ -14,5 +14,13 @@
   "comparison": [
     "${name} and ${possessive} friend both start from the same point traveling in the same direction. ${name} drives at ${speed} miles per hour for ${hours} hours. How far has ${subject} traveled?",
     "Two delivery trucks leave the warehouse at the same time. The first truck travels at ${speed} miles per hour. After ${hours} hours, how far from the warehouse is the first truck?"
+  ],
+  "gsm8k_style": [
+    "${name}'s ship can travel at ${speed} miles per hour. ${subj} is sailing from 1 to ${hours_plus_1} PM. How many miles can ${subject} travel?",
+    "${name} drives ${possessive} car at ${speed} kilometers per hour on the highway. ${subj} started driving at noon and stopped at ${hours} PM. How many kilometers did ${subject} drive?",
+    "A boat travels at ${speed} miles per hour across the lake. The journey takes ${hours} hours to complete. How far apart are the two shores?",
+    "${name} is biking to ${possessive} friend's house at ${speed} miles per hour. If ${subject} left at 2 PM and arrived at ${hours_plus_2} PM, how far away does ${possessive} friend live?",
+    "The train from ${place1} to ${place2} travels at ${speed} kilometers per hour. If the trip takes ${hours} hours, what is the distance between the two cities?",
+    "${name} walks to the park at a speed of ${speed} kilometers per hour. The walk takes ${hours} hours. How far is the park from ${possessive} house?"
   ]
 }
