@@ -219,5 +219,54 @@
     {"singular": "km", "plural": "km"},
     {"singular": "mile", "plural": "miles"},
     {"singular": "meter", "plural": "meters"}
+  ],
+  "comparison_phrases": [
+    "less than", "more than", "fewer than", "at least",
+    "at most", "no more than", "no fewer than", "as many as"
+  ],
+  "temporal_phrases": [
+    "at the end", "at first", "in the beginning", "after that",
+    "by the end", "in the end", "at the start", "finally",
+    "originally", "initially", "eventually", "afterward"
+  ],
+  "intention_verbs": [
+    {"base": "plan", "s": "plans", "continuous": "planning"},
+    {"base": "want", "s": "wants", "continuous": "wanting"},
+    {"base": "decide", "s": "decides", "continuous": "deciding"},
+    {"base": "need", "s": "needs", "continuous": "needing"},
+    {"base": "intend", "s": "intends", "continuous": "intending"},
+    {"base": "hope", "s": "hopes", "continuous": "hoping"}
+  ],
+  "multiplicative_comparison": [
+    "times more", "times as many", "times as much",
+    "times greater", "times larger", "times the amount"
+  ],
+  "word_numbers": {
+    "1": "one", "2": "two", "3": "three", "4": "four", "5": "five",
+    "6": "six", "7": "seven", "8": "eight", "9": "nine", "10": "ten",
+    "11": "eleven", "12": "twelve", "15": "fifteen", "20": "twenty",
+    "24": "twenty-four", "30": "thirty", "50": "fifty", "100": "one hundred"
+  },
+  "duration_phrases": [
+    "an hour", "a day", "a week", "a month", "a year",
+    "per hour", "per day", "per week", "per month",
+    "each hour", "each day", "each week", "every day"
+  ],
+  "possession_verbs": [
+    {"base": "have", "s": "has", "past": "had"},
+    {"base": "own", "s": "owns", "past": "owned"},
+    {"base": "hold", "s": "holds", "past": "held"},
+    {"base": "keep", "s": "keeps", "past": "kept"}
+  ],
+  "transfer_verbs": [
+    {"base": "give", "s": "gives", "past": "gave", "to": "to"},
+    {"base": "send", "s": "sends", "past": "sent", "to": "to"},
+    {"base": "lend", "s": "lends", "past": "lent", "to": "to"},
+    {"base": "pass", "s": "passes", "past": "passed", "to": "to"},
+    {"base": "receive", "s": "receives", "past": "received", "to": "from"}
+  ],
+  "collection_phrases": [
+    "put together", "gathered", "collected", "accumulated",
+    "saved up", "set aside", "brought together"
   ]
 }

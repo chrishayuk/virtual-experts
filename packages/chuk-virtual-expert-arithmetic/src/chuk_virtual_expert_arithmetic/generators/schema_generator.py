@@ -14,8 +14,19 @@ from __future__ import annotations
 
 import json
 import random
+import re
 from pathlib import Path
 from typing import Any
+
+# Word number mappings
+WORD_NUMBERS = {
+    1: "one", 2: "two", 3: "three", 4: "four", 5: "five",
+    6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten",
+    11: "eleven", 12: "twelve", 13: "thirteen", 14: "fourteen", 15: "fifteen",
+    16: "sixteen", 17: "seventeen", 18: "eighteen", 19: "nineteen", 20: "twenty",
+    21: "twenty-one", 22: "twenty-two", 23: "twenty-three", 24: "twenty-four",
+    25: "twenty-five", 30: "thirty", 40: "forty", 50: "fifty",
+}
 
 from chuk_virtual_expert.trace_example import TraceExample
 from chuk_virtual_expert.trace_models import (
@@ -37,9 +48,16 @@ from chuk_virtual_expert_arithmetic.vocab import get_vocab
 class SchemaGenerator:
     """Generates arithmetic problems from JSON schemas."""
 
-    def __init__(self) -> None:
+    def __init__(self, word_number_prob: float = 0.3) -> None:
+        """Initialize the generator.
+
+        Args:
+            word_number_prob: Probability of converting a number to word form (0-1).
+                             GSM-8K uses word numbers ~31% of the time, default is 0.3.
+        """
         self._vocab = get_vocab()
         self._schemas = self._load_schemas()
+        self._word_number_prob = word_number_prob
 
     def _load_schemas(self) -> dict[str, dict[str, Any]]:
         """Load all schemas from the schemas directory and subdirectories."""
@@ -139,6 +157,9 @@ class SchemaGenerator:
         pattern = schema["pattern"]
         variant = schema.get("variant")
         question = self._vocab.pattern(pattern, variant, **template_vars)
+
+        # Apply word number substitution
+        question = self._apply_word_numbers(question)
 
         # Build trace
         trace = self._build_trace(schema.get("trace", []), variables)
@@ -459,6 +480,48 @@ class SchemaGenerator:
             return float(result)
         except Exception:
             return 0.0
+
+    def _apply_word_numbers(self, text: str) -> str:
+        """Randomly convert some numbers to word form.
+
+        Only converts small integers (1-25, 30, 40, 50) that are not part of
+        prices, decimals, or large numbers. Each eligible number has
+        word_number_prob chance of being converted.
+        """
+        if self._word_number_prob <= 0:
+            return text
+
+        def maybe_convert(match: re.Match) -> str:
+            # Get the full match and surrounding context
+            num_str = match.group(0)
+
+            # Skip if it's a price ($X)
+            start = match.start()
+            if start > 0 and text[start - 1] == "$":
+                return num_str
+
+            # Skip decimals
+            if "." in num_str:
+                return num_str
+
+            try:
+                num = int(num_str)
+            except ValueError:
+                return num_str
+
+            # Only convert numbers we have words for
+            if num not in WORD_NUMBERS:
+                return num_str
+
+            # Random chance to convert
+            if random.random() < self._word_number_prob:
+                return WORD_NUMBERS[num]
+
+            return num_str
+
+        # Match standalone numbers (not part of larger numbers or decimals)
+        # This pattern matches numbers not preceded by digits, dots, or $
+        return re.sub(r"(?<![0-9.$])\b(\d+)\b(?![0-9.])", maybe_convert, text)
 
 
 # Convenience function

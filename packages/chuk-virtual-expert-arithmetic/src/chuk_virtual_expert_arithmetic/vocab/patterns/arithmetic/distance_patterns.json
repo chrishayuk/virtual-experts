@@ -1,0 +1,18 @@
+{
+  "travel": [
+    "${name} is driving to visit ${possessive} grandparents who live in another city. If ${subject} drives at a steady speed of ${speed} miles per hour, and the trip takes ${hours} hours, how many miles away do ${possessive} grandparents live?",
+    "For the summer road trip, ${name} plans to drive ${possessive} car at ${speed} miles per hour. If ${subject} drives for ${hours} hours before stopping for lunch, how many miles will ${subject} have traveled?",
+    "${name} is taking a long-distance bus that travels at an average speed of ${speed} kilometers per hour. If the bus ride lasts ${hours} hours, what is the total distance of the journey in kilometers?",
+    "A train departs from the station traveling at ${speed} miles per hour on its route to the next city. The journey takes ${hours} hours to complete. How far apart are the two cities?",
+    "${name} decides to cycle to the beach, maintaining a speed of ${speed} kilometers per hour. The ride takes ${hours} hours in total. How many kilometers is the beach from ${possessive} home?",
+    "During ${possessive} vacation, ${name} rents a car and drives at ${speed} miles per hour along the scenic coastal highway. After driving for ${hours} hours, how many miles has ${subject} covered?"
+  ],
+  "round_trip": [
+    "${name} drives to the store at ${speed} miles per hour. The drive takes ${hours} hours one way. If ${subject} makes the same trip back home at the same speed, how many miles does ${subject} drive in total for the round trip?",
+    "The school bus travels at ${speed} kilometers per hour. It takes ${hours} hours to reach the school from ${name}'s house. How many kilometers does ${name} travel going to school and back home each day?"
+  ],
+  "comparison": [
+    "${name} and ${possessive} friend both start from the same point traveling in the same direction. ${name} drives at ${speed} miles per hour for ${hours} hours. How far has ${subject} traveled?",
+    "Two delivery trucks leave the warehouse at the same time. The first truck travels at ${speed} miles per hour. After ${hours} hours, how far from the warehouse is the first truck?"
+  ]
+}

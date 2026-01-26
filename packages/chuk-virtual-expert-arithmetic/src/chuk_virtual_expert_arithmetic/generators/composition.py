@@ -291,11 +291,31 @@ def generate_paired_discount() -> dict[str, Any]:
     item = random.choice(items)
     name = random.choice(NAMES)
 
-    question = (
-        f"{name} wants to buy {item}. One costs ${full_price}, but every second one "
-        f"costs only {discount_percent}% of the price. {name} wants to buy {quantity}. "
-        f"How much does it cost?"
-    )
+    # Multiple template variations to improve robustness
+    templates = [
+        (
+            f"{name} wants to buy {item}. One costs ${full_price}, but every second one "
+            f"costs only {discount_percent}% of the price. {name} wants to buy {quantity}. "
+            f"How much does it cost?"
+        ),
+        (
+            f"{name} went to the store to buy {item}. One {item[:-1] if item.endswith('s') else item} "
+            f"costs ${full_price}, but every second {item[:-1] if item.endswith('s') else item} costs "
+            f"only {discount_percent}% of the price. {name} wants to buy {quantity} {item}. "
+            f"How much does {name} need to pay for them?"
+        ),
+        (
+            f"At a shop, {item} are on a special deal. One costs ${full_price}, and every second one "
+            f"costs {discount_percent}% of that price. {name} buys {quantity} {item}. "
+            f"What is the total cost?"
+        ),
+        (
+            f"{name} is buying {item} for a party. Each costs ${full_price}, but if you buy two, "
+            f"the second one is only {discount_percent}% of the regular price. "
+            f"How much does {name} pay for {quantity} {item}?"
+        ),
+    ]
+    question = random.choice(templates)
 
     return {
         "query": question,
@@ -357,11 +377,46 @@ def generate_interrupted_rate() -> dict[str, Any]:
     total_time = partial_time + delay + full_time
 
     name = random.choice(NAMES)
-    question = (
-        f"{name} is downloading a {total_size} GB file at {rate} GB/minute. "
-        f"{progress_percent}% of the way through, a restart is required which takes {delay} minutes. "
-        f"Then the download starts from the beginning. How long does it take in total?"
-    )
+
+    # Multiple templates with varied domains
+    templates = [
+        # Download scenarios
+        (
+            f"{name} is downloading a {total_size} GB file. The download speed is {rate} GB/minute. "
+            f"After {progress_percent}% of the download completes, a restart is required which takes "
+            f"{delay} minutes. Then the download starts over from the beginning. "
+            f"How long does the entire process take?"
+        ),
+        (
+            f"{name} downloads a {total_size} GB file at a rate of {rate} GB per minute. "
+            f"{progress_percent}% through the download, the computer restarts, adding a {delay}-minute delay. "
+            f"The download then restarts from scratch. What is the total download time?"
+        ),
+        # Printing/copying scenarios
+        (
+            f"A printer is printing {total_size} pages at {rate} pages per minute. "
+            f"After {progress_percent}% of the job is done, a paper jam causes a {delay}-minute delay "
+            f"and the print job restarts from the beginning. How many minutes to complete?"
+        ),
+        (
+            f"{name} is copying {total_size} files at a rate of {rate} files per minute. "
+            f"When {progress_percent}% done, an error requires a {delay}-minute restart from zero. "
+            f"What is the total time to copy all files?"
+        ),
+        # Manufacturing scenarios
+        (
+            f"A factory is producing {total_size} units at {rate} units per minute. "
+            f"After {progress_percent}% are made, a malfunction causes a {delay}-minute shutdown "
+            f"and production restarts from scratch. Total production time in minutes?"
+        ),
+        # Reading/processing scenarios
+        (
+            f"{name} is reading a {total_size}-page document at {rate} pages per minute. "
+            f"After finishing {progress_percent}% of it, they realize they need to restart from page 1. "
+            f"This costs a {delay}-minute break. How long until {name} finishes the document?"
+        ),
+    ]
+    question = random.choice(templates)
 
     return {
         "query": question,

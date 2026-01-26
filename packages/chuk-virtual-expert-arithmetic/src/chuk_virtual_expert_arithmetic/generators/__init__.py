@@ -38,12 +38,18 @@ INTERLEAVED_SCHEMAS = [
     "interleaved_mul_mul",
     "parallel_merge",
     "chained_mul_sum",
+    "chained_mul_sum_inverted",  # GSM-8K style inverted phrasing (Toulouse)
     "consume_then_sell",
     "rate_comparison_total",
 ]
 
 LONG_CHAIN_SCHEMAS = [
     "long_expense_chain",
+]
+
+DIVISION_CHAIN_SCHEMAS = [
+    "sub_sub_div_div",  # Subtract twice, divide twice (GSM-8K gap pattern)
+    "div_chain",  # Chain of divisions (GSM-8K gap pattern)
 ]
 
 GAP_CLOSING_SCHEMAS = [
@@ -55,12 +61,21 @@ GAP_CLOSING_SCHEMAS = [
     "material_half",  # "X and half that much" pattern
     "material_twice",  # "X and twice that much" pattern
     "decimal_rate_week",  # Decimal rates like "0.5 hours per day"
+    "decimal_rate_week",  # Duplicate for higher decimal frequency
+    "decimal_multiply",  # Simple decimal multiplication
     "weekly_sprints",  # "X sprints Y times/week, Z meters each"
     "total_minus_given",  # "Need X total, given Y and Z, remainder?"
+    # Domain coverage gaps - boosted for better representation
+    "distance_rate",  # Distance = speed * time
+    "distance_rate",  # Duplicate for higher frequency
+    "distance_round_trip",  # Round trip distance
+    "school_supplies",  # School domain
+    "school_supplies",  # Duplicate for higher frequency
+    "classroom_groups",  # Classroom activities
 ]
 
 ALL_ARITHMETIC_SCHEMAS = (
-    SEQUENTIAL_SCHEMAS + INTERLEAVED_SCHEMAS + LONG_CHAIN_SCHEMAS + GAP_CLOSING_SCHEMAS
+    SEQUENTIAL_SCHEMAS + INTERLEAVED_SCHEMAS + LONG_CHAIN_SCHEMAS + DIVISION_CHAIN_SCHEMAS + GAP_CLOSING_SCHEMAS
 )
 
 # ============================================================================
@@ -324,5 +339,6 @@ __all__ = [
     "SEQUENTIAL_SCHEMAS",
     "INTERLEAVED_SCHEMAS",
     "LONG_CHAIN_SCHEMAS",
+    "DIVISION_CHAIN_SCHEMAS",
     "GAP_CLOSING_SCHEMAS",
 ]

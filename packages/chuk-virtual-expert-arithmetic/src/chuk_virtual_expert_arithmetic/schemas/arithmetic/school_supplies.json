@@ -1,0 +1,35 @@
+{
+  "name": "school_supplies",
+  "expert": "arithmetic",
+  "description": "School-related calculations with students and supplies",
+  "pattern": "school_patterns",
+  "variant": "supplies",
+  "variables": {
+    "students": {"type": "int", "min": 15, "max": 35},
+    "items_per": {"type": "int", "min": 2, "max": 8},
+    "extra": {"type": "int", "min": 5, "max": 20}
+  },
+  "derived": {
+    "total_needed": "students * items_per",
+    "with_extra": "total_needed + extra"
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "supply": {"path": "items.school_supplies"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subject": "person.subject",
+    "possessive": "person.possessive",
+    "item": "supply"
+  },
+  "trace": [
+    {"op": "init", "var": "students", "value": "students"},
+    {"op": "init", "var": "items_per", "value": "items_per"},
+    {"op": "compute", "compute_op": "mul", "args": ["students", "items_per"], "var": "step1"},
+    {"op": "init", "var": "extra", "value": "extra"},
+    {"op": "compute", "compute_op": "add", "args": ["step1", "extra"], "var": "result"},
+    {"op": "query", "var": "result"}
+  ],
+  "answer": "with_extra"
+}

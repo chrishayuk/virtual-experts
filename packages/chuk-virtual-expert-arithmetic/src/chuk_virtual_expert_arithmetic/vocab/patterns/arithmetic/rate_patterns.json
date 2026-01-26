@@ -1,19 +1,23 @@
 {
   "decimal_weekly": [
-    "${name} takes care of ${count} dogs. Each dog takes ${rate_decimal} hours a day to walk and care for. How many hours a week does ${subject} spend taking care of dogs?",
-    "${name} has ${count} plants. Each plant needs ${rate_decimal} cups of water per day. How many cups of water does ${subject} use in a week?",
-    "${name} walks ${count} dogs every day. Each walk takes ${rate_decimal} hours. How many hours does ${subject} spend walking dogs each week?",
-    "A teacher grades ${count} papers. Each paper takes ${rate_decimal} hours to grade. If the teacher works ${days} days a week, how many hours total does grading take?",
-    "${name} exercises ${count} times a day, with each session lasting ${rate_decimal} hours. How many hours does ${subject} exercise in ${days} days?"
+    "${name} takes care of ${count} dogs. Each dog takes ${rate_decimal} hours a day to walk and take care of their business. How many hours a week does ${subject} spend taking care of dogs?",
+    "${name} has ${count} plants in ${possessive} garden that need daily attention. Each plant needs ${rate_decimal} cups of water per day to stay healthy. How many cups of water does ${subject} use in a week?",
+    "Every day, ${name} walks ${count} dogs in the neighborhood as a part-time job. Each walk takes ${rate_decimal} hours to complete properly. How many hours does ${subject} spend walking dogs each week?",
+    "A dedicated teacher grades ${count} student papers each day. Each paper takes ${rate_decimal} hours to grade thoroughly with feedback. If the teacher works ${days} days a week, how many hours total does grading take?",
+    "${name} exercises ${count} times a day to stay in shape for the upcoming marathon. Each session lasts ${rate_decimal} hours and includes both cardio and strength training. How many hours does ${subject} exercise in ${days} days?",
+    "${name} is a professional dog walker who takes care of ${count} dogs every single day. It takes ${rate_decimal} hours to properly walk and care for each dog. How many hours does ${subject} spend on dog walking per week?",
+    "At the community garden, ${name} tends to ${count} vegetable plots. Each plot requires ${rate_decimal} hours of maintenance per day including watering and weeding. How many hours a week does ${subject} spend at the garden?"
   ],
   "simple_rate": [
-    "${name} can complete ${count} tasks per hour. Working for ${rate_decimal} hours, how many tasks can ${subject} complete?",
-    "A machine produces ${count} items per minute. How many items does it produce in ${rate_decimal} minutes?"
+    "${name} can complete ${count} tasks per hour when ${subject} is focused and working efficiently. Working for ${rate_decimal} hours today, how many tasks can ${subject} complete?",
+    "A machine at the factory produces ${count} items per minute when running at full capacity. How many items does it produce in ${rate_decimal} minutes?",
+    "${name} types at a speed of ${count} words per minute. If ${subject} types for ${rate_decimal} minutes without stopping, how many words will ${subject} have typed?",
+    "The bakery oven can bake ${count} cookies per batch. If ${name} runs the oven for ${rate_decimal} batches, how many cookies will be ready?"
   ],
   "comparison_total": [
-    "Machine A produces ${rate} ${items} per hour. Machine B produces ${multiplier} times as many. How many ${items} do both machines produce together in ${hours} hours?",
-    "Factory A makes ${rate} ${items} per hour. Factory B makes ${multiplier} times as many per hour. What is the combined output after ${hours} hours?",
-    "Printer A prints ${rate} pages per hour. Printer B prints ${multiplier} times faster. How many pages do both printers print in ${hours} hours?",
-    "Worker A completes ${rate} ${items} per hour. Worker B is ${multiplier} times as fast. Together, how many ${items} do they finish in ${hours} hours?"
+    "At the manufacturing plant, Machine A produces ${rate} ${items} per hour running at standard speed. Machine B is newer and produces ${multiplier} times as many ${items} per hour. How many ${items} do both machines produce together in ${hours} hours?",
+    "Factory A makes ${rate} ${items} per hour with its current equipment. Factory B recently upgraded and now makes ${multiplier} times as many per hour as Factory A. What is the combined output of both factories after ${hours} hours of operation?",
+    "In the office, Printer A prints ${rate} pages per hour. Printer B is a high-speed model that prints ${multiplier} times faster than Printer A. How many pages do both printers print in total during ${hours} hours?",
+    "Worker A completes ${rate} ${items} per hour at a steady pace. Worker B is more experienced and is ${multiplier} times as fast as Worker A. Together, how many ${items} do they finish in ${hours} hours of work?"
   ]
 }

@@ -22,5 +22,25 @@
     "Every day, ${name} makes ${produced} ${items} at ${his_her} bakery. ${subj} keeps ${use1} for ${his_her} family and gives ${use2} to friends. The rest are sold for $${price} each. What is ${his_her} daily income from the bakery?",
     "${name}'s bakery produces ${produced} ${items} each day. After setting aside ${use1} for samples and ${use2} for staff, ${subject} sells the rest at $${price} each. How much does ${name} make per day?",
     "Each morning, ${name} bakes ${produced} fresh ${items}. ${subj} saves ${use1} for later, gives ${use2} to neighbors, and sells the rest for $${price} each. What are ${his_her} daily earnings from the bakery?"
+  ],
+  "craft_shop": [
+    "${name} makes ${produced} handmade candles every day in ${his_her} workshop. ${subj} keeps ${use1} for personal use and gives ${use2} as gifts to friends. ${subj} sells the rest at the craft fair for $${price} each. How much does ${name} earn daily?",
+    "Every day, ${name} creates ${produced} greeting cards by hand. After keeping ${use1} and giving ${use2} away, ${subject} sells the remaining cards for $${price} each online. What is ${his_her} daily income?",
+    "${name}'s studio produces ${produced} pottery pieces each day. ${subj} uses ${use1} at home and donates ${use2} to charity auctions. The rest are sold for $${price} each. How much revenue does ${subject} make daily?"
+  ],
+  "book_store": [
+    "${name}'s bookshop receives ${produced} new books every day. ${subj} keeps ${use1} for the reading corner and donates ${use2} to the library. ${subj} sells the rest for $${price} each. How much does the bookshop make daily?",
+    "Each day, ${name} gets ${produced} vintage books from estate sales. After setting aside ${use1} for ${his_her} collection and giving ${use2} to friends, ${subject} sells the rest at $${price} each. What are ${his_her} daily earnings?",
+    "The used bookstore acquires ${produced} books daily. ${use1} are kept for display and ${use2} go to the donation bin. The remaining books sell for $${price} each. How much money does the store make per day?"
+  ],
+  "flower_shop": [
+    "${name}'s greenhouse grows ${produced} roses every day. ${subj} keeps ${use1} for home decoration and gives ${use2} bouquets to neighbors. ${subj} sells the rest at the flower shop for $${price} each. How much does ${name} earn daily?",
+    "Each day, ${name} harvests ${produced} sunflowers from ${his_her} garden. After keeping ${use1} and giving away ${use2}, ${subject} sells the rest for $${price} each at the farmers market. What is ${his_her} daily income?",
+    "The flower farm produces ${produced} tulips daily. ${use1} are used for arrangements and ${use2} are donated to nursing homes. The rest are sold for $${price} each. How much revenue is generated?"
+  ],
+  "lemonade_stand": [
+    "${name} makes ${produced} glasses of lemonade every afternoon. ${subj} drinks ${use1} and gives ${use2} to ${his_her} siblings. ${subj} sells the rest at the lemonade stand for $${price} each. How much does ${name} make?",
+    "Every day, ${name} prepares ${produced} smoothies at ${his_her} juice bar. After drinking ${use1} and giving ${use2} to staff, ${subject} sells the rest for $${price} each. What are the daily earnings?",
+    "The beverage cart makes ${produced} iced teas daily. ${use1} are given as samples and ${use2} are reserved for events. The rest sell for $${price} each. How much money is made per day?"
   ]
 }

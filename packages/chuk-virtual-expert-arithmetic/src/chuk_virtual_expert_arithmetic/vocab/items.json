@@ -24,5 +24,10 @@
   "manufactured": [
     "widgets", "parts", "units", "items", "products", "components",
     "modules", "pieces", "gadgets", "devices"
+  ],
+  "school_supplies": [
+    "pencils", "pens", "notebooks", "erasers", "rulers", "folders",
+    "crayons", "markers", "glue sticks", "scissors", "paper clips",
+    "index cards", "highlighters", "binders", "textbooks"
   ]
 }

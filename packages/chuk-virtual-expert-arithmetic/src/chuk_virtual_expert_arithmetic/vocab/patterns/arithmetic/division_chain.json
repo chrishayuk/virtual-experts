@@ -1,0 +1,14 @@
+{
+  "sub_sub_div_div": [
+    "${name} has ${start} ${items}. ${subj} eats ${sub1} and gives away ${sub2}. ${subj} wants to put ${div1} ${items} in each bag, then pack ${div2} bags per box. How many boxes can ${subject} fill?",
+    "${name} starts with ${start} ${items}. After using ${sub1} and losing ${sub2}, ${subject} divides them into groups of ${div1}, then groups those into sets of ${div2}. How many sets?",
+    "There are ${start} ${items}. ${sub1} are broken and ${sub2} are missing. The rest are packed ${div1} per bag, then ${div2} bags per crate. How many crates?",
+    "${name} collects ${start} ${items}. ${subj} keeps ${sub1} and gives ${sub2} to friends. ${subj} packs the rest ${div1} per container, then ${div2} containers per shipment. How many shipments?"
+  ],
+  "div_div_div": [
+    "${name} has ${start} ${items} to distribute. First ${subject} splits them among ${div1} teams, then each team divides theirs among ${div2} members, and each member shares with ${div3} friends. How many does each friend get?",
+    "A factory produces ${start} ${items}. They pack ${div1} per box, ${div2} boxes per crate, and ${div3} crates per truck. How many ${items} per truck?",
+    "${name} earned $${start}. ${subj} splits it ${div1} ways, then divides each share by ${div2}, then by ${div3}. What is the final amount per portion?",
+    "There are ${start} ${items} to organize. They are sorted into ${div1} groups, each group into ${div2} sections, and each section into ${div3} parts. How many ${items} per part?"
+  ]
+}

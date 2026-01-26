@@ -1,0 +1,33 @@
+{
+  "name": "classroom_groups",
+  "expert": "arithmetic",
+  "description": "Divide students into groups with remainder",
+  "pattern": "school_patterns",
+  "variant": "class_activities",
+  "variables": {
+    "students": {"type": "int", "min": 20, "max": 35},
+    "items_per": {"type": "int", "min": 3, "max": 6},
+    "extra": {"type": "int", "min": 2, "max": 8}
+  },
+  "derived": {
+    "base_total": "students * items_per",
+    "final": "base_total + extra"
+  },
+  "vocab": {
+    "person": {"type": "person_with_pronouns"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subject": "person.subject",
+    "possessive": "person.possessive"
+  },
+  "trace": [
+    {"op": "init", "var": "students", "value": "students"},
+    {"op": "init", "var": "items_per", "value": "items_per"},
+    {"op": "compute", "compute_op": "mul", "args": ["students", "items_per"], "var": "step1"},
+    {"op": "init", "var": "extra", "value": "extra"},
+    {"op": "compute", "compute_op": "add", "args": ["step1", "extra"], "var": "result"},
+    {"op": "query", "var": "result"}
+  ],
+  "answer": "final"
+}
