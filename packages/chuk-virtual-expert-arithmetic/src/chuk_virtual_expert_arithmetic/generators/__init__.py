@@ -39,6 +39,7 @@ INTERLEAVED_SCHEMAS = [
     "parallel_merge",
     "chained_mul_sum",
     "consume_then_sell",
+    "rate_comparison_total",
 ]
 
 LONG_CHAIN_SCHEMAS = [

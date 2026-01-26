@@ -9,5 +9,11 @@
   "simple_rate": [
     "${name} can complete ${count} tasks per hour. Working for ${rate_decimal} hours, how many tasks can ${subject} complete?",
     "A machine produces ${count} items per minute. How many items does it produce in ${rate_decimal} minutes?"
+  ],
+  "comparison_total": [
+    "Machine A produces ${rate} ${items} per hour. Machine B produces ${multiplier} times as many. How many ${items} do both machines produce together in ${hours} hours?",
+    "Factory A makes ${rate} ${items} per hour. Factory B makes ${multiplier} times as many per hour. What is the combined output after ${hours} hours?",
+    "Printer A prints ${rate} pages per hour. Printer B prints ${multiplier} times faster. How many pages do both printers print in ${hours} hours?",
+    "Worker A completes ${rate} ${items} per hour. Worker B is ${multiplier} times as fast. Together, how many ${items} do they finish in ${hours} hours?"
   ]
 }

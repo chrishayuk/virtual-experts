@@ -547,94 +547,6 @@ def generate_cost_increase_profit() -> dict[str, Any]:
     }
 
 
-def generate_comparison_then_total() -> dict[str, Any]:
-    """Comparison chain then sum: A has X, B has N times A, C has M times B. Total?
-
-    GSM-8K pattern: "Toulouse has twice as many sheep as Charleston.
-    Charleston has 4× Seattle's. Seattle has 20. Total together?"
-
-    Solution: seattle=20, charleston=4*20=80, toulouse=2*80=160, total=260
-
-    Simplified to single arithmetic trace with interleaved inits (was 3-expert, now 1-expert).
-    """
-    base = random.randint(10, 30)
-    mult1 = random.choice([2, 3, 4, 5])
-    mult2 = random.choice([2, 3, 4])
-
-    mid = base * mult1
-    top = mid * mult2
-    total = base + mid + top
-
-    names = ["Seattle", "Portland", "Denver", "Austin", "Boston"]
-    random.shuffle(names)
-    name_base, name_mid, name_top = names[:3]
-
-    question = (
-        f"{name_top} has {mult2} times as many sheep as {name_mid}. "
-        f"{name_mid} has {mult1} times as many sheep as {name_base}. "
-        f"{name_base} has {base} sheep. How many sheep do they have together?"
-    )
-
-    # Single arithmetic trace with interleaved computation
-    return {
-        "query": question,
-        "expert": "arithmetic",
-        "trace": [
-            {"op": "init", "var": "base", "value": base},
-            {"op": "init", "var": "mult1", "value": mult1},
-            {"op": "compute", "compute_op": "mul", "args": ["base", "mult1"], "var": "step1"},
-            {"op": "init", "var": "mult2", "value": mult2},  # interleaved init
-            {"op": "compute", "compute_op": "mul", "args": ["step1", "mult2"], "var": "step2"},
-            {"op": "compute", "compute_op": "add", "args": ["base", "step1"], "var": "step3"},
-            {"op": "compute", "compute_op": "add", "args": ["step3", "step2"], "var": "result"},
-            {"op": "query", "var": "result"},
-        ],
-        "answer": total,
-    }
-
-
-def generate_rate_comparison_total() -> dict[str, Any]:
-    """Rate calculation then comparison: A produces X/hr, B produces N times A. Total in T hours?
-
-    Pattern: "Machine A makes 10 widgets/hour. Machine B makes 3× as many.
-    How many widgets total in 5 hours?"
-
-    Solution: A=10*5=50, B=3*10*5=150, total=200
-
-    Simplified to single arithmetic trace with interleaved inits (was 3-expert, now 1-expert).
-    """
-    rate_a = random.randint(5, 20)
-    multiplier = random.choice([2, 3, 4])
-    hours = random.randint(4, 10)
-
-    output_a = rate_a * hours
-    rate_b = rate_a * multiplier
-    output_b = rate_b * hours
-    total = output_a + output_b
-
-    question = (
-        f"Machine A produces {rate_a} items per hour. Machine B produces {multiplier} times as many. "
-        f"How many items do both machines produce together in {hours} hours?"
-    )
-
-    # Single arithmetic trace: rate_a*hours + (rate_a*mult)*hours
-    return {
-        "query": question,
-        "expert": "arithmetic",
-        "trace": [
-            {"op": "init", "var": "rate_a", "value": rate_a},
-            {"op": "init", "var": "hours", "value": hours},
-            {"op": "compute", "compute_op": "mul", "args": ["rate_a", "hours"], "var": "step1"},
-            {"op": "init", "var": "multiplier", "value": multiplier},  # interleaved init
-            {"op": "compute", "compute_op": "mul", "args": ["rate_a", "multiplier"], "var": "step2"},
-            {"op": "compute", "compute_op": "mul", "args": ["step2", "hours"], "var": "step3"},
-            {"op": "compute", "compute_op": "add", "args": ["step1", "step3"], "var": "result"},
-            {"op": "query", "var": "result"},
-        ],
-        "answer": total,
-    }
-
-
 def generate_discount_tax_total() -> dict[str, Any]:
     """Discount then tax: original price → discounted → with tax added.
 
@@ -710,8 +622,6 @@ GENERATORS = [
     generate_consume_then_sell,  # Entity track → revenue
     # Complex 3-expert patterns with multi-value wiring
     generate_cost_increase_profit,  # Cost + value increase + profit (uses sub0.result)
-    generate_comparison_then_total,  # Chain comparisons → sum all
-    generate_rate_comparison_total,  # Two rates → total output
     generate_discount_tax_total,  # Discount → tax → final price
 ]
 
