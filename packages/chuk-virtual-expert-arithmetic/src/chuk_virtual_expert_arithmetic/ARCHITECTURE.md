@@ -700,3 +700,353 @@ for ex in examples:
     print(f"[{ex.expert}] {ex.query}")
     print(f"Answer: {ex.answer}")
 ```
+
+---
+
+## 11. Core Module Architecture
+
+The `core/` module provides modular, composable building blocks that replace the monolithic generator with focused components.
+
+### Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                         CORE MODULE                                  │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  ┌─────────────────┐     ┌─────────────────┐     ┌───────────────┐ │
+│  │  SchemaLoader   │────▶│  SchemaComposer │────▶│  Pydantic     │ │
+│  │                 │     │                 │     │  Validation   │ │
+│  │  - load schemas │     │  - mixins       │     │               │ │
+│  │  - cache        │     │  - extends      │     │  SchemaSpec   │ │
+│  │  - validate     │     │  - merge        │     │  VariableSpec │ │
+│  └─────────────────┘     └─────────────────┘     └───────────────┘ │
+│           │                                                         │
+│           ▼                                                         │
+│  ┌─────────────────┐     ┌─────────────────┐     ┌───────────────┐ │
+│  │ VariableGenerator│────▶│ConstraintValid │────▶│ SafeEvaluator │ │
+│  │                 │     │                 │     │               │ │
+│  │  - int/float    │     │  - check bounds │     │  - AST-based  │ │
+│  │  - difficulty   │     │  - retry logic  │     │  - no eval()  │ │
+│  │  - avoid_round  │     │  - expressions  │     │  - secure     │ │
+│  └─────────────────┘     └─────────────────┘     └───────────────┘ │
+│           │                                                         │
+│           ▼                                                         │
+│  ┌─────────────────┐     ┌─────────────────┐     ┌───────────────┐ │
+│  │  DomainSampler  │────▶│  VocabSampler   │────▶│TransformReg   │ │
+│  │                 │     │                 │     │               │ │
+│  │  - agents       │     │  - names        │     │  - pluralize  │ │
+│  │  - items        │     │  - items        │     │  - capitalize │ │
+│  │  - verbs        │     │  - pronouns     │     │  - article    │ │
+│  └─────────────────┘     └─────────────────┘     └───────────────┘ │
+│           │                                                         │
+│           ▼                                                         │
+│  ┌─────────────────┐     ┌─────────────────┐                       │
+│  │TemplateResolver │────▶│TemplatePerturbator│                     │
+│  │                 │     │                 │                       │
+│  │  - specs        │     │  - reorder      │                       │
+│  │  - transforms   │     │  - fillers      │                       │
+│  │  - substitution │     │  - synonyms     │                       │
+│  └─────────────────┘     └─────────────────┘                       │
+│                                                                      │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Component Summary
+
+| Component | File | Responsibility |
+|-----------|------|----------------|
+| `SafeEvaluator` | `core/expression.py` | Secure math evaluation (no `eval()`) |
+| `SchemaLoader` | `core/loader.py` | Load, validate, cache schemas |
+| `SchemaComposer` | `core/composer.py` | Schema composition (mixins/extends) |
+| `VariableGenerator` | `core/variables.py` | Generate random variables |
+| `ConstraintValidator` | `core/constraints.py` | Validate & retry logic |
+| `TransformRegistry` | `core/transforms.py` | Pluggable text transforms |
+| `VocabSampler` | `core/sampler.py` | Sample vocabulary items |
+| `DomainSampler` | `core/domains.py` | Domain-first vocab sampling |
+| `TemplateResolver` | `core/resolver.py` | Resolve template specs |
+| `ContractValidator` | `core/contracts.py` | Validate pattern contracts |
+| `TemplatePerturbator` | `core/perturbation.py` | GSM-8K generalization |
+| `NumericDiversifier` | `core/perturbation.py` | Numeric diversity |
+
+---
+
+## 12. Safe Expression Evaluation
+
+The `SafeEvaluator` replaces `eval()` with an AST-based approach that is secure and extensible.
+
+### Supported Operations
+
+| Operator | Symbol | Example |
+|----------|--------|---------|
+| Addition | `+` | `a + b` |
+| Subtraction | `-` | `a - b` |
+| Multiplication | `*` | `a * b` |
+| True Division | `/` | `a / b` → float |
+| Floor Division | `//` | `a // b` → int |
+| Modulo | `%` | `a % b` |
+| Power | `**` | `a ** b` |
+| Unary Negative | `-` | `-a` |
+
+### Built-in Functions
+
+| Function | Description | Example |
+|----------|-------------|---------|
+| `abs()` | Absolute value | `abs(-5)` → `5` |
+| `min()` | Minimum | `min(a, b)` |
+| `max()` | Maximum | `max(a, b)` |
+| `round()` | Round to precision | `round(3.14159, 2)` → `3.14` |
+
+### Division Behavior
+
+The `/` operator (true division) always returns a float:
+```python
+10 / 2   # Returns 5.0, not 5
+10 // 2  # Returns 5 (floor division)
+```
+
+### Usage
+
+```python
+from chuk_virtual_expert_arithmetic.core import SafeEvaluator
+
+evaluator = SafeEvaluator()
+result = evaluator.evaluate("(rate1 + rate2) * time", {
+    "rate1": 12,
+    "rate2": 8,
+    "time": 3
+})
+# result = 60.0
+```
+
+---
+
+## 13. Schema Composition
+
+Schemas support inheritance (`extends`) and mixins for code reuse.
+
+### Mixins
+
+Mixins provide reusable vocabulary and template variable definitions.
+
+**Location:** `schemas/mixins/*.json`
+
+| Mixin | Provides |
+|-------|----------|
+| `person_vocab` | Person names and pronouns |
+| `item_vocab` | Item vocabulary |
+
+**Example mixin** (`person_vocab.json`):
+```json
+{
+  "name": "person_vocab",
+  "vocab": {
+    "person": {"type": "person_with_pronouns"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subject": "person.subject",
+    "subj": "person.subject|capitalize",
+    "his_her": "person.possessive",
+    "him_her": "person.object"
+  }
+}
+```
+
+### Using Mixins
+
+Schemas reference mixins by name:
+
+```json
+{
+  "name": "multiply_add",
+  "mixins": ["person_vocab", "item_vocab"],
+  "variables": {
+    "base": {"type": "int", "min": 2, "max": 10}
+  },
+  "template_vars": {
+    "item_singular": "item"
+  },
+  "trace": [...],
+  "answer": "base * mult + addend"
+}
+```
+
+### Inheritance
+
+Schemas can extend a base schema:
+
+```json
+{
+  "name": "custom_rate",
+  "extends": "combined_rate",
+  "variables": {
+    "rate1": {"type": "int", "min": 10, "max": 30}
+  }
+}
+```
+
+### Composition Order
+
+1. Load base schema (if `extends` specified)
+2. Apply mixins in order
+3. Apply schema's own definitions (overrides)
+
+---
+
+## 14. Variable Generation
+
+The `VariableGenerator` creates random values with support for difficulty levels and numeric diversity.
+
+### Variable Specification
+
+```python
+from chuk_virtual_expert_arithmetic.models import VariableSpec
+
+spec = VariableSpec(
+    type="int",
+    min=1,
+    max=100,
+    multiple_of=5,        # Optional: divisible by 5
+    avoid_round=True,     # Optional: not divisible by 10
+    difficulty="hard"     # Optional: easy/medium/hard
+)
+```
+
+### Difficulty Profiles
+
+| Profile | Max Digits | Round Numbers | Range Scaling |
+|---------|------------|---------------|---------------|
+| `easy` | 2 | Preferred (×5) | Limited to 30 |
+| `medium` | 3 | Allowed | Full range |
+| `hard` | 4 | Avoided | Full range |
+
+**Example:**
+```python
+from chuk_virtual_expert_arithmetic.core import VariableGenerator, DifficultyProfile
+
+generator = VariableGenerator(seed=42)
+
+# Easy generates small, round numbers
+spec_easy = VariableSpec(type="int", min=1, max=100, difficulty="easy")
+# Values like 5, 10, 15, 20, 25, 30
+
+# Hard generates larger, non-round numbers
+spec_hard = VariableSpec(type="int", min=1, max=100, difficulty="hard")
+# Values like 37, 63, 84, 91
+```
+
+### Numeric Diversity
+
+The `avoid_round` flag ensures numbers aren't divisible by 10:
+
+```python
+spec = VariableSpec(type="int", min=1, max=100, avoid_round=True)
+# Never generates: 10, 20, 30, 40, ...
+# Generates: 12, 37, 84, 91, ...
+```
+
+---
+
+## 15. GSM-8K Generalization
+
+The perturbation system helps synthetic data generalize to real benchmarks like GSM-8K.
+
+### TemplatePerturbator
+
+Applies random variations to break template regularity:
+
+```python
+from chuk_virtual_expert_arithmetic.core import TemplatePerturbator
+
+perturbator = TemplatePerturbator(seed=42)
+
+original = "Sarah has 5 apples. She buys 3 more. How many apples does Sarah have?"
+perturbed = perturbator.perturb(original, level=0.3)
+# "Now, Sarah has 5 apples. She buys 3 more apples. What's the total number of apples?"
+```
+
+### Perturbation Types
+
+| Type | Description | Example |
+|------|-------------|---------|
+| Clause Reorder | Move clauses around | "X. Y. Z?" → "Y. X. Z?" |
+| Filler Phrases | Add natural fillers | "So, " / "Now, " / "Here's the thing: " |
+| Question Variation | Vary question form | "How many" → "What's the total" |
+| Synonym Substitution | Replace common words | "buys" → "purchases" |
+
+### NumericDiversifier
+
+Generates diverse number representations:
+
+```python
+from chuk_virtual_expert_arithmetic.core import NumericDiversifier
+
+diversifier = NumericDiversifier(seed=42)
+diversifier.diversify(12)  # "12", "twelve", "a dozen"
+```
+
+---
+
+## 16. Testing
+
+### Run All Tests
+
+```bash
+make test
+# or
+pytest tests/ -v
+```
+
+### Test Coverage
+
+```bash
+make test-cov
+# or
+pytest tests/ --cov=src --cov-report=term-missing
+```
+
+### Verify Generation
+
+```python
+from chuk_virtual_expert_arithmetic.generators import TraceGenerator
+
+gen = TraceGenerator(seed=42)
+examples = gen.generate_balanced(20)
+
+for ex in examples:
+    assert '${' not in ex.query, f"Unresolved in {ex.expert}"
+    assert ex.answer is not None
+    print(f"{ex.expert}: OK")
+```
+
+---
+
+## 17. Migration from Legacy
+
+The old `SchemaGenerator` is still functional but delegates to new core components:
+
+```python
+# Old way (still works)
+from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+gen = SchemaGenerator(seed=42)
+
+# New way (recommended for direct component use)
+from chuk_virtual_expert_arithmetic.core import SchemaLoader, VariableGenerator
+loader = SchemaLoader()
+var_gen = VariableGenerator(seed=42)
+```
+
+### Schema Updates for Mixins
+
+Schemas using person or item vocabulary should add mixins:
+
+```json
+{
+  "name": "my_schema",
+  "mixins": ["person_vocab", "item_vocab"],
+  ...
+}
+```
+
+This automatically provides `name`, `subject`, `his_her`, `him_her` from person and `item` vocabulary.
