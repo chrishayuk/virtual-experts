@@ -17,11 +17,13 @@ from chuk_virtual_expert.trace_models import (
 )
 from chuk_virtual_expert.trace_solver import TraceSolverExpert
 
+from chuk_virtual_expert_arithmetic.types import ExpertType
+
 
 class PercentageExpert(TraceSolverExpert):
     """Expert for percentage calculation problems."""
 
-    name: ClassVar[str] = "percentage"
+    name: ClassVar[str] = ExpertType.PERCENTAGE
     description: ClassVar[str] = "Computes percentage discounts, increases, and proportions"
     version: ClassVar[str] = "1.0.0"
     priority: ClassVar[int] = 12

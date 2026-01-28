@@ -1,0 +1,19 @@
+{
+  "name": "sports",
+  "description": "Athletics and competition",
+  "agent_types": ["team", "person"],
+  "agent_templates": {
+    "team": {"pattern": "Team ${letter}", "letters": ["A", "B", "C"]},
+    "player": {"pattern": "Player ${number}", "numbers": [1, 2, 3]},
+    "runner": {"pattern": "Runner ${number}", "numbers": [1, 2]},
+    "person": {"source": "names.people", "pattern": "${name}"}
+  },
+  "items": ["points", "goals", "laps", "baskets", "runs"],
+  "verbs": {"singular": "scores", "plural": "score"},
+  "time_units": [
+    {"singular": "quarter", "plural": "quarters"},
+    {"singular": "half", "plural": "halves"},
+    {"singular": "game", "plural": "games"},
+    {"singular": "hour", "plural": "hours"}
+  ]
+}

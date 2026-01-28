@@ -14,7 +14,7 @@ from typing import Any
 
 
 class ProblemType(Enum):
-    """Types of GSM-8K problems."""
+    """Types of arithmetic word problems."""
 
     ENTITY_TRACKING = "entity_tracking"  # Alice has X, gives Y to Bob
     ARITHMETIC_CHAIN = "arithmetic_chain"  # Sequential operations on one value
@@ -188,7 +188,7 @@ class Constraint:
 @dataclass
 class ProblemSpec:
     """
-    Complete structured representation of a GSM-8K problem.
+    Complete structured representation of an arithmetic word problem.
 
     This is what the LLM extracts from natural language.
     The trace generator uses this to produce a verifiable trace.

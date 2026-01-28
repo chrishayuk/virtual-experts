@@ -1,32 +1,78 @@
 {
   "name": "weekly_sprints",
-  "expert": "arithmetic",
   "description": "X sprints Y times per week, Z meters each sprint",
-  "pattern": "activity_patterns",
-  "variant": "weekly_sprints",
   "variables": {
-    "sprints_per_session": {"type": "int", "min": 2, "max": 5},
-    "sessions_per_week": {"type": "int", "min": 2, "max": 5},
-    "meters_per_sprint": {"type": "int", "min": 40, "max": 100, "multiple_of": 10}
+    "sprints_per_session": {
+      "type": "int",
+      "min": 2,
+      "max": 5
+    },
+    "sessions_per_week": {
+      "type": "int",
+      "min": 2,
+      "max": 5
+    },
+    "meters_per_sprint": {
+      "type": "int",
+      "min": 40,
+      "max": 100,
+      "multiple_of": 10
+    }
   },
   "derived": {
     "total_sprints": "sprints_per_session * sessions_per_week",
     "total_meters": "total_sprints * meters_per_sprint"
   },
+  "trace": [
+    {
+      "op": "init",
+      "var": "sprints_per_session",
+      "value": "sprints_per_session"
+    },
+    {
+      "op": "init",
+      "var": "sessions_per_week",
+      "value": "sessions_per_week"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "sprints_per_session",
+        "sessions_per_week"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "init",
+      "var": "meters_per_sprint",
+      "value": "meters_per_sprint"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "step1",
+        "meters_per_sprint"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
+  ],
+  "answer": "total_meters",
+  "pattern": "activity_patterns",
+  "variant": "weekly_sprints",
   "vocab": {
-    "person": {"type": "person_with_pronouns"}
+    "person": {
+      "type": "person_with_pronouns"
+    }
   },
   "template_vars": {
     "name": "person.name",
-    "subject": "person.subject"
-  },
-  "trace": [
-    {"op": "init", "var": "sprints_per_session", "value": "sprints_per_session"},
-    {"op": "init", "var": "sessions_per_week", "value": "sessions_per_week"},
-    {"op": "compute", "compute_op": "mul", "args": ["sprints_per_session", "sessions_per_week"], "var": "step1"},
-    {"op": "init", "var": "meters_per_sprint", "value": "meters_per_sprint"},
-    {"op": "compute", "compute_op": "mul", "args": ["step1", "meters_per_sprint"], "var": "result"},
-    {"op": "query", "var": "result"}
-  ],
-  "answer": "total_meters"
+    "subject": "person.subject",
+    "subj": "person.subject|capitalize"
+  }
 }

@@ -4,32 +4,74 @@
   "description": "A gives to B, B gives back some",
   "pattern": "entity_track",
   "variant": "bidirectional_transfer",
-  "variables": {
-    "initial1": {"type": "int", "min": 20, "max": 45},
-    "initial2": {"type": "int", "min": 5, "max": 20},
-    "transfer1": {"type": "int", "min": 5, "max": 15},
-    "transfer2": {"type": "int", "min": 2, "max": 8}
-  },
-  "constraints": {
-    "initial1 - transfer1": {"min": 5}
-  },
   "vocab": {
     "person1": {"type": "person_with_pronouns"},
     "person2": {"type": "person_with_pronouns"},
-    "items": {"path": "items.countable"},
-    "give_verb1": {"path": "phrases.give_verbs"},
-    "give_verb2": {"path": "phrases.give_verbs"}
+    "item": {"path": "items.countable_singular"}
   },
   "template_vars": {
     "name1": "person1.name",
-    "name2": "person2.name"
+    "name2": "person2.name",
+    "items": "item|pluralize",
+    "initial1": "start1",
+    "initial2": "start2",
+    "give_verb1": "gives",
+    "give_verb2": "gives"
+  },
+  "variables": {
+    "start1": {
+      "type": "int",
+      "min": 20,
+      "max": 45
+    },
+    "start2": {
+      "type": "int",
+      "min": 5,
+      "max": 20
+    },
+    "transfer1": {
+      "type": "int",
+      "min": 5,
+      "max": 15
+    },
+    "transfer2": {
+      "type": "int",
+      "min": 2,
+      "max": 8
+    }
+  },
+  "constraints": {
+    "start1 - transfer1": {
+      "min": 5
+    }
   },
   "trace": [
-    {"op": "init", "var": "p1", "value": "initial1"},
-    {"op": "init", "var": "p2", "value": "initial2"},
-    {"op": "transfer", "from_entity": "p1", "to_entity": "p2", "amount": "transfer1"},
-    {"op": "transfer", "from_entity": "p2", "to_entity": "p1", "amount": "transfer2"},
-    {"op": "query", "var": "p1"}
+    {
+      "op": "init",
+      "var": "p1",
+      "value": "start1"
+    },
+    {
+      "op": "init",
+      "var": "p2",
+      "value": "start2"
+    },
+    {
+      "op": "transfer",
+      "from_entity": "p1",
+      "to_entity": "p2",
+      "amount": "transfer1"
+    },
+    {
+      "op": "transfer",
+      "from_entity": "p2",
+      "to_entity": "p1",
+      "amount": "transfer2"
+    },
+    {
+      "op": "query",
+      "var": "p1"
+    }
   ],
-  "answer": "initial1 - transfer1 + transfer2"
+  "answer": "start1 - transfer1 + transfer2"
 }

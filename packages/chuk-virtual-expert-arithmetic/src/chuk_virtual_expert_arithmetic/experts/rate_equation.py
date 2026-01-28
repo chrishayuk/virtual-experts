@@ -13,11 +13,13 @@ from typing import Any, ClassVar
 from chuk_virtual_expert.trace_models import BaseTraceStep
 from chuk_virtual_expert.trace_solver import TraceSolverExpert
 
+from chuk_virtual_expert_arithmetic.types import ExpertType
+
 
 class RateEquationExpert(TraceSolverExpert):
     """Expert for rate and formula-based problems."""
 
-    name: ClassVar[str] = "rate_equation"
+    name: ClassVar[str] = ExpertType.RATE_EQUATION
     description: ClassVar[str] = "Solves rate/formula problems (speed, distance, time, work)"
     version: ClassVar[str] = "1.0.0"
     priority: ClassVar[int] = 11

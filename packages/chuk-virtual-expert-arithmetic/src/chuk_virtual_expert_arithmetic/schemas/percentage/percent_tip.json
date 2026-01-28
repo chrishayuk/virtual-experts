@@ -4,19 +4,49 @@
   "description": "Calculate tip on a bill",
   "pattern": "percentage",
   "variant": "tip_calculation",
-  "variables": {
-    "bill": {"type": "int", "min": 20, "max": 100},
-    "percent": {"type": "choice", "options": [15, 18, 20, 25]}
-  },
   "vocab": {
-    "restaurant": {"path": "phrases.restaurants"}
+    "restaurant_name": {"path": "places.restaurants"}
   },
-  "template_vars": {},
+  "template_vars": {
+    "restaurant": "restaurant_name"
+  },
+  "variables": {
+    "bill": {
+      "type": "int",
+      "min": 20,
+      "max": 100
+    },
+    "percent": {
+      "type": "choice",
+      "options": [
+        15,
+        18,
+        20,
+        25
+      ]
+    }
+  },
   "trace": [
-    {"op": "init", "var": "bill", "value": "bill"},
-    {"op": "init", "var": "rate", "value": "percent"},
-    {"op": "percent_of", "base": "bill", "rate": "rate", "var": "result"},
-    {"op": "query", "var": "result"}
+    {
+      "op": "init",
+      "var": "bill",
+      "value": "bill"
+    },
+    {
+      "op": "init",
+      "var": "rate",
+      "value": "percent"
+    },
+    {
+      "op": "percent_of",
+      "base": "bill",
+      "rate": "rate",
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
   ],
   "answer": "bill * percent / 100"
 }

@@ -1,36 +1,69 @@
 {
   "name": "twice_as_much",
-  "expert": "arithmetic",
   "description": "First has twice as much as second, first is known - divide to find second, then sum",
-  "pattern": "inverse_half",
-  "variant": "twice_as_much",
   "variables": {
-    "first": {"type": "int", "min": 20, "max": 100, "multiple_of": 2}
+    "first": {
+      "type": "int",
+      "min": 20,
+      "max": 100,
+      "multiple_of": 2
+    }
   },
   "derived": {
     "second": "first // 2",
     "total": "first + second"
   },
+  "trace": [
+    {
+      "op": "init",
+      "var": "first",
+      "value": "first"
+    },
+    {
+      "op": "init",
+      "var": "divisor",
+      "value": 2
+    },
+    {
+      "op": "compute",
+      "compute_op": "div",
+      "args": [
+        "first",
+        "divisor"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "compute",
+      "compute_op": "add",
+      "args": [
+        "first",
+        "step1"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
+  ],
+  "answer": "total",
+  "pattern": "inverse_half",
   "vocab": {
-    "person": {"type": "person_with_pronouns"},
-    "container": {"path": "containers.types"},
-    "items": {"path": "items.countable"}
+    "person": {
+      "type": "person_with_pronouns"
+    },
+    "item": {
+      "path": "items.countable_singular"
+    },
+    "container": {
+      "path": "phrases.distribution_targets"
+    }
   },
   "template_vars": {
     "name": "person.name",
-    "subject": "person.subject"
+    "items": "item|pluralize",
+    "container": "container.singular"
   },
-  "templates": [
-    "{name} has two {container}s. The first {container} has twice as many {items} as the second {container}. If the first {container} has {first} {items}, how many {items} does {name} have in total?",
-    "There are two {container}s of {items}. The first has twice as many as the second. The first {container} contains {first} {items}. How many {items} are there altogether?",
-    "{name}'s first {container} has twice as many {items} as {subject} second {container}. The first has {first} {items}. What is the total number of {items}?"
-  ],
-  "trace": [
-    {"op": "init", "var": "first", "value": "first"},
-    {"op": "init", "var": "divisor", "value": 2},
-    {"op": "compute", "compute_op": "div", "args": ["first", "divisor"], "var": "step1"},
-    {"op": "compute", "compute_op": "add", "args": ["first", "step1"], "var": "result"},
-    {"op": "query", "var": "result"}
-  ],
-  "answer": "total"
+  "variant": "twice_as_much"
 }

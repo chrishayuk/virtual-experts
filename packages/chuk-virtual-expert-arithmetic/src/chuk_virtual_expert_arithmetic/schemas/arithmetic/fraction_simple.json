@@ -1,30 +1,62 @@
 {
   "name": "fraction_simple",
   "description": "Simple fraction of total (1/2, 1/3, 1/4)",
-  "pattern": "fraction_patterns",
-  "variant": "simple_fraction",
   "variables": {
-    "fraction": {"type": "choice", "options": [2, 3, 4]},
-    "total_base": {"type": "int", "min": 8, "max": 30}
+    "fraction": {
+      "type": "choice",
+      "options": [
+        2,
+        3,
+        4
+      ]
+    },
+    "total_base": {
+      "type": "int",
+      "min": 8,
+      "max": 30
+    }
   },
   "derived": {
     "total": "total_base * fraction"
   },
+  "trace": [
+    {
+      "op": "init",
+      "var": "total",
+      "value": "total"
+    },
+    {
+      "op": "init",
+      "var": "fraction",
+      "value": "fraction"
+    },
+    {
+      "op": "compute",
+      "compute_op": "div",
+      "args": [
+        "total",
+        "fraction"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
+  ],
+  "answer": "total / fraction",
+  "pattern": "fraction_patterns",
+  "variant": "simple_fraction",
   "vocab": {
-    "person": {"type": "person_with_pronouns"},
-    "items": {"path": "items.countable"}
+    "person": {
+      "type": "person_with_pronouns"
+    },
+    "item": {
+      "path": "items.countable_singular"
+    }
   },
   "template_vars": {
     "name": "person.name",
-    "subj": "person.subject|capitalize",
-    "subject": "person.subject",
-    "his_her": "person.possessive"
-  },
-  "trace": [
-    {"op": "init", "var": "total", "value": "total"},
-    {"op": "init", "var": "fraction", "value": "fraction"},
-    {"op": "compute", "compute_op": "div", "args": ["total", "fraction"], "var": "result"},
-    {"op": "query", "var": "result"}
-  ],
-  "answer": "total / fraction"
+    "items": "item|pluralize"
+  }
 }

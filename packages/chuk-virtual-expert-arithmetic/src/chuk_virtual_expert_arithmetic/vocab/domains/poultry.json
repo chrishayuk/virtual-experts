@@ -1,0 +1,21 @@
+{
+  "name": "poultry",
+  "description": "Egg and poultry production",
+  "agent_types": ["coop", "person"],
+  "agent_templates": {
+    "coop": {"pattern": "Coop ${letter}", "letters": ["A", "B", "C"]},
+    "flock": {"pattern": "Flock ${number}", "numbers": [1, 2]},
+    "person": {"source": "names.people", "pattern": "${name}"}
+  },
+  "animals": [
+    {"name": "chickens", "singular": "chicken", "produces": "eggs", "verb": "lay"},
+    {"name": "ducks", "singular": "duck", "produces": "eggs", "verb": "lay"},
+    {"name": "geese", "singular": "goose", "produces": "eggs", "verb": "lay"}
+  ],
+  "items": ["eggs", "feathers", "chicks"],
+  "verbs": {"singular": "lays", "plural": "lay"},
+  "time_units": [
+    {"singular": "day", "plural": "days"},
+    {"singular": "week", "plural": "weeks"}
+  ]
+}

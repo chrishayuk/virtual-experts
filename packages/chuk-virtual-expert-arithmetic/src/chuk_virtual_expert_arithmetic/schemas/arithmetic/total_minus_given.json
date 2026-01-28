@@ -1,41 +1,105 @@
 {
   "name": "total_minus_given",
-  "expert": "arithmetic",
   "description": "Calculate total needed, subtract what's already given, find remainder",
-  "pattern": "remainder_patterns",
-  "variant": "feed_remainder",
   "variables": {
-    "units": {"type": "int", "min": 15, "max": 25},
-    "per_unit": {"type": "int", "min": 2, "max": 5},
-    "given1": {"type": "int", "min": 10, "max": 20},
-    "given2": {"type": "int", "min": 15, "max": 30}
+    "units": {
+      "type": "int",
+      "min": 15,
+      "max": 25
+    },
+    "per_unit": {
+      "type": "int",
+      "min": 2,
+      "max": 5
+    },
+    "given1": {
+      "type": "int",
+      "min": 10,
+      "max": 20
+    },
+    "given2": {
+      "type": "int",
+      "min": 15,
+      "max": 30
+    }
+  },
+  "constraints": {
+    "units * per_unit - given1 - given2": {
+      "min": 5
+    }
   },
   "derived": {
     "total_needed": "units * per_unit",
     "total_given": "given1 + given2",
     "remainder": "total_needed - total_given"
   },
-  "constraints": {
-    "total_needed - given1 - given2": {"min": 5}
-  },
+  "trace": [
+    {
+      "op": "init",
+      "var": "units",
+      "value": "units"
+    },
+    {
+      "op": "init",
+      "var": "per_unit",
+      "value": "per_unit"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "units",
+        "per_unit"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "init",
+      "var": "given1",
+      "value": "given1"
+    },
+    {
+      "op": "init",
+      "var": "given2",
+      "value": "given2"
+    },
+    {
+      "op": "compute",
+      "compute_op": "add",
+      "args": [
+        "given1",
+        "given2"
+      ],
+      "var": "step2"
+    },
+    {
+      "op": "compute",
+      "compute_op": "sub",
+      "args": [
+        "step1",
+        "step2"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
+  ],
+  "answer": "remainder",
+  "pattern": "remainder_patterns",
+  "variant": "feed_remainder",
   "vocab": {
-    "person": {"type": "person_with_pronouns"},
-    "items": {"path": "items.countable"}
+    "person": {
+      "type": "person_with_pronouns"
+    },
+    "item": {
+      "path": "items.baked_goods"
+    }
   },
   "template_vars": {
     "name": "person.name",
     "subject": "person.subject",
-    "his_her": "person.possessive"
-  },
-  "trace": [
-    {"op": "init", "var": "units", "value": "units"},
-    {"op": "init", "var": "per_unit", "value": "per_unit"},
-    {"op": "compute", "compute_op": "mul", "args": ["units", "per_unit"], "var": "step1"},
-    {"op": "init", "var": "given1", "value": "given1"},
-    {"op": "init", "var": "given2", "value": "given2"},
-    {"op": "compute", "compute_op": "add", "args": ["given1", "given2"], "var": "step2"},
-    {"op": "compute", "compute_op": "sub", "args": ["step1", "step2"], "var": "result"},
-    {"op": "query", "var": "result"}
-  ],
-  "answer": "remainder"
+    "items": "item"
+  }
 }

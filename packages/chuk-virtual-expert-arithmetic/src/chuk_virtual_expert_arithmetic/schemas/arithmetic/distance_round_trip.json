@@ -1,32 +1,71 @@
 {
   "name": "distance_round_trip",
-  "expert": "arithmetic",
   "description": "Round trip distance calculation",
-  "pattern": "distance_patterns",
-  "variant": "round_trip",
   "variables": {
-    "speed": {"type": "int", "min": 20, "max": 60},
-    "hours": {"type": "int", "min": 1, "max": 4}
+    "speed": {
+      "type": "int",
+      "min": 20,
+      "max": 60
+    },
+    "hours": {
+      "type": "int",
+      "min": 1,
+      "max": 4
+    }
   },
   "derived": {
     "one_way": "speed * hours",
     "total": "one_way * 2"
   },
+  "trace": [
+    {
+      "op": "init",
+      "var": "speed",
+      "value": "speed"
+    },
+    {
+      "op": "init",
+      "var": "hours",
+      "value": "hours"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "speed",
+        "hours"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "init",
+      "var": "multiplier",
+      "value": 2
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "step1",
+        "multiplier"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
+  ],
+  "answer": "total",
+  "pattern": "distance_patterns",
+  "variant": "round_trip",
   "vocab": {
-    "person": {"type": "person_with_pronouns"}
+    "person": {
+      "type": "person_with_pronouns"
+    }
   },
   "template_vars": {
     "name": "person.name",
-    "subject": "person.subject",
-    "possessive": "person.possessive"
-  },
-  "trace": [
-    {"op": "init", "var": "speed", "value": "speed"},
-    {"op": "init", "var": "hours", "value": "hours"},
-    {"op": "compute", "compute_op": "mul", "args": ["speed", "hours"], "var": "step1"},
-    {"op": "init", "var": "multiplier", "value": 2},
-    {"op": "compute", "compute_op": "mul", "args": ["step1", "multiplier"], "var": "result"},
-    {"op": "query", "var": "result"}
-  ],
-  "answer": "total"
+    "subject": "person.subject"
+  }
 }

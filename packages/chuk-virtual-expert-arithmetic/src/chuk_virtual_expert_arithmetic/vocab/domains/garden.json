@@ -1,0 +1,17 @@
+{
+  "name": "garden",
+  "description": "Gardening and plants",
+  "agent_types": ["plant", "person"],
+  "agent_templates": {
+    "plant": {"pattern": "Plant ${letter}", "letters": ["A", "B", "C"]},
+    "tree": {"pattern": "Tree ${number}", "numbers": [1, 2, 3]},
+    "person": {"source": "names.people", "pattern": "${name}"}
+  },
+  "plants": ["tomato vine", "pepper plant", "rose bush", "sunflower", "apple tree", "orange tree"],
+  "items": ["tomatoes", "flowers", "vegetables", "fruits", "peppers"],
+  "verbs": {"singular": "produces", "plural": "produce"},
+  "time_units": [
+    {"singular": "day", "plural": "days"},
+    {"singular": "week", "plural": "weeks"}
+  ]
+}

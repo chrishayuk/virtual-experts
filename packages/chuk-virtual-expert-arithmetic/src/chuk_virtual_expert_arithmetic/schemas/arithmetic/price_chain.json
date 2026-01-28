@@ -2,33 +2,72 @@
   "name": "price_chain",
   "description": "Price + tax + shipping pattern",
   "pattern": "price_chain",
-  "variables": {
-    "base": {"type": "int", "min": 10, "max": 100},
-    "tax": {"type": "float", "min": 1, "max": 10, "precision": 2},
-    "shipping": {"type": "int", "min": 2, "max": 10}
-  },
+  "mixins": ["person_vocab", "item_vocab"],
   "vocab": {
-    "person": {"type": "person_with_pronouns"},
-    "item": {"path": "items.countable_singular"},
-    "store": {"path": "places.stores"},
-    "fee": {"path": "phrases.fee_types"}
+    "store_name": {"path": "places.stores"}
   },
   "template_vars": {
-    "name": "person.name",
-    "subject": "person.subject",
-    "subj": "person.subject|capitalize",
-    "his_her": "person.possessive",
-    "reflexive": "person.reflexive",
     "has_have": "person.verb_s|has_have",
-    "a_item": "item|with_article"
+    "a_item": "item|with_article",
+    "store": "store_name",
+    "fee": "delivery"
+  },
+  "variables": {
+    "base": {
+      "type": "int",
+      "min": 10,
+      "max": 100
+    },
+    "tax": {
+      "type": "float",
+      "min": 1,
+      "max": 10,
+      "precision": 2
+    },
+    "shipping": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    }
   },
   "trace": [
-    {"op": "init", "var": "base", "value": "base"},
-    {"op": "init", "var": "tax", "value": "tax"},
-    {"op": "init", "var": "shipping", "value": "shipping"},
-    {"op": "compute", "compute_op": "add", "args": ["base", "tax"], "var": "step1"},
-    {"op": "compute", "compute_op": "add", "args": ["step1", "shipping"], "var": "result"},
-    {"op": "query", "var": "result"}
+    {
+      "op": "init",
+      "var": "base",
+      "value": "base"
+    },
+    {
+      "op": "init",
+      "var": "tax",
+      "value": "tax"
+    },
+    {
+      "op": "init",
+      "var": "shipping",
+      "value": "shipping"
+    },
+    {
+      "op": "compute",
+      "compute_op": "add",
+      "args": [
+        "base",
+        "tax"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "compute",
+      "compute_op": "add",
+      "args": [
+        "step1",
+        "shipping"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
   ],
   "answer": "base + tax + shipping"
 }

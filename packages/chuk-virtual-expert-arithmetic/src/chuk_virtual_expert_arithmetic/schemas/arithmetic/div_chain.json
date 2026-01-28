@@ -1,39 +1,100 @@
 {
   "name": "div_chain",
-  "expert": "arithmetic",
   "description": "Chain of divisions: start / div1 / div2 / div3",
-  "pattern": "division_chain",
-  "variant": "div_div_div",
   "variables": {
-    "start": {"type": "int", "min": 120, "max": 1000},
-    "div1": {"type": "int", "min": 2, "max": 5},
-    "div2": {"type": "int", "min": 2, "max": 5},
-    "div3": {"type": "int", "min": 2, "max": 4}
+    "start": {
+      "type": "int",
+      "min": 120,
+      "max": 1000
+    },
+    "div1": {
+      "type": "int",
+      "min": 2,
+      "max": 5
+    },
+    "div2": {
+      "type": "int",
+      "min": 2,
+      "max": 5
+    },
+    "div3": {
+      "type": "int",
+      "min": 2,
+      "max": 4
+    }
   },
   "derived": {
     "after_div1": "start // div1",
     "after_div2": "after_div1 // div2",
     "final": "after_div2 // div3"
   },
+  "trace": [
+    {
+      "op": "init",
+      "var": "start",
+      "value": "start"
+    },
+    {
+      "op": "init",
+      "var": "div1",
+      "value": "div1"
+    },
+    {
+      "op": "init",
+      "var": "div2",
+      "value": "div2"
+    },
+    {
+      "op": "init",
+      "var": "div3",
+      "value": "div3"
+    },
+    {
+      "op": "compute",
+      "compute_op": "div",
+      "args": [
+        "start",
+        "div1"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "compute",
+      "compute_op": "div",
+      "args": [
+        "step1",
+        "div2"
+      ],
+      "var": "step2"
+    },
+    {
+      "op": "compute",
+      "compute_op": "div",
+      "args": [
+        "step2",
+        "div3"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
+  ],
+  "answer": "final",
+  "pattern": "division_chain",
+  "variant": "div_div_div",
   "vocab": {
-    "person": {"type": "person_with_pronouns"},
-    "item": {"path": "items.countable"}
+    "person": {
+      "type": "person_with_pronouns"
+    },
+    "item": {
+      "path": "items.countable_singular"
+    }
   },
   "template_vars": {
     "name": "person.name",
     "subject": "person.subject",
-    "subj": "person.subject|capitalize",
-    "items": "item"
-  },
-  "trace": [
-    {"op": "init", "var": "start", "value": "start"},
-    {"op": "init", "var": "div1", "value": "div1"},
-    {"op": "init", "var": "div2", "value": "div2"},
-    {"op": "init", "var": "div3", "value": "div3"},
-    {"op": "compute", "compute_op": "div", "args": ["start", "div1"], "var": "step1"},
-    {"op": "compute", "compute_op": "div", "args": ["step1", "div2"], "var": "step2"},
-    {"op": "compute", "compute_op": "div", "args": ["step2", "div3"], "var": "result"},
-    {"op": "query", "var": "result"}
-  ],
-  "answer": "final"
+    "items": "item|pluralize"
+  }
 }

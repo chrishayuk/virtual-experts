@@ -18,11 +18,13 @@ from chuk_virtual_expert.trace_models import (
 )
 from chuk_virtual_expert.trace_solver import TraceSolverExpert
 
+from chuk_virtual_expert_arithmetic.types import ExpertType
+
 
 class EntityTrackExpert(TraceSolverExpert):
     """Expert for entity state tracking problems."""
 
-    name: ClassVar[str] = "entity_track"
+    name: ClassVar[str] = ExpertType.ENTITY_TRACK
     description: ClassVar[str] = "Tracks entity quantities through transfers and operations"
     version: ClassVar[str] = "1.0.0"
     priority: ClassVar[int] = 15

@@ -4,31 +4,62 @@
   "description": "Entity finds and loses items",
   "pattern": "entity_track",
   "variant": "find_and_lose",
-  "variables": {
-    "initial": {"type": "int", "min": 10, "max": 35},
-    "found": {"type": "int", "min": 3, "max": 12},
-    "lost": {"type": "int", "min": 2, "max": 8}
-  },
-  "constraints": {
-    "initial + found - lost": {"min": 5}
-  },
   "vocab": {
     "person": {"type": "person_with_pronouns"},
-    "items": {"path": "items.countable"},
-    "find_verb": {"path": "phrases.find_verbs"},
-    "lose_verb": {"path": "phrases.lose_verbs"}
+    "item": {"path": "items.countable_singular"}
   },
   "template_vars": {
     "name": "person.name",
     "subject": "person.subject",
     "subj": "person.subject|capitalize",
-    "his_her": "person.possessive"
+    "his_her": "person.possessive",
+    "items": "item|pluralize",
+    "initial": "start",
+    "find_verb": "finds",
+    "lose_verb": "loses"
+  },
+  "variables": {
+    "start": {
+      "type": "int",
+      "min": 10,
+      "max": 35
+    },
+    "found": {
+      "type": "int",
+      "min": 3,
+      "max": 12
+    },
+    "lost": {
+      "type": "int",
+      "min": 2,
+      "max": 8
+    }
+  },
+  "constraints": {
+    "start + found - lost": {
+      "min": 5
+    }
   },
   "trace": [
-    {"op": "init", "var": "items", "value": "initial"},
-    {"op": "add_entity", "entity": "items", "amount": "found"},
-    {"op": "consume", "entity": "items", "amount": "lost"},
-    {"op": "query", "var": "items"}
+    {
+      "op": "init",
+      "var": "items",
+      "value": "start"
+    },
+    {
+      "op": "add_entity",
+      "entity": "items",
+      "amount": "found"
+    },
+    {
+      "op": "consume",
+      "entity": "items",
+      "amount": "lost"
+    },
+    {
+      "op": "query",
+      "var": "items"
+    }
   ],
-  "answer": "initial + found - lost"
+  "answer": "start + found - lost"
 }

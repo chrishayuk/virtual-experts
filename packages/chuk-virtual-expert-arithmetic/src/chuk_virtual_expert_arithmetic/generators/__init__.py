@@ -19,6 +19,7 @@ from chuk_virtual_expert.trace_example import TraceExample
 
 from chuk_virtual_expert_arithmetic.generators import composition
 from chuk_virtual_expert_arithmetic.generators.schema_generator import SchemaGenerator
+from chuk_virtual_expert_arithmetic.types import ExpertType
 
 # ============================================================================
 # ARITHMETIC SCHEMA GROUPS
@@ -38,10 +39,7 @@ INTERLEAVED_SCHEMAS = [
     "interleaved_mul_mul",
     "parallel_merge",
     "chained_mul_sum",
-    "chained_mul_sum_gsm8k",  # GSM-8K style phrasing with people
-    "chained_mul_sum_inverted",  # GSM-8K style inverted phrasing (Toulouse)
     "consume_then_sell",
-    "consume_then_sell_gsm8k",  # GSM-8K style phrasing for consume_then_sell
     "rate_comparison_total",
 ]
 
@@ -50,16 +48,15 @@ LONG_CHAIN_SCHEMAS = [
 ]
 
 DIVISION_CHAIN_SCHEMAS = [
-    "sub_sub_div_div",  # Subtract twice, divide twice (GSM-8K gap pattern)
-    "div_chain",  # Chain of divisions (GSM-8K gap pattern)
+    "sub_sub_div_div",  # Subtract twice, divide twice
+    "div_chain",  # Chain of divisions
 ]
 
 GAP_CLOSING_SCHEMAS = [
     "half_twice",
-    "conditional_rate",
     "fraction_simple",
     "shopping_spree",
-    # GSM-8K style patterns
+    # Material patterns
     "material_half",  # "X and half that much" pattern
     "material_twice",  # "X and twice that much" pattern
     "decimal_rate_week",  # Decimal rates like "0.5 hours per day"
@@ -117,9 +114,7 @@ ENTITY_TRACK_SCHEMAS = [
 # ============================================================================
 
 RATE_EQUATION_SCHEMAS = [
-    "rate_production",
     "rate_distance",
-    "rate_consumption",
     "rate_earning",
 ]
 
@@ -162,11 +157,38 @@ class TraceGenerator:
     Uses SchemaGenerator for all expert types (data-driven).
     """
 
-    def __init__(self, seed: int | None = None) -> None:
+    def __init__(
+        self,
+        seed: int | None = None,
+        perturbation_level: float = 0.0,
+    ) -> None:
+        """Initialize the generator.
+
+        Args:
+            seed: Random seed for reproducibility.
+            perturbation_level: Level of template perturbation (0-1). Higher values
+                               apply more variations for better GSM-8K generalization.
+                               0 = no perturbation (default), 0.3 = moderate, 0.6 = high.
+        """
         import random
 
         self._rng = random.Random(seed)
-        self._schema_gen = SchemaGenerator()
+        self._perturbation_level = perturbation_level
+        self._schema_gen = SchemaGenerator(
+            perturbation_level=perturbation_level,
+            seed=seed,
+        )
+
+    @property
+    def perturbation_level(self) -> float:
+        """Get current perturbation level."""
+        return self._perturbation_level
+
+    @perturbation_level.setter
+    def perturbation_level(self, level: float) -> None:
+        """Set perturbation level (0-1)."""
+        self._perturbation_level = max(0.0, min(1.0, level))
+        self._schema_gen.perturbation_level = self._perturbation_level
 
     def _seeded_schema_generate(self, schemas: list[str], n: int) -> list[TraceExample]:
         """Generate from schemas with seeded random."""
@@ -351,6 +373,7 @@ class TraceGenerator:
 __all__ = [
     "TraceGenerator",
     "SchemaGenerator",
+    "ExpertType",
     "composition",
     "ALL_SCHEMAS",
     "ALL_ARITHMETIC_SCHEMAS",

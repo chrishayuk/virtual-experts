@@ -1,0 +1,18 @@
+{
+  "name": "factory",
+  "description": "Manufacturing and production",
+  "agent_types": ["machine", "line"],
+  "agent_templates": {
+    "machine": {"pattern": "Machine ${letter}", "letters": ["A", "B", "C", "D"]},
+    "line": {"pattern": "Line ${number}", "numbers": [1, 2, 3, 4]},
+    "robot": {"pattern": "Robot ${letter}", "letters": ["A", "B", "C"]},
+    "station": {"pattern": "Station ${number}", "numbers": [1, 2, 3]}
+  },
+  "items": ["widgets", "parts", "units", "products", "components", "devices"],
+  "verbs": {"singular": "produces", "plural": "produce"},
+  "time_units": [
+    {"singular": "hour", "plural": "hours"},
+    {"singular": "minute", "plural": "minutes"},
+    {"singular": "day", "plural": "days"}
+  ]
+}

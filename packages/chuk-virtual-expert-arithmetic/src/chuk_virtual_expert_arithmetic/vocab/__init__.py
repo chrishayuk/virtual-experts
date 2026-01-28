@@ -70,6 +70,19 @@ class Vocab:
 
             self._cache["patterns"] = patterns
 
+        # Load domains from domains/ subdirectory
+        domains_dir = vocab_dir / "domains"
+        if domains_dir.exists():
+            domains = {}
+            for json_file in domains_dir.glob("*.json"):
+                with open(json_file) as f:
+                    domain_data = json.load(f)
+                    # Use the domain name from the file or the filename
+                    domain_name = domain_data.get("name", json_file.stem)
+                    domains[domain_name] = domain_data
+
+            self._cache["domains"] = domains
+
     def get(self, path: str) -> Any:
         """Get vocabulary by dot-separated path.
 
@@ -141,6 +154,12 @@ class Vocab:
     def pattern(self, pattern_name: str, variant: str | None = None, **kwargs: Any) -> str:
         """Get a random pattern template and substitute variables.
 
+        Supports weighted templates for diversity. Templates can be:
+        - Simple strings: "This is a template with ${var}"
+        - Weighted dicts: {"text": "Template...", "weight": 3}
+
+        Higher weight = more likely to be selected. Default weight is 1.
+
         Args:
             pattern_name: Name of the pattern (e.g., "price_chain")
             variant: Optional variant name for patterns with sub-templates
@@ -168,8 +187,39 @@ class Vocab:
         if not templates:
             return ""
 
-        template = random.choice(templates) if isinstance(templates, list) else templates
+        # Select template with weighted random choice
+        template = self._select_weighted_template(templates)
         return self.substitute(template, **kwargs)
+
+    def _select_weighted_template(self, templates: list[Any] | Any) -> str:
+        """Select a template using weighted random choice.
+
+        Args:
+            templates: List of templates (strings or weighted dicts)
+
+        Returns:
+            Selected template string
+        """
+        if not isinstance(templates, list):
+            return str(templates)
+
+        if not templates:
+            return ""
+
+        # Extract texts and weights
+        texts: list[str] = []
+        weights: list[int] = []
+
+        for t in templates:
+            if isinstance(t, dict):
+                texts.append(t.get("text", ""))
+                weights.append(t.get("weight", 1))
+            else:
+                texts.append(str(t))
+                weights.append(1)
+
+        # Use weighted random choice
+        return random.choices(texts, weights=weights, k=1)[0]
 
     def random_pair(self, path: str) -> tuple[Any, Any]:
         """Get a random paired container (first, second).
@@ -326,7 +376,7 @@ class Vocab:
             Example: {"name": "Sarah", "subject": "she", "object": "her",
                       "possessive": "her", "reflexive": "herself", "verb_s": "s"}
         """
-        # Randomly pick gender (weighted toward gendered for GSM-8K compatibility)
+        # Randomly pick gender (weighted toward gendered for natural problem text)
         gender = random.choices(["male", "female", "neutral"], weights=[0.45, 0.45, 0.10])[0]
 
         name = self.random(f"names.{gender}")

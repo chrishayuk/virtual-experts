@@ -1,0 +1,17 @@
+{
+  "name": "office",
+  "description": "Office and document work",
+  "agent_types": ["equipment", "person"],
+  "agent_templates": {
+    "equipment": {"pattern": "Printer ${letter}", "letters": ["A", "B", "C"]},
+    "copier": {"pattern": "Copier ${number}", "numbers": [1, 2, 3]},
+    "scanner": {"pattern": "Scanner ${letter}", "letters": ["A", "B"]},
+    "person": {"source": "names.people", "pattern": "${name}"}
+  },
+  "items": ["pages", "documents", "reports", "emails", "copies"],
+  "verbs": {"singular": "processes", "plural": "process"},
+  "time_units": [
+    {"singular": "hour", "plural": "hours"},
+    {"singular": "minute", "plural": "minutes"}
+  ]
+}

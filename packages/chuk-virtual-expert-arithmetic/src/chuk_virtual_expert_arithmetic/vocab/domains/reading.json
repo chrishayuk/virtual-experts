@@ -1,0 +1,16 @@
+{
+  "name": "reading",
+  "description": "Reading and studying",
+  "agent_types": ["person"],
+  "agent_templates": {
+    "person": {"source": "names.people", "pattern": "${name}"},
+    "student": {"pattern": "Student ${letter}", "letters": ["A", "B", "C"]}
+  },
+  "items": ["pages", "chapters", "books", "articles", "problems"],
+  "verbs": {"singular": "reads", "plural": "read"},
+  "time_units": [
+    {"singular": "hour", "plural": "hours"},
+    {"singular": "day", "plural": "days"},
+    {"singular": "week", "plural": "weeks"}
+  ]
+}

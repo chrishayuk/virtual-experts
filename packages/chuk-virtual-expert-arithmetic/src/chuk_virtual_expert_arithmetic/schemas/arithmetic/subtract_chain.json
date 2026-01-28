@@ -2,34 +2,92 @@
   "name": "subtract_chain",
   "description": "Start with amount, subtract multiple expenses",
   "pattern": "subtract_chain",
-  "variables": {
-    "start": {"type": "int", "min": 50, "max": 200},
-    "sub1": {"type": "int", "min": 5, "max": 30},
-    "sub2": {"type": "int", "min": 5, "max": 30},
-    "sub3": {"type": "int", "min": 5, "max": 20}
-  },
+  "mixins": ["person_vocab"],
   "vocab": {
-    "person": {"type": "person_with_pronouns"},
-    "expenses": {"path": "phrases.expense_categories", "sample": 3}
+    "expense1": {"path": "phrases.expense_categories"},
+    "expense2": {"path": "phrases.expense_categories"},
+    "expense3": {"path": "phrases.expense_categories"}
   },
   "template_vars": {
-    "name": "person.name",
-    "subj": "person.subject|capitalize",
-    "subject": "person.subject",
-    "his_her": "person.possessive",
-    "exp1": "expenses.0",
-    "exp2": "expenses.1",
-    "exp3": "expenses.2"
+    "exp1": "expense1",
+    "exp2": "expense2",
+    "exp3": "expense3"
+  },
+  "variables": {
+    "start": {
+      "type": "int",
+      "min": 50,
+      "max": 200
+    },
+    "sub1": {
+      "type": "int",
+      "min": 5,
+      "max": 30
+    },
+    "sub2": {
+      "type": "int",
+      "min": 5,
+      "max": 30
+    },
+    "sub3": {
+      "type": "int",
+      "min": 5,
+      "max": 20
+    }
   },
   "trace": [
-    {"op": "init", "var": "start", "value": "start"},
-    {"op": "init", "var": "sub1", "value": "sub1"},
-    {"op": "init", "var": "sub2", "value": "sub2"},
-    {"op": "init", "var": "sub3", "value": "sub3"},
-    {"op": "compute", "compute_op": "sub", "args": ["start", "sub1"], "var": "step1"},
-    {"op": "compute", "compute_op": "sub", "args": ["step1", "sub2"], "var": "step2"},
-    {"op": "compute", "compute_op": "sub", "args": ["step2", "sub3"], "var": "result"},
-    {"op": "query", "var": "result"}
+    {
+      "op": "init",
+      "var": "start",
+      "value": "start"
+    },
+    {
+      "op": "init",
+      "var": "sub1",
+      "value": "sub1"
+    },
+    {
+      "op": "init",
+      "var": "sub2",
+      "value": "sub2"
+    },
+    {
+      "op": "init",
+      "var": "sub3",
+      "value": "sub3"
+    },
+    {
+      "op": "compute",
+      "compute_op": "sub",
+      "args": [
+        "start",
+        "sub1"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "compute",
+      "compute_op": "sub",
+      "args": [
+        "step1",
+        "sub2"
+      ],
+      "var": "step2"
+    },
+    {
+      "op": "compute",
+      "compute_op": "sub",
+      "args": [
+        "step2",
+        "sub3"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
   ],
-  "answer": "start - sub1 - sub2 - sub3"
+  "answer": "start - sub1 - sub2 - sub3",
+  "pattern": "subtract_chain"
 }

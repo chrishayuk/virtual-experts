@@ -1,0 +1,15 @@
+{
+  "name": "person_vocab",
+  "description": "Reusable person vocabulary with pronouns",
+  "vocab": {
+    "person": {"type": "person_with_pronouns"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subject": "person.subject",
+    "subj": "person.subject|capitalize",
+    "his_her": "person.possessive",
+    "him_her": "person.object",
+    "reflexive": "person.reflexive"
+  }
+}

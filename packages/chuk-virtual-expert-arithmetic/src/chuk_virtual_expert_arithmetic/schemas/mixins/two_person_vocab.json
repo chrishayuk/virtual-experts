@@ -1,0 +1,18 @@
+{
+  "name": "two_person_vocab",
+  "description": "Reusable vocab for problems involving two people",
+  "vocab": {
+    "person1": {"type": "person_with_pronouns"},
+    "person2": {"type": "person_with_pronouns"}
+  },
+  "template_vars": {
+    "name1": "person1.name",
+    "name2": "person2.name",
+    "subject1": "person1.subject",
+    "subject2": "person2.subject",
+    "subj1": "person1.subject|capitalize",
+    "subj2": "person2.subject|capitalize",
+    "his_her1": "person1.possessive",
+    "his_her2": "person2.possessive"
+  }
+}

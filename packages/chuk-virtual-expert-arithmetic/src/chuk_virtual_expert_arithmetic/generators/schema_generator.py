@@ -2,20 +2,35 @@
 
 Generates problems from JSON schema definitions, reducing hardcoded logic.
 
+Architecture:
+    This module uses the following core components:
+    - SchemaLoader: Loads and composes schemas (handles mixins/extends)
+    - SafeEvaluator: Secure expression evaluation (replaces eval())
+    - TemplatePerturbator: GSM-8K generalization via query perturbation
+
+    For new development, consider using the standalone core components:
+    - core.VariableGenerator: Variable generation with difficulty/diversity
+    - core.ConstraintValidator: Constraint validation with retry logic
+    - core.TransformRegistry: Pluggable value transformations
+    - core.TemplateResolver: Template variable resolution
+    - core.VocabSampler: Vocabulary sampling
+    - core.DomainSampler: Domain-first vocabulary bundles
+
 Usage:
     from chuk_virtual_expert_arithmetic.generators.schema_generator import SchemaGenerator
 
     gen = SchemaGenerator()
     example = gen.generate("price_chain")
     examples = gen.generate_batch(["price_chain", "subtract_chain"], n=10)
+
+    # With perturbation for GSM-8K generalization
+    gen = SchemaGenerator(perturbation_level=0.5)
 """
 
 from __future__ import annotations
 
-import json
 import random
 import re
-from pathlib import Path
 from typing import Any
 
 from chuk_virtual_expert.trace_example import TraceExample
@@ -32,6 +47,10 @@ from chuk_virtual_expert.trace_models import (
     TransferStep,
 )
 
+from chuk_virtual_expert_arithmetic.core.expression import ExpressionError, SafeEvaluator
+from chuk_virtual_expert_arithmetic.core.loader import SchemaLoader
+from chuk_virtual_expert_arithmetic.core.perturbation import TemplatePerturbator
+from chuk_virtual_expert_arithmetic.types import DEFAULT_EXPERT
 from chuk_virtual_expert_arithmetic.vocab import get_vocab
 
 # Word number mappings
@@ -70,45 +89,64 @@ WORD_NUMBERS = {
 class SchemaGenerator:
     """Generates arithmetic problems from JSON schemas."""
 
-    def __init__(self, word_number_prob: float = 0.3) -> None:
+    def __init__(
+        self,
+        word_number_prob: float = 0.3,
+        perturbation_level: float = 0.0,
+        seed: int | None = None,
+    ) -> None:
         """Initialize the generator.
 
         Args:
             word_number_prob: Probability of converting a number to word form (0-1).
-                             GSM-8K uses word numbers ~31% of the time, default is 0.3.
+                             Word problems commonly use word numbers ~30% of the time.
+            perturbation_level: Level of template perturbation (0-1). Higher values
+                               apply more variations for better GSM-8K generalization.
+                               0 = no perturbation (default), 0.3 = moderate, 0.6 = high.
+            seed: Random seed for reproducibility.
         """
         self._vocab = get_vocab()
+        self._loader = SchemaLoader()
         self._schemas = self._load_schemas()
         self._word_number_prob = word_number_prob
+        self._perturbation_level = perturbation_level
+        self._evaluator = SafeEvaluator()
+        self._perturbator = TemplatePerturbator(seed=seed)
 
     def _load_schemas(self) -> dict[str, dict[str, Any]]:
-        """Load all schemas from the schemas directory and subdirectories."""
-        schemas = {}
-        schema_dir = Path(__file__).parent.parent / "schemas"
+        """Load all schemas using SchemaLoader (handles composition/mixins)."""
+        raw_schemas = self._loader.get_all_raw()
+        composed_schemas: dict[str, dict[str, Any]] = {}
 
-        if schema_dir.exists():
-            # Load from root (for backwards compatibility)
-            for schema_file in schema_dir.glob("*.json"):
-                with open(schema_file) as f:
-                    schema = json.load(f)
-                    name = schema.get("name", schema_file.stem)
-                    schemas[name] = schema
+        for name, raw in raw_schemas.items():
+            # Use loader to get composed schema (handles mixins/extends)
+            try:
+                # Load raw and compose if needed
+                if "extends" in raw or "mixins" in raw:
+                    composed = self._loader._get_composer().compose(raw)
+                    composed_schemas[name] = composed
+                else:
+                    composed_schemas[name] = raw
+            except Exception:
+                # If composition fails, use raw
+                composed_schemas[name] = raw
 
-            # Load from subdirectories (organized by expert type)
-            for subdir in schema_dir.iterdir():
-                if subdir.is_dir():
-                    for schema_file in subdir.glob("*.json"):
-                        with open(schema_file) as f:
-                            schema = json.load(f)
-                            name = schema.get("name", schema_file.stem)
-                            schemas[name] = schema
-
-        return schemas
+        return composed_schemas
 
     @property
     def schema_names(self) -> list[str]:
         """List available schema names."""
         return list(self._schemas.keys())
+
+    @property
+    def perturbation_level(self) -> float:
+        """Get current perturbation level."""
+        return self._perturbation_level
+
+    @perturbation_level.setter
+    def perturbation_level(self, level: float) -> None:
+        """Set perturbation level (0-1)."""
+        self._perturbation_level = max(0.0, min(1.0, level))
 
     def generate(self, schema_name: str) -> TraceExample:
         """Generate a problem from a schema.
@@ -191,14 +229,18 @@ class SchemaGenerator:
         # Apply word number substitution
         question = self._apply_word_numbers(question)
 
+        # Apply perturbation for GSM-8K generalization
+        if self._perturbation_level > 0:
+            question = self._perturbator.perturb(question, level=self._perturbation_level)
+
         # Build trace
         trace = self._build_trace(schema.get("trace", []), variables)
 
         # Compute answer
         answer = self._compute_answer(schema.get("answer", "0"), variables)
 
-        # Get expert from schema, default to "arithmetic"
-        expert_name = schema.get("expert", "arithmetic")
+        # Get expert from schema, with default
+        expert_name = schema.get("expert", DEFAULT_EXPERT.value)
 
         return TraceExample(
             expert=expert_name,
@@ -282,13 +324,12 @@ class SchemaGenerator:
 
         for name, expr in derived_specs.items():
             try:
-                # Simple expression evaluation with combined context
-                # nosec B307 - eval is safe here: expressions from controlled schema files, __builtins__ disabled
-                value = eval(expr, {"__builtins__": {}}, context)  # nosec B307
+                # Safe expression evaluation using AST parser
+                value = self._evaluator.evaluate(expr, context)
                 derived[name] = value
                 # Add to context so later expressions can reference it
                 context[name] = value
-            except Exception:
+            except ExpressionError:
                 derived[name] = 0
                 context[name] = 0
 
@@ -308,14 +349,15 @@ class SchemaGenerator:
 
             for expr, bounds in constraints.items():
                 try:
-                    value = eval(expr, {"__builtins__": {}}, variables)  # nosec B307
+                    # Safe expression evaluation using AST parser
+                    value = self._evaluator.evaluate(expr, variables)
                     min_val = bounds.get("min", float("-inf"))
                     max_val = bounds.get("max", float("inf"))
 
                     if not (min_val <= value <= max_val):
                         all_satisfied = False
                         break
-                except Exception:
+                except ExpressionError:
                     pass
 
             if all_satisfied:
@@ -407,8 +449,13 @@ class SchemaGenerator:
 
             return obj
 
-        # Direct lookup
-        return vocab_items.get(spec) or variables.get(spec)
+        # Direct lookup - check vocab and variables, else treat as literal
+        if spec in vocab_items:
+            return vocab_items[spec]
+        if spec in variables:
+            return variables[spec]
+        # Return spec as literal value if not found
+        return spec
 
     def _apply_transform(self, value: Any, transform: str) -> Any:
         """Apply a transformation to a value."""
@@ -524,9 +571,10 @@ class SchemaGenerator:
     def _compute_answer(self, expr: str, variables: dict[str, Any]) -> float:
         """Compute answer from expression."""
         try:
-            result = eval(expr, {"__builtins__": {}}, variables)  # nosec B307
+            # Safe expression evaluation using AST parser
+            result = self._evaluator.evaluate(expr, variables)
             return float(result)
-        except Exception:
+        except ExpressionError:
             return 0.0
 
     def _apply_word_numbers(self, text: str) -> str:

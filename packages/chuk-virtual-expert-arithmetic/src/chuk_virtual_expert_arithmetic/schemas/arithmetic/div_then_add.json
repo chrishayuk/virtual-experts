@@ -1,34 +1,67 @@
 {
   "name": "div_then_add",
   "description": "Container has X, other has half, total?",
-  "pattern": "div_then_add",
-  "variant": "container",
   "variables": {
-    "base": {"type": "int", "min": 10, "max": 50, "multiple_of": 2}
-  },
-  "vocab": {
-    "person": {"type": "person_with_pronouns"},
-    "containers": {"path": "containers.types"},
-    "items": {"path": "items.countable"}
-  },
-  "template_vars": {
-    "name": "person.name",
-    "subj": "person.subject|capitalize",
-    "subject": "person.subject",
-    "his_her": "person.possessive",
-    "container_type": "containers",
-    "container_plural": "containers|pluralize"
+    "base": {
+      "type": "int",
+      "min": 10,
+      "max": 50,
+      "multiple_of": 2
+    }
   },
   "derived": {
     "c1": "'the first ' + containers",
     "c2": "'the second ' + containers"
   },
   "trace": [
-    {"op": "init", "var": "base", "value": "base"},
-    {"op": "init", "var": "divisor", "value": 2},
-    {"op": "compute", "compute_op": "div", "args": ["base", "divisor"], "var": "step1"},
-    {"op": "compute", "compute_op": "add", "args": ["base", "step1"], "var": "result"},
-    {"op": "query", "var": "result"}
+    {
+      "op": "init",
+      "var": "base",
+      "value": "base"
+    },
+    {
+      "op": "init",
+      "var": "divisor",
+      "value": 2
+    },
+    {
+      "op": "compute",
+      "compute_op": "div",
+      "args": [
+        "base",
+        "divisor"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "compute",
+      "compute_op": "add",
+      "args": [
+        "base",
+        "step1"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
   ],
-  "answer": "base + base // 2"
+  "answer": "base + base // 2",
+  "pattern": "div_then_add",
+  "variant": "container",
+  "vocab": {
+    "person": {"type": "person_with_pronouns"},
+    "item": {"path": "items.countable_singular"},
+    "container": {"path": "phrases.distribution_targets"}
+  },
+  "template_vars": {
+    "name": "person.name",
+    "subject": "person.subject",
+    "subj": "person.subject|capitalize",
+    "his_her": "person.possessive",
+    "items": "item|pluralize",
+    "container_plural": "container.plural",
+    "container_type": "container.singular"
+  }
 }

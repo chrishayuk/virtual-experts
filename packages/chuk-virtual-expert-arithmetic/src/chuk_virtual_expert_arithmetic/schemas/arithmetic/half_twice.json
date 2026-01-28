@@ -1,30 +1,65 @@
 {
   "name": "half_twice",
   "description": "Two people comparison with half/twice",
+  "variables": {
+    "base": {
+      "type": "int",
+      "min": 10,
+      "max": 50,
+      "multiple_of": 2
+    }
+  },
+  "trace": [
+    {
+      "op": "init",
+      "var": "base",
+      "value": "base"
+    },
+    {
+      "op": "init",
+      "var": "divisor",
+      "value": 2
+    },
+    {
+      "op": "compute",
+      "compute_op": "div",
+      "args": [
+        "base",
+        "divisor"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "compute",
+      "compute_op": "add",
+      "args": [
+        "base",
+        "step1"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
+  ],
+  "answer": "base + base // 2",
   "pattern": "half_twice_compare",
   "variant": "two_people",
-  "variables": {
-    "base": {"type": "int", "min": 10, "max": 50, "multiple_of": 2}
-  },
   "vocab": {
-    "person1": {"type": "person_with_pronouns"},
-    "person2": {"type": "person_with_pronouns"},
-    "items": {"path": "items.countable"}
+    "person1": {
+      "type": "person_with_pronouns"
+    },
+    "person2": {
+      "type": "person_with_pronouns"
+    },
+    "item": {
+      "path": "items.countable_singular"
+    }
   },
   "template_vars": {
     "name1": "person1.name",
     "name2": "person2.name",
-    "his_her1": "person1.possessive",
-    "his_her2": "person2.possessive",
-    "subject1": "person1.subject",
-    "subject2": "person2.subject"
-  },
-  "trace": [
-    {"op": "init", "var": "base", "value": "base"},
-    {"op": "init", "var": "divisor", "value": 2},
-    {"op": "compute", "compute_op": "div", "args": ["base", "divisor"], "var": "step1"},
-    {"op": "compute", "compute_op": "add", "args": ["base", "step1"], "var": "result"},
-    {"op": "query", "var": "result"}
-  ],
-  "answer": "base + base // 2"
+    "items": "item|pluralize"
+  }
 }

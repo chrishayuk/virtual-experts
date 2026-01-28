@@ -642,3 +642,242 @@ class TestSchemaGeneratorCoverage:
         # Invalid schema raises ValueError
         with pytest.raises(ValueError, match="Unknown schema"):
             gen.generate("nonexistent_schema_xyz")
+
+    def test_generate_batch_default(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        # Generate batch with default (all schemas)
+        examples = gen.generate_batch(n=5)
+        assert len(examples) == 5
+
+    def test_word_number_conversion(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator(word_number_prob=1.0)  # 100% conversion
+        # Generate a lot to exercise word number conversion
+        for _ in range(20):
+            ex = gen.generate("price_chain")
+            assert ex.query  # Just ensure no errors
+
+    def test_word_number_disabled(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator(word_number_prob=0.0)  # No conversion
+        for _ in range(10):
+            ex = gen.generate("price_chain")
+            assert ex.query
+
+    def test_generate_with_float_variable(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        # price_chain has float tax
+        ex = gen.generate("price_chain")
+        assert ex.answer is not None
+
+    def test_generate_with_choice_variable(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        # percent_off has choice type for percent
+        ex = gen.generate("percent_off")
+        assert ex.answer is not None
+
+    def test_generate_with_derived_variables(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        # comparison_sum_diff has derived variables
+        ex = gen.generate("comparison_sum_diff")
+        assert ex.answer is not None
+
+    def test_generate_with_constraints(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        # entity_simple_transfer has constraints
+        ex = gen.generate("entity_simple_transfer")
+        assert ex.answer is not None
+
+    def test_generate_entity_track_schemas(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        for schema in [
+            "entity_simple_transfer",
+            "entity_consume_sequence",
+            "entity_consume_multiply",
+        ]:
+            ex = gen.generate(schema)
+            assert ex.expert == "entity_track"
+
+    def test_generate_rate_equation_schemas(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        for schema in ["rate_distance", "rate_earning"]:
+            ex = gen.generate(schema)
+            assert ex.expert == "rate_equation"
+
+    def test_generate_comparison_schemas(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        for schema in ["comparison_times_more", "comparison_sum_diff"]:
+            ex = gen.generate(schema)
+            assert ex.expert == "comparison"
+
+    def test_generate_percentage_schemas(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        for schema in ["percent_off", "percent_increase", "percent_simple"]:
+            ex = gen.generate(schema)
+            assert ex.expert == "percentage"
+
+
+class TestSchemaGeneratorConvenienceFunctions:
+    """Test convenience functions in schema_generator."""
+
+    def test_generate_from_schema_function(self):
+        from chuk_virtual_expert_arithmetic.generators.schema_generator import generate_from_schema
+
+        ex = generate_from_schema("price_chain")
+        assert ex is not None
+        assert ex.expert == "arithmetic"
+
+    def test_generate_batch_from_schemas_function(self):
+        from chuk_virtual_expert_arithmetic.generators.schema_generator import (
+            generate_batch_from_schemas,
+        )
+
+        examples = generate_batch_from_schemas(n=5)
+        assert len(examples) == 5
+
+
+class TestSchemaGeneratorTransforms:
+    """Test transform operations in schema_generator."""
+
+    def test_pluralize_transform(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        # Test pluralize via _apply_transform
+        assert gen._apply_transform("dog", "pluralize") == "dogs"
+        assert gen._apply_transform("box", "pluralize") == "boxes"
+        assert gen._apply_transform("match", "pluralize") == "matches"
+        assert gen._apply_transform("dish", "pluralize") == "dishes"
+        assert gen._apply_transform("baby", "pluralize") == "babies"
+        assert gen._apply_transform("key", "pluralize") == "keys"
+
+    def test_singularize_transform(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        assert gen._apply_transform("babies", "singularize") == "baby"
+        assert gen._apply_transform("boxes", "singularize") == "box"
+        assert gen._apply_transform("dogs", "singularize") == "dog"
+
+    def test_capitalize_transform(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        assert gen._apply_transform("hello", "capitalize") == "Hello"
+
+    def test_with_article_transform(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        result = gen._apply_transform("apple", "with_article")
+        assert result == "an apple"
+        result = gen._apply_transform("book", "with_article")
+        assert result == "a book"
+
+    def test_has_have_transform(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        assert gen._apply_transform("s", "has_have") == "has"
+        assert gen._apply_transform("", "has_have") == "have"
+
+    def test_does_do_transform(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        assert gen._apply_transform("s", "does_do") == "does"
+        assert gen._apply_transform("", "does_do") == "do"
+
+    def test_none_transform(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        assert gen._apply_transform(None, "pluralize") is None
+
+    def test_unknown_transform(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        # Unknown transform returns value unchanged
+        assert gen._apply_transform("test", "unknown_transform") == "test"
+
+
+class TestSchemaGeneratorInternals:
+    """Test internal methods of SchemaGenerator."""
+
+    def test_compute_derived_with_exception(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        # Test derived with expression that causes exception
+        derived = gen._compute_derived({"bad": "undefined_var + 1"}, {"x": 10})
+        assert derived["bad"] == 0  # Falls back to 0
+
+    def test_generate_variables_multiple_of(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        # Test variable with multiple_of constraint
+        for _ in range(10):
+            vars = gen._generate_variables(
+                {"n": {"type": "int", "min": 1, "max": 20, "multiple_of": 5}}
+            )
+            assert vars["n"] % 5 == 0
+
+    def test_sample_vocab_choice_type(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        # Test vocab with choice type
+        items = gen._sample_vocab({"word": {"type": "choice", "values": ["one", "two", "three"]}})
+        assert items["word"] in ["one", "two", "three"]
+
+    def test_sample_vocab_empty_choice(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        items = gen._sample_vocab({"word": {"type": "choice", "values": []}})
+        assert items["word"] == ""
+
+    def test_build_template_vars_list_index(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        # Test resolving list index in template spec
+        result = gen._resolve_template_spec("items.0", {}, {"items": ["first", "second", "third"]})
+        assert result == "first"
+
+    def test_build_template_vars_invalid_list_index(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        # Test resolving invalid list index
+        result = gen._resolve_template_spec("items.99", {}, {"items": ["first", "second"]})
+        assert result is None
+
+    def test_resolve_template_spec_with_pipe(self):
+        from chuk_virtual_expert_arithmetic.generators import SchemaGenerator
+
+        gen = SchemaGenerator()
+        result = gen._resolve_template_spec("word|capitalize", {"word": "hello"}, {})
+        assert result == "Hello"

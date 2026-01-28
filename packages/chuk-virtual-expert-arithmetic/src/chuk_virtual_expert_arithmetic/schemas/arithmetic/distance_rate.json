@@ -1,30 +1,57 @@
 {
   "name": "distance_rate",
-  "expert": "arithmetic",
   "description": "Distance = rate * time calculations",
-  "pattern": "distance_patterns",
-  "variant": "travel",
   "variables": {
-    "speed": {"type": "int", "min": 30, "max": 70},
-    "hours": {"type": "int", "min": 2, "max": 8}
+    "speed": {
+      "type": "int",
+      "min": 30,
+      "max": 70
+    },
+    "hours": {
+      "type": "int",
+      "min": 2,
+      "max": 8
+    }
   },
   "derived": {
     "distance": "speed * hours"
   },
+  "trace": [
+    {
+      "op": "init",
+      "var": "speed",
+      "value": "speed"
+    },
+    {
+      "op": "init",
+      "var": "hours",
+      "value": "hours"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "speed",
+        "hours"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
+  ],
+  "answer": "distance",
+  "pattern": "distance_patterns",
+  "variant": "travel",
   "vocab": {
-    "person": {"type": "person_with_pronouns"},
-    "vehicle": {"path": "phrases.vehicles"}
+    "person": {
+      "type": "person_with_pronouns"
+    }
   },
   "template_vars": {
     "name": "person.name",
     "subject": "person.subject",
     "possessive": "person.possessive"
-  },
-  "trace": [
-    {"op": "init", "var": "speed", "value": "speed"},
-    {"op": "init", "var": "hours", "value": "hours"},
-    {"op": "compute", "compute_op": "mul", "args": ["speed", "hours"], "var": "result"},
-    {"op": "query", "var": "result"}
-  ],
-  "answer": "distance"
+  }
 }

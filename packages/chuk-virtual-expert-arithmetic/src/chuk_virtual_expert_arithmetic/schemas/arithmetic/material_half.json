@@ -1,23 +1,65 @@
 {
   "name": "material_half",
-  "expert": "arithmetic",
   "description": "X units of material A and half that much of material B",
-  "pattern": "material_patterns",
-  "variant": "half_that_much",
   "variables": {
-    "amount": {"type": "int", "min": 2, "max": 20, "multiple_of": 2}
-  },
-  "vocab": {
-    "material1": {"path": "materials.fabrics"},
-    "material2": {"path": "materials.fabrics"},
-    "item": {"path": "items.countable_singular"}
+    "amount": {
+      "type": "int",
+      "min": 2,
+      "max": 20,
+      "multiple_of": 2
+    }
   },
   "trace": [
-    {"op": "init", "var": "amount", "value": "amount"},
-    {"op": "init", "var": "divisor", "value": 2},
-    {"op": "compute", "compute_op": "div", "args": ["amount", "divisor"], "var": "step1"},
-    {"op": "compute", "compute_op": "add", "args": ["amount", "step1"], "var": "result"},
-    {"op": "query", "var": "result"}
+    {
+      "op": "init",
+      "var": "amount",
+      "value": "amount"
+    },
+    {
+      "op": "init",
+      "var": "divisor",
+      "value": 2
+    },
+    {
+      "op": "compute",
+      "compute_op": "div",
+      "args": [
+        "amount",
+        "divisor"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "compute",
+      "compute_op": "add",
+      "args": [
+        "amount",
+        "step1"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
   ],
-  "answer": "amount + amount // 2"
+  "answer": "amount + amount // 2",
+  "pattern": "material_patterns",
+  "variant": "half_that_much",
+  "vocab": {
+    "item": {
+      "path": "items.countable_singular"
+    },
+    "material1": {
+      "path": "phrases.batch_words"
+    },
+    "material2": {
+      "path": "phrases.batch_words"
+    }
+  },
+  "template_vars": {
+    "item": "item",
+    "material1": "material1",
+    "material2": "material2"
+  }
 }

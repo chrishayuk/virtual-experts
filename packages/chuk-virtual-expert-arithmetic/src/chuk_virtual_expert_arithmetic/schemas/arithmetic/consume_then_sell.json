@@ -1,40 +1,101 @@
 {
   "name": "consume_then_sell",
-  "description": "Produce - consume = remainder × price (Janet's ducks pattern)",
-  "pattern": "consume_then_sell",
-  "variant": "animal_farm",
+  "description": "Produce - consume = remainder \u00d7 price (Janet's ducks pattern)",
   "variables": {
-    "produced": {"type": "int", "min": 15, "max": 30},
-    "use1": {"type": "int", "min": 2, "max": 6},
-    "use2": {"type": "int", "min": 2, "max": 6},
-    "price": {"type": "int", "min": 2, "max": 5}
+    "produced": {
+      "type": "int",
+      "min": 15,
+      "max": 30
+    },
+    "use1": {
+      "type": "int",
+      "min": 2,
+      "max": 6
+    },
+    "use2": {
+      "type": "int",
+      "min": 2,
+      "max": 6
+    },
+    "price": {
+      "type": "int",
+      "min": 2,
+      "max": 5
+    }
   },
   "constraints": {
-    "produced - use1 - use2": {"min": 5}
+    "produced - use1 - use2": {
+      "min": 5
+    }
   },
+  "trace": [
+    {
+      "op": "init",
+      "var": "produced",
+      "value": "produced"
+    },
+    {
+      "op": "init",
+      "var": "use1",
+      "value": "use1"
+    },
+    {
+      "op": "init",
+      "var": "use2",
+      "value": "use2"
+    },
+    {
+      "op": "compute",
+      "compute_op": "sub",
+      "args": [
+        "produced",
+        "use1"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "compute",
+      "compute_op": "sub",
+      "args": [
+        "step1",
+        "use2"
+      ],
+      "var": "step2"
+    },
+    {
+      "op": "init",
+      "var": "price",
+      "value": "price"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "step2",
+        "price"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
+  ],
+  "answer": "(produced - use1 - use2) * price",
+  "pattern": "consume_then_sell",
+  "variant": "garden",
   "vocab": {
-    "person": {"type": "person_with_pronouns"},
-    "animal": {"path": "animals.farm_animals"}
+    "person": {
+      "type": "person_with_pronouns"
+    },
+    "item": {
+      "path": "items.produce"
+    }
   },
   "template_vars": {
     "name": "person.name",
     "subject": "person.subject",
-    "subj": "person.subject|capitalize",
     "his_her": "person.possessive",
-    "animals": "animal.name",
-    "verb": "animal.verb",
-    "product": "animal.produces",
-    "product_singular": "animal.produces|singularize"
-  },
-  "trace": [
-    {"op": "init", "var": "produced", "value": "produced"},
-    {"op": "init", "var": "use1", "value": "use1"},
-    {"op": "init", "var": "use2", "value": "use2"},
-    {"op": "compute", "compute_op": "sub", "args": ["produced", "use1"], "var": "step1"},
-    {"op": "compute", "compute_op": "sub", "args": ["step1", "use2"], "var": "step2"},
-    {"op": "init", "var": "price", "value": "price"},
-    {"op": "compute", "compute_op": "mul", "args": ["step2", "price"], "var": "result"},
-    {"op": "query", "var": "result"}
-  ],
-  "answer": "(produced - use1 - use2) * price"
+    "items": "item"
+  }
 }

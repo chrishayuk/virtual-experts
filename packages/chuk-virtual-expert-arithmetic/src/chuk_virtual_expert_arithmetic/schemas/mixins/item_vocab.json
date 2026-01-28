@@ -1,0 +1,11 @@
+{
+  "name": "item_vocab",
+  "description": "Reusable item vocabulary with plural form",
+  "vocab": {
+    "item": {"path": "items.countable_singular"}
+  },
+  "template_vars": {
+    "item": "item",
+    "items": "item|pluralize"
+  }
+}

@@ -29,10 +29,9 @@ Trace operations vary by expert type:
 
 from pathlib import Path
 
-SCHEMA_DIR = Path(__file__).parent
+from chuk_virtual_expert_arithmetic.types import EXPERT_DIRS
 
-# Expert subdirectories
-EXPERT_DIRS = ["arithmetic", "entity_track", "rate_equation", "comparison", "percentage"]
+SCHEMA_DIR = Path(__file__).parent
 
 
 def list_schemas() -> list[str]:

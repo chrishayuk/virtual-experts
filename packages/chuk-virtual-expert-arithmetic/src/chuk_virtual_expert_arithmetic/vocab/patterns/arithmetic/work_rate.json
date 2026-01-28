@@ -1,8 +1,12 @@
 {
   "templates": [
-    "${name}'s ${worker} produces ${rate} ${items} per hour when running at full capacity. After working continuously for ${time} hours, all the ${items} need to be packed into ${workers} ${targets} for shipping to customers. If each ${target_singular} gets the same number of ${items}, how many ${items} go in each ${target_singular}?",
-    "${A_worker} at ${name}'s factory can make ${rate} ${items} every hour when running smoothly without any interruptions. It runs for ${time} hours straight, then the ${items} are divided equally among ${workers} ${targets} for distribution. How many ${items} are placed in each ${target_singular}?",
-    "${name} owns ${a_worker} that produces ${rate} ${items} per hour at ${his_her} small business. After ${time} hours of continuous operation, ${subject} distributes the finished ${items} equally into ${workers} ${targets} for delivery to various stores. How many ${items} does each ${target_singular} contain?",
-    "The ${worker} in ${name}'s workshop makes ${rate} ${items} every hour when operating normally. ${name} runs it for ${time} hours straight to complete a big order, then splits all the finished ${items} equally among ${workers} ${targets} for shipping. How many ${items} go in each ${target_singular}?"
+    "${agent1} produces ${rate} ${items} per ${time_unit}. After working for ${time} ${time_units}, the ${items} are divided equally among ${workers} ${targets}. How many ${items} go in each ${target_singular}?",
+    "${agent1} completes ${rate} ${items} every ${time_unit}. After ${time} ${time_units}, the ${items} are split equally into ${workers} ${targets}. How many ${items} are in each ${target_singular}?",
+    "Working at ${rate} ${items} per ${time_unit}, ${agent1} runs for ${time} ${time_units}. The output is then distributed equally among ${workers} ${targets}. How many ${items} does each ${target_singular} receive?",
+    "${agent1} handles ${rate} ${items} each ${time_unit}. After ${time} ${time_units} of work, all ${items} are divided equally into ${workers} ${targets}. What is the count per ${target_singular}?",
+    "At a rate of ${rate} ${items} per ${time_unit}, ${agent1} works for ${time} ${time_units}. The total is then shared equally among ${workers} ${targets}. How many ${items} in each ${target_singular}?",
+    "${agent1} processes ${rate} ${items} each ${time_unit}. Running for ${time} ${time_units} straight, the results are evenly distributed to ${workers} ${targets}. How many ${items} per ${target_singular}?",
+    "After ${time} ${time_units} at ${rate} ${items} per ${time_unit}, ${agent1}'s output is split among ${workers} ${targets}. How many ${items} does each ${target_singular} get?",
+    "${agent1} generates ${rate} ${items} per ${time_unit} for ${time} ${time_units}. Dividing the total equally among ${workers} ${targets}, how many ${items} are in each?"
   ]
 }

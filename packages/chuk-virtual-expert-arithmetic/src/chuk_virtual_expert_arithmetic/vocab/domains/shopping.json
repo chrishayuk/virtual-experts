@@ -1,0 +1,25 @@
+{
+  "name": "shopping",
+  "description": "Retail and purchasing",
+  "agent_types": ["person"],
+  "agent_templates": {
+    "person": {"source": "names.people", "pattern": "${name}"}
+  },
+  "items": ["apples", "oranges", "books", "pencils", "notebooks", "toys", "shirts", "socks"],
+  "priced_items": [
+    {"item": "apple", "plural": "apples", "price_range": [1, 3]},
+    {"item": "orange", "plural": "oranges", "price_range": [1, 2]},
+    {"item": "book", "plural": "books", "price_range": [5, 15]},
+    {"item": "pencil", "plural": "pencils", "price_range": [1, 2]},
+    {"item": "notebook", "plural": "notebooks", "price_range": [3, 8]},
+    {"item": "toy", "plural": "toys", "price_range": [5, 20]},
+    {"item": "shirt", "plural": "shirts", "price_range": [10, 30]},
+    {"item": "candy bar", "plural": "candy bars", "price_range": [1, 3]}
+  ],
+  "stores": ["the grocery store", "the bookstore", "the mall", "the market", "the shop"],
+  "verbs": {"singular": "buys", "plural": "buy"},
+  "time_units": [
+    {"singular": "day", "plural": "days"},
+    {"singular": "week", "plural": "weeks"}
+  ]
+}

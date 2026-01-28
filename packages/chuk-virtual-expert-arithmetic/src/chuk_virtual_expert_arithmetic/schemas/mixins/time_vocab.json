@@ -1,0 +1,11 @@
+{
+  "name": "time_vocab",
+  "description": "Reusable time-related vocabulary",
+  "vocab": {
+    "time_unit": {"path": "phrases.time_units"}
+  },
+  "template_vars": {
+    "time_unit": "time_unit",
+    "time_units": "time_unit|pluralize"
+  }
+}

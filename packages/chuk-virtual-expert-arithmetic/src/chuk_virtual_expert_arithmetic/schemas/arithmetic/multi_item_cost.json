@@ -1,36 +1,93 @@
 {
   "name": "multi_item_cost",
   "description": "Total cost of multiple different items: count1*price1 + count2*price2",
-  "pattern": "multi_item_cost",
   "variables": {
-    "count1": {"type": "int", "min": 3, "max": 10},
-    "price1": {"type": "int", "min": 2, "max": 10},
-    "count2": {"type": "int", "min": 3, "max": 10},
-    "price2": {"type": "int", "min": 2, "max": 10}
+    "count1": {
+      "type": "int",
+      "min": 3,
+      "max": 10
+    },
+    "price1": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "count2": {
+      "type": "int",
+      "min": 3,
+      "max": 10
+    },
+    "price2": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    }
   },
-  "vocab": {
-    "item1": {"path": "items.countable_singular"},
-    "item2": {"path": "items.countable_singular"}
-  },
-  "templates": [
-    "An ${item1} costs $${price1} and a ${item2} costs $${price2}. How much do ${count1} ${item1}s and ${count2} ${item2}s cost?",
-    "${count1} ${item1}s at $${price1} each and ${count2} ${item2}s at $${price2} each. What is the total cost?",
-    "If ${item1}s cost $${price1} and ${item2}s cost $${price2}, how much for ${count1} ${item1}s and ${count2} ${item2}s?",
-    "At the store, ${item1}s are $${price1} each and ${item2}s are $${price2} each. How much does it cost to buy ${count1} ${item1}s and ${count2} ${item2}s?",
-    "For the party, we need ${count1} ${item1}s at $${price1} each and ${count2} ${item2}s at $${price2} each. What will be the total cost?",
-    "The ${item1}s cost $${price1} apiece and the ${item2}s cost $${price2} apiece. How much do ${count1} ${item1}s and ${count2} ${item2}s cost together?",
-    "Each ${item1} is priced at $${price1} and each ${item2} at $${price2}. If we buy ${count1} ${item1}s and ${count2} ${item2}s, what is the total?",
-    "A bakery sells ${item1}s for $${price1} and ${item2}s for $${price2}. How much for ${count1} ${item1}s and ${count2} ${item2}s?"
-  ],
   "trace": [
-    {"op": "init", "var": "count1", "value": "count1"},
-    {"op": "init", "var": "price1", "value": "price1"},
-    {"op": "compute", "compute_op": "mul", "args": ["count1", "price1"], "var": "step1"},
-    {"op": "init", "var": "count2", "value": "count2"},
-    {"op": "init", "var": "price2", "value": "price2"},
-    {"op": "compute", "compute_op": "mul", "args": ["count2", "price2"], "var": "step2"},
-    {"op": "compute", "compute_op": "add", "args": ["step1", "step2"], "var": "result"},
-    {"op": "query", "var": "result"}
+    {
+      "op": "init",
+      "var": "count1",
+      "value": "count1"
+    },
+    {
+      "op": "init",
+      "var": "price1",
+      "value": "price1"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "count1",
+        "price1"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "init",
+      "var": "count2",
+      "value": "count2"
+    },
+    {
+      "op": "init",
+      "var": "price2",
+      "value": "price2"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "count2",
+        "price2"
+      ],
+      "var": "step2"
+    },
+    {
+      "op": "compute",
+      "compute_op": "add",
+      "args": [
+        "step1",
+        "step2"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
   ],
-  "answer": "count1 * price1 + count2 * price2"
+  "answer": "count1 * price1 + count2 * price2",
+  "pattern": "multi_item_cost",
+  "vocab": {
+    "item1": {
+      "path": "items.countable_singular"
+    },
+    "item2": {
+      "path": "items.countable_singular"
+    }
+  },
+  "template_vars": {
+    "item1_plural": "item1|pluralize",
+    "item2_plural": "item2|pluralize"
+  }
 }

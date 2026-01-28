@@ -4,30 +4,54 @@
   "description": "A gives B some items, ask how many A has left",
   "pattern": "entity_track",
   "variant": "simple_transfer",
-  "variables": {
-    "initial": {"type": "int", "min": 15, "max": 50},
-    "transfer": {"type": "int", "min": 3, "max": 15}
-  },
-  "constraints": {
-    "initial - transfer": {"min": 5}
-  },
   "vocab": {
     "person1": {"type": "person_with_pronouns"},
     "person2": {"type": "person_with_pronouns"},
-    "items": {"path": "items.countable"},
-    "give_verb": {"path": "phrases.give_verbs"}
+    "item": {"path": "items.countable_singular"}
   },
   "template_vars": {
     "name1": "person1.name",
     "name2": "person2.name",
     "subject1": "person1.subject",
     "subj1": "person1.subject|capitalize",
-    "his_her1": "person1.possessive"
+    "his_her1": "person1.possessive",
+    "items": "item|pluralize",
+    "initial": "start",
+    "give_verb": "gives"
+  },
+  "variables": {
+    "start": {
+      "type": "int",
+      "min": 15,
+      "max": 50
+    },
+    "transfer": {
+      "type": "int",
+      "min": 3,
+      "max": 15
+    }
+  },
+  "constraints": {
+    "start - transfer": {
+      "min": 5
+    }
   },
   "trace": [
-    {"op": "init", "var": "from", "value": "initial"},
-    {"op": "transfer", "from_entity": "from", "to_entity": "to", "amount": "transfer"},
-    {"op": "query", "var": "from"}
+    {
+      "op": "init",
+      "var": "from",
+      "value": "start"
+    },
+    {
+      "op": "transfer",
+      "from_entity": "from",
+      "to_entity": "to",
+      "amount": "transfer"
+    },
+    {
+      "op": "query",
+      "var": "from"
+    }
   ],
-  "answer": "initial - transfer"
+  "answer": "start - transfer"
 }

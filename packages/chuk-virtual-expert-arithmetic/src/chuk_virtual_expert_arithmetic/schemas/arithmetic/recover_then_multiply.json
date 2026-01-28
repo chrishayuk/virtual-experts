@@ -1,36 +1,80 @@
 {
   "name": "recover_then_multiply",
   "description": "Recover original amount then multiply: (current + consumed) * multiplier",
-  "pattern": "recover_then_multiply",
   "variables": {
-    "current": {"type": "int", "min": 3, "max": 20},
-    "consumed": {"type": "int", "min": 2, "max": 10},
-    "multiplier": {"type": "choice", "values": [2, 3]}
+    "current": {
+      "type": "int",
+      "min": 3,
+      "max": 20
+    },
+    "consumed": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "multiplier": {
+      "type": "choice",
+      "values": [
+        2,
+        3
+      ]
+    }
   },
+  "trace": [
+    {
+      "op": "init",
+      "var": "current",
+      "value": "current"
+    },
+    {
+      "op": "init",
+      "var": "consumed",
+      "value": "consumed"
+    },
+    {
+      "op": "compute",
+      "compute_op": "add",
+      "args": [
+        "current",
+        "consumed"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "init",
+      "var": "multiplier",
+      "value": "multiplier"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "step1",
+        "multiplier"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
+  ],
+  "answer": "(current + consumed) * multiplier",
+  "pattern": "recover_then_multiply",
   "vocab": {
-    "person1": {"type": "person_with_pronouns"},
-    "person2": {"type": "person_with_pronouns"},
-    "item": {"path": "items.countable_singular"}
+    "person1": {
+      "type": "person_with_pronouns"
+    },
+    "person2": {
+      "type": "person_with_pronouns"
+    },
+    "item": {
+      "path": "items.countable_singular"
+    }
   },
   "template_vars": {
     "name1": "person1.name",
-    "name2": "person2.name"
-  },
-  "templates": [
-    "${name1} had ${mult_word} as many ${item}s as ${name2}. Then ${name2} ate ${consumed} ${item}s. Now ${name2} has ${current} ${item}s left. How many ${item}s does ${name1} have?",
-    "${name2} had some ${item}s, ate ${consumed}, and has ${current} left. ${name1} has ${mult_word} as many as ${name2} originally had. How many does ${name1} have?",
-    "After giving away ${consumed} ${item}s, ${name2} has ${current} left. ${name1} has ${mult_word} what ${name2} started with. How many does ${name1} have?",
-    "${name2} started with some ${item}s. After eating ${consumed}, ${name2} has ${current} remaining. ${name1} has ${mult_word} the original amount. How many does ${name1} have?",
-    "${name2} lost ${consumed} ${item}s and now has ${current}. ${name1} has ${mult_word} as many as ${name2} had before losing any. How many ${item}s does ${name1} have?",
-    "Before using ${consumed} ${item}s, ${name2} had more. Now ${name2} has ${current}. ${name1} owns ${mult_word} what ${name2} originally possessed. How many does ${name1} own?"
-  ],
-  "trace": [
-    {"op": "init", "var": "current", "value": "current"},
-    {"op": "init", "var": "consumed", "value": "consumed"},
-    {"op": "compute", "compute_op": "add", "args": ["current", "consumed"], "var": "step1"},
-    {"op": "init", "var": "multiplier", "value": "multiplier"},
-    {"op": "compute", "compute_op": "mul", "args": ["step1", "multiplier"], "var": "result"},
-    {"op": "query", "var": "result"}
-  ],
-  "answer": "(current + consumed) * multiplier"
+    "name2": "person2.name",
+    "item_plural": "item|pluralize"
+  }
 }

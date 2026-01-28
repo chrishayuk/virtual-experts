@@ -4,6 +4,15 @@
     "bottles", "cans", "bags", "pencils", "pens", "toys", "balls",
     "cookies", "muffins", "cupcakes", "sandwiches", "pizzas"
   ],
+  "countable_plural": [
+    "apples", "oranges", "books", "coins", "marbles", "cards", "boxes",
+    "bottles", "cans", "bags", "pencils", "pens", "toys", "balls",
+    "cookies", "muffins", "cupcakes", "plates", "cups", "glasses"
+  ],
+  "vehicles": [
+    "car", "bus", "train", "truck", "bicycle", "motorcycle", "boat",
+    "airplane", "helicopter", "van", "taxi", "ambulance"
+  ],
   "countable_singular": [
     "apple", "orange", "book", "coin", "marble", "card", "box",
     "bottle", "can", "bag", "pencil", "pen", "toy", "ball",

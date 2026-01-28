@@ -1,28 +1,65 @@
 {
   "name": "decimal_multiply",
-  "expert": "arithmetic",
   "description": "Multiply count by decimal rate",
-  "pattern": "rate_patterns",
-  "variant": "simple_rate",
   "variables": {
-    "count": {"type": "int", "min": 8, "max": 30},
-    "rate_decimal": {"type": "choice", "options": [0.5, 1.5, 2.5, 0.25, 0.75]}
+    "count": {
+      "type": "int",
+      "min": 8,
+      "max": 30
+    },
+    "rate_decimal": {
+      "type": "choice",
+      "options": [
+        0.5,
+        1.5,
+        2.5,
+        0.25,
+        0.75
+      ]
+    }
   },
   "derived": {
     "total": "count * rate_decimal"
   },
+  "trace": [
+    {
+      "op": "init",
+      "var": "count",
+      "value": "count"
+    },
+    {
+      "op": "init",
+      "var": "rate_decimal",
+      "value": "rate_decimal"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "count",
+        "rate_decimal"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
+  ],
+  "answer": "total",
+  "pattern": "rate_patterns",
+  "variant": "simple_rate",
   "vocab": {
-    "person": {"type": "person_with_pronouns"}
+    "person": {
+      "type": "person_with_pronouns"
+    },
+    "item": {
+      "path": "items.countable_singular"
+    }
   },
   "template_vars": {
     "name": "person.name",
-    "subject": "person.subject"
-  },
-  "trace": [
-    {"op": "init", "var": "count", "value": "count"},
-    {"op": "init", "var": "rate_decimal", "value": "rate_decimal"},
-    {"op": "compute", "compute_op": "mul", "args": ["count", "rate_decimal"], "var": "result"},
-    {"op": "query", "var": "result"}
-  ],
-  "answer": "total"
+    "subject": "person.subject",
+    "items": "item|pluralize"
+  }
 }

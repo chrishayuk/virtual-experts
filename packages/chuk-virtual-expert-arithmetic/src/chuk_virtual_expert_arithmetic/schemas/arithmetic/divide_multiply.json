@@ -1,32 +1,82 @@
 {
   "name": "divide_multiply",
   "description": "Split total among group, then multiply investment returns",
-  "pattern": "divide_multiply",
   "variables": {
-    "divisor": {"type": "choice", "options": [2, 4, 5, 10]},
-    "per_item": {"type": "int", "min": 5, "max": 25},
-    "multiplier": {"type": "int", "min": 2, "max": 5}
+    "divisor": {
+      "type": "choice",
+      "options": [
+        2,
+        4,
+        5,
+        10
+      ]
+    },
+    "per_item": {
+      "type": "int",
+      "min": 5,
+      "max": 25
+    },
+    "multiplier": {
+      "type": "int",
+      "min": 2,
+      "max": 5
+    }
   },
   "derived": {
     "total": "per_item * divisor",
     "count_minus_one": "divisor - 1"
   },
+  "trace": [
+    {
+      "op": "init",
+      "var": "total",
+      "value": "total"
+    },
+    {
+      "op": "init",
+      "var": "divisor",
+      "value": "divisor"
+    },
+    {
+      "op": "init",
+      "var": "multiplier",
+      "value": "multiplier"
+    },
+    {
+      "op": "compute",
+      "compute_op": "div",
+      "args": [
+        "total",
+        "divisor"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "step1",
+        "multiplier"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
+  ],
+  "answer": "per_item * multiplier",
+  "pattern": "divide_multiply",
   "vocab": {
-    "person": {"type": "person_with_pronouns"},
-    "group": {"path": "phrases.group_terms"}
+    "person": {
+      "type": "person_with_pronouns"
+    },
+    "group": {
+      "path": "phrases.group_terms"
+    }
   },
   "template_vars": {
     "name": "person.name",
-    "his_her": "person.possessive",
-    "group_singular": "group|singularize"
-  },
-  "trace": [
-    {"op": "init", "var": "total", "value": "total"},
-    {"op": "init", "var": "divisor", "value": "divisor"},
-    {"op": "init", "var": "multiplier", "value": "multiplier"},
-    {"op": "compute", "compute_op": "div", "args": ["total", "divisor"], "var": "step1"},
-    {"op": "compute", "compute_op": "mul", "args": ["step1", "multiplier"], "var": "result"},
-    {"op": "query", "var": "result"}
-  ],
-  "answer": "per_item * multiplier"
+    "group": "group"
+  }
 }

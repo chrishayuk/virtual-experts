@@ -5,16 +5,43 @@
   "pattern": "percentage",
   "variant": "percent_increase",
   "variables": {
-    "base": {"type": "int", "min": 50, "max": 200},
-    "percent": {"type": "choice", "options": [10, 15, 20, 25, 50]}
+    "base": {
+      "type": "int",
+      "min": 50,
+      "max": 200
+    },
+    "percent": {
+      "type": "choice",
+      "options": [
+        10,
+        15,
+        20,
+        25,
+        50
+      ]
+    }
   },
-  "vocab": {},
-  "template_vars": {},
   "trace": [
-    {"op": "init", "var": "base", "value": "base"},
-    {"op": "init", "var": "rate", "value": "percent"},
-    {"op": "percent_increase", "base": "base", "rate": "rate", "var": "result"},
-    {"op": "query", "var": "result"}
+    {
+      "op": "init",
+      "var": "base",
+      "value": "base"
+    },
+    {
+      "op": "init",
+      "var": "rate",
+      "value": "percent"
+    },
+    {
+      "op": "percent_increase",
+      "base": "base",
+      "rate": "rate",
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
   ],
   "answer": "base * (100 + percent) / 100"
 }

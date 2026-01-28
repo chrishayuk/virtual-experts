@@ -13,11 +13,13 @@ from typing import Any, ClassVar
 from chuk_virtual_expert.trace_models import BaseTraceStep
 from chuk_virtual_expert.trace_solver import TraceSolverExpert
 
+from chuk_virtual_expert_arithmetic.types import ExpertType
+
 
 class ArithmeticExpert(TraceSolverExpert):
     """Expert for pure arithmetic chain problems."""
 
-    name: ClassVar[str] = "arithmetic"
+    name: ClassVar[str] = ExpertType.ARITHMETIC
     description: ClassVar[str] = "Computes arithmetic chains (cost totals, sums, products)"
     version: ClassVar[str] = "1.0.0"
     priority: ClassVar[int] = 10

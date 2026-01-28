@@ -1,0 +1,16 @@
+{
+  "name": "kitchen",
+  "description": "Cooking and baking",
+  "agent_types": ["appliance", "person"],
+  "agent_templates": {
+    "appliance": {"pattern": "Oven ${number}", "numbers": [1, 2, 3]},
+    "mixer": {"pattern": "Mixer ${letter}", "letters": ["A", "B"]},
+    "person": {"source": "names.people", "pattern": "${name}"}
+  },
+  "items": ["cookies", "loaves", "cakes", "muffins", "pies", "batches"],
+  "verbs": {"singular": "bakes", "plural": "bake"},
+  "time_units": [
+    {"singular": "hour", "plural": "hours"},
+    {"singular": "minute", "plural": "minutes"}
+  ]
+}

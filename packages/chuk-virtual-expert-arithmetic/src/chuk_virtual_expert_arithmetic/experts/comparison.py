@@ -12,11 +12,13 @@ from typing import Any, ClassVar
 from chuk_virtual_expert.trace_models import BaseTraceStep, CompareStep
 from chuk_virtual_expert.trace_solver import TraceSolverExpert
 
+from chuk_virtual_expert_arithmetic.types import ExpertType
+
 
 class ComparisonExpert(TraceSolverExpert):
     """Expert for comparison and difference problems."""
 
-    name: ClassVar[str] = "comparison"
+    name: ClassVar[str] = ExpertType.COMPARISON
     description: ClassVar[str] = "Computes differences, ratios, and comparisons between quantities"
     version: ClassVar[str] = "1.0.0"
     priority: ClassVar[int] = 11

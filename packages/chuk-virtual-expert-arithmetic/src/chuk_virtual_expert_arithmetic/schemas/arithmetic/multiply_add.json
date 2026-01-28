@@ -1,31 +1,68 @@
 {
   "name": "multiply_add",
-  "description": "Count × price + extra fee",
+  "description": "Count x price + extra fee",
   "pattern": "multiply_add",
-  "variables": {
-    "count": {"type": "int", "min": 3, "max": 10},
-    "price": {"type": "int", "min": 5, "max": 20},
-    "extra": {"type": "int", "min": 5, "max": 20}
-  },
-  "vocab": {
-    "person": {"type": "person_with_pronouns"},
-    "items": {"path": "items.countable"},
-    "fee": {"path": "phrases.fee_types"}
-  },
+  "mixins": ["person_vocab", "item_vocab"],
   "template_vars": {
-    "name": "person.name",
-    "subj": "person.subject|capitalize",
-    "subject": "person.subject",
-    "his_her": "person.possessive",
-    "item_singular": "items|singularize"
+    "item_singular": "item",
+    "fee": "delivery"
+  },
+  "variables": {
+    "count": {
+      "type": "int",
+      "min": 3,
+      "max": 10
+    },
+    "price": {
+      "type": "int",
+      "min": 5,
+      "max": 20
+    },
+    "extra": {
+      "type": "int",
+      "min": 5,
+      "max": 20
+    }
   },
   "trace": [
-    {"op": "init", "var": "count", "value": "count"},
-    {"op": "init", "var": "price", "value": "price"},
-    {"op": "init", "var": "extra", "value": "extra"},
-    {"op": "compute", "compute_op": "mul", "args": ["count", "price"], "var": "step1"},
-    {"op": "compute", "compute_op": "add", "args": ["step1", "extra"], "var": "result"},
-    {"op": "query", "var": "result"}
+    {
+      "op": "init",
+      "var": "count",
+      "value": "count"
+    },
+    {
+      "op": "init",
+      "var": "price",
+      "value": "price"
+    },
+    {
+      "op": "init",
+      "var": "extra",
+      "value": "extra"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "count",
+        "price"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "compute",
+      "compute_op": "add",
+      "args": [
+        "step1",
+        "extra"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
   ],
-  "answer": "count * price + extra"
+  "answer": "count * price + extra",
+  "pattern": "multiply_add"
 }

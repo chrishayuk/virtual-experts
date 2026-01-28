@@ -4,26 +4,51 @@
   "description": "Distance = speed x time (travel)",
   "pattern": "rate_equation",
   "variant": "distance_speed_time",
-  "variables": {
-    "speed": {"type": "int", "min": 30, "max": 80},
-    "time": {"type": "int", "min": 2, "max": 8}
-  },
   "vocab": {
-    "vehicle": {"path": "phrases.vehicles"},
-    "time_unit": {"path": "phrases.time_unit_pairs"},
-    "distance_unit": {"path": "phrases.distance_unit_pairs"}
+    "vehicle": {"path": "items.vehicles"}
   },
   "template_vars": {
-    "a_vehicle": "vehicle.name|with_article",
-    "time_unit": "time_unit.singular",
-    "time_unit_plural": "time_unit.plural",
-    "distance_unit": "distance_unit.plural"
+    "a_vehicle": "vehicle|with_article",
+    "distance_unit": "miles",
+    "time_unit": "hour",
+    "time_unit_plural": "hours"
+  },
+  "variables": {
+    "speed": {
+      "type": "int",
+      "min": 30,
+      "max": 80
+    },
+    "time": {
+      "type": "int",
+      "min": 2,
+      "max": 8
+    }
   },
   "trace": [
-    {"op": "init", "var": "rate", "value": "speed"},
-    {"op": "init", "var": "time", "value": "time"},
-    {"op": "compute", "compute_op": "mul", "args": ["rate", "time"], "var": "result"},
-    {"op": "query", "var": "result"}
+    {
+      "op": "init",
+      "var": "rate",
+      "value": "speed"
+    },
+    {
+      "op": "init",
+      "var": "time",
+      "value": "time"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "rate",
+        "time"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
   ],
   "answer": "speed * time"
 }

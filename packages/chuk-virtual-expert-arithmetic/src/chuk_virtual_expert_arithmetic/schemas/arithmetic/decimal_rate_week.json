@@ -1,35 +1,86 @@
 {
   "name": "decimal_rate_week",
-  "expert": "arithmetic",
   "description": "Decimal rate per day multiplied by days per week",
-  "pattern": "rate_patterns",
-  "variant": "decimal_weekly",
   "variables": {
-    "count": {"type": "int", "min": 5, "max": 20},
-    "rate_decimal": {"type": "choice", "options": [0.25, 0.5, 0.75, 1.5, 2.5]},
-    "days": {"type": "choice", "options": [7]}
+    "count": {
+      "type": "int",
+      "min": 5,
+      "max": 20
+    },
+    "rate_decimal": {
+      "type": "choice",
+      "options": [
+        0.25,
+        0.5,
+        0.75,
+        1.5,
+        2.5
+      ]
+    },
+    "days": {
+      "type": "choice",
+      "options": [
+        7
+      ]
+    }
   },
   "derived": {
     "daily": "count * rate_decimal",
     "total": "daily * days"
   },
+  "trace": [
+    {
+      "op": "init",
+      "var": "count",
+      "value": "count"
+    },
+    {
+      "op": "init",
+      "var": "rate_decimal",
+      "value": "rate_decimal"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "count",
+        "rate_decimal"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "init",
+      "var": "days",
+      "value": "days"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "step1",
+        "days"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
+  ],
+  "answer": "total",
+  "pattern": "rate_patterns",
+  "variant": "decimal_weekly",
   "vocab": {
-    "person": {"type": "person_with_pronouns"},
-    "activity": {"path": "phrases.activities"}
+    "person": {
+      "type": "person_with_pronouns"
+    },
+    "activity": {
+      "path": "phrases.activities"
+    }
   },
   "template_vars": {
     "name": "person.name",
     "subject": "person.subject",
-    "his_her": "person.possessive",
     "possessive": "person.possessive"
-  },
-  "trace": [
-    {"op": "init", "var": "count", "value": "count"},
-    {"op": "init", "var": "rate_decimal", "value": "rate_decimal"},
-    {"op": "compute", "compute_op": "mul", "args": ["count", "rate_decimal"], "var": "step1"},
-    {"op": "init", "var": "days", "value": "days"},
-    {"op": "compute", "compute_op": "mul", "args": ["step1", "days"], "var": "result"},
-    {"op": "query", "var": "result"}
-  ],
-  "answer": "total"
+  }
 }

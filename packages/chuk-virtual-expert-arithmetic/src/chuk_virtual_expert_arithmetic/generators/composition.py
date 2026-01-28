@@ -12,8 +12,11 @@ from __future__ import annotations
 import random
 from typing import Any
 
-ITEMS = ["shirt", "jacket", "bag", "book", "toy"]
-NAMES = ["Alice", "Bob", "Carol", "Dan", "Emma"]
+from chuk_virtual_expert_arithmetic.types import ExpertType
+from chuk_virtual_expert_arithmetic.vocab import get_vocab
+
+# Vocab singleton for random sampling
+_vocab = get_vocab()
 
 
 def generate_percent_off_plus_extra() -> dict[str, Any]:
@@ -21,7 +24,7 @@ def generate_percent_off_plus_extra() -> dict[str, Any]:
     price = random.randint(40, 200)
     percent = random.choice([10, 15, 20, 25, 30])
     extra = random.randint(5, 25)
-    item = random.choice(ITEMS)
+    item = _vocab.random("items.countable_singular")
 
     sale_price = price * (100 - percent) / 100
     total = sale_price + extra
@@ -35,7 +38,7 @@ def generate_percent_off_plus_extra() -> dict[str, Any]:
         "composed": True,
         "steps": [
             {
-                "expert": "percentage",
+                "expert": ExpertType.PERCENTAGE.value,
                 "trace": [
                     {"op": "init", "var": "price", "value": price},
                     {"op": "init", "var": "rate", "value": percent},
@@ -44,7 +47,7 @@ def generate_percent_off_plus_extra() -> dict[str, Any]:
                 ],
             },
             {
-                "expert": "arithmetic",
+                "expert": ExpertType.ARITHMETIC.value,
                 "trace": [
                     {"op": "init", "var": "prev", "source": "prev.result"},
                     {"op": "init", "var": "factor", "value": extra},
@@ -77,7 +80,7 @@ def generate_percent_increase_minus_cost() -> dict[str, Any]:
         "composed": True,
         "steps": [
             {
-                "expert": "percentage",
+                "expert": ExpertType.PERCENTAGE.value,
                 "trace": [
                     {"op": "init", "var": "base", "value": original},
                     {"op": "init", "var": "rate", "value": percent},
@@ -86,7 +89,7 @@ def generate_percent_increase_minus_cost() -> dict[str, Any]:
                 ],
             },
             {
-                "expert": "arithmetic",
+                "expert": ExpertType.ARITHMETIC.value,
                 "trace": [
                     {"op": "init", "var": "prev", "source": "prev.result"},
                     {"op": "init", "var": "factor", "value": original},
@@ -113,7 +116,7 @@ def generate_percent_of_then_multiply() -> dict[str, Any]:
     unit = whole * percent / 100
     total = unit * quantity
 
-    item = random.choice(ITEMS)
+    item = _vocab.random("items.countable_singular")
     question = (
         f"A {item} is priced at {percent}% of ${whole}. You buy {quantity}. What's the total?"
     )
@@ -123,7 +126,7 @@ def generate_percent_of_then_multiply() -> dict[str, Any]:
         "composed": True,
         "steps": [
             {
-                "expert": "percentage",
+                "expert": ExpertType.PERCENTAGE.value,
                 "trace": [
                     {"op": "init", "var": "whole", "value": whole},
                     {"op": "init", "var": "rate", "value": percent},
@@ -132,7 +135,7 @@ def generate_percent_of_then_multiply() -> dict[str, Any]:
                 ],
             },
             {
-                "expert": "arithmetic",
+                "expert": ExpertType.ARITHMETIC.value,
                 "trace": [
                     {"op": "init", "var": "prev", "source": "prev.result"},
                     {"op": "init", "var": "factor", "value": quantity},
@@ -166,7 +169,7 @@ def generate_rate_then_subtract() -> dict[str, Any]:
         "composed": True,
         "steps": [
             {
-                "expert": "rate_equation",
+                "expert": ExpertType.RATE_EQUATION.value,
                 "trace": [
                     {"op": "init", "var": "rate", "value": rate},
                     {"op": "init", "var": "time", "value": time},
@@ -180,7 +183,7 @@ def generate_rate_then_subtract() -> dict[str, Any]:
                 ],
             },
             {
-                "expert": "arithmetic",
+                "expert": ExpertType.ARITHMETIC.value,
                 "trace": [
                     {"op": "init", "var": "prev", "source": "prev.result"},
                     {"op": "init", "var": "factor", "value": defective},
@@ -222,7 +225,7 @@ def generate_value_increase_profit() -> dict[str, Any]:
     new_value = original + increase
     profit = new_value - total_cost
 
-    name = random.choice(NAMES)
+    name = _vocab.random("names.people")
     question = (
         f"{name} buys a house for ${original} and puts in ${repairs} in repairs. "
         f"This increased the value of the house by {percent}%. How much profit did they make?"
@@ -233,7 +236,7 @@ def generate_value_increase_profit() -> dict[str, Any]:
         "composed": True,
         "steps": [
             {
-                "expert": "percentage",
+                "expert": ExpertType.PERCENTAGE.value,
                 "trace": [
                     {"op": "init", "var": "original", "value": original},
                     {"op": "init", "var": "rate", "value": percent},
@@ -242,7 +245,7 @@ def generate_value_increase_profit() -> dict[str, Any]:
                 ],
             },
             {
-                "expert": "arithmetic",
+                "expert": ExpertType.ARITHMETIC.value,
                 "trace": [
                     {"op": "init", "var": "new_value", "source": "prev.result"},
                     {"op": "init", "var": "original", "value": original},
@@ -287,9 +290,8 @@ def generate_paired_discount() -> dict[str, Any]:
     pairs = quantity // 2
     total = pairs * pair_cost
 
-    items = ["glasses", "cups", "plates", "bowls", "mugs"]
-    item = random.choice(items)
-    name = random.choice(NAMES)
+    item = _vocab.random("items.countable_plural") or "items"
+    name = _vocab.random("names.people")
 
     # Multiple template variations to improve robustness
     templates = [
@@ -322,7 +324,7 @@ def generate_paired_discount() -> dict[str, Any]:
         "composed": True,
         "steps": [
             {
-                "expert": "percentage",
+                "expert": ExpertType.PERCENTAGE.value,
                 "trace": [
                     {"op": "init", "var": "full_price", "value": full_price},
                     {"op": "init", "var": "rate", "value": discount_percent},
@@ -331,7 +333,7 @@ def generate_paired_discount() -> dict[str, Any]:
                 ],
             },
             {
-                "expert": "arithmetic",
+                "expert": ExpertType.ARITHMETIC.value,
                 "trace": [
                     {"op": "init", "var": "discounted", "source": "prev.result"},
                     {"op": "init", "var": "full_price", "value": full_price},
@@ -376,7 +378,7 @@ def generate_interrupted_rate() -> dict[str, Any]:
     full_time = total_size / rate
     total_time = partial_time + delay + full_time
 
-    name = random.choice(NAMES)
+    name = _vocab.random("names.people")
 
     # Multiple templates with varied domains
     templates = [
@@ -392,7 +394,7 @@ def generate_interrupted_rate() -> dict[str, Any]:
             f"{progress_percent}% through the download, the computer restarts, adding a {delay}-minute delay. "
             f"The download then restarts from scratch. What is the total download time?"
         ),
-        # GSM-8K style phrasing (Carla download)
+        # Alternative phrasing (download scenario)
         (
             f"{name} is downloading a {total_size} GB file. Normally they can download {rate} GB/minute, "
             f"but {progress_percent}% of the way through the download, the system forces a restart "
@@ -430,7 +432,7 @@ def generate_interrupted_rate() -> dict[str, Any]:
         "composed": True,
         "steps": [
             {
-                "expert": "percentage",
+                "expert": ExpertType.PERCENTAGE.value,
                 "trace": [
                     {"op": "init", "var": "total_size", "value": total_size},
                     {"op": "init", "var": "rate", "value": progress_percent},
@@ -439,7 +441,7 @@ def generate_interrupted_rate() -> dict[str, Any]:
                 ],
             },
             {
-                "expert": "arithmetic",
+                "expert": ExpertType.ARITHMETIC.value,
                 "trace": [
                     {"op": "init", "var": "partial_size", "source": "prev.result"},
                     {"op": "init", "var": "speed", "value": rate},
@@ -480,8 +482,7 @@ def generate_interrupted_rate() -> dict[str, Any]:
 def generate_consume_then_sell() -> dict[str, Any]:
     """Consume some items, sell remainder at a price.
 
-    GSM-8K pattern: "Janet's ducks lay 16 eggs. She eats 3, bakes with 4,
-    sells rest at $2 each. How much does she make?"
+    Pattern: "Ducks lay 16 eggs. Eat 3, bake with 4, sell rest at $2 each."
 
     Solution: remaining = 16 - 3 - 4 = 9
               revenue = 9 * 2 = 18
@@ -494,9 +495,10 @@ def generate_consume_then_sell() -> dict[str, Any]:
     remaining = initial - consume1 - consume2
     revenue = remaining * price
 
-    name = random.choice(NAMES)
-    animals = ["ducks", "chickens", "hens"]
-    animal = random.choice(animals)
+    name = _vocab.random("names.people")
+    # Get poultry animal that produces eggs
+    farm_animal = _vocab.random("animals.farm_animals")
+    animal = farm_animal.get("name", "chickens") if isinstance(farm_animal, dict) else "chickens"
 
     question = (
         f"{name}'s {animal} lay {initial} eggs per day. "
@@ -509,7 +511,7 @@ def generate_consume_then_sell() -> dict[str, Any]:
         "composed": True,
         "steps": [
             {
-                "expert": "entity_track",
+                "expert": ExpertType.ENTITY_TRACK.value,
                 "trace": [
                     {"op": "init", "var": "eggs", "value": initial},
                     {"op": "consume", "entity": "eggs", "amount": consume1},
@@ -518,7 +520,7 @@ def generate_consume_then_sell() -> dict[str, Any]:
                 ],
             },
             {
-                "expert": "arithmetic",
+                "expert": ExpertType.ARITHMETIC.value,
                 "trace": [
                     {"op": "init", "var": "remaining", "source": "prev.result"},
                     {"op": "init", "var": "price", "value": price},
@@ -557,7 +559,7 @@ def generate_cost_increase_profit() -> dict[str, Any]:
     new_value = purchase * (100 + percent) / 100
     profit = new_value - total_cost
 
-    name = random.choice(NAMES)
+    name = _vocab.random("names.people")
     question = (
         f"{name} buys a house for ${purchase} and spends ${repairs} on repairs. "
         f"This increased the value of the house by {percent}%. How much profit did {name} make?"
@@ -568,7 +570,7 @@ def generate_cost_increase_profit() -> dict[str, Any]:
         "composed": True,
         "steps": [
             {
-                "expert": "arithmetic",
+                "expert": ExpertType.ARITHMETIC.value,
                 "trace": [
                     {"op": "init", "var": "purchase", "value": purchase},
                     {"op": "init", "var": "repairs", "value": repairs},
@@ -582,7 +584,7 @@ def generate_cost_increase_profit() -> dict[str, Any]:
                 ],
             },
             {
-                "expert": "percentage",
+                "expert": ExpertType.PERCENTAGE.value,
                 "trace": [
                     {"op": "init", "var": "base", "value": purchase},
                     {"op": "init", "var": "rate", "value": percent},
@@ -591,7 +593,7 @@ def generate_cost_increase_profit() -> dict[str, Any]:
                 ],
             },
             {
-                "expert": "arithmetic",
+                "expert": ExpertType.ARITHMETIC.value,
                 "trace": [
                     {"op": "init", "var": "new_value", "source": "prev.result"},
                     {"op": "init", "var": "cost", "source": "sub0.result"},
@@ -624,7 +626,7 @@ def generate_discount_tax_total() -> dict[str, Any]:
     tax = discounted * tax_pct / 100
     final = discounted + tax
 
-    item = random.choice(ITEMS)
+    item = _vocab.random("items.countable_singular")
     question = (
         f"A {item} originally costs ${original}. It's {discount_pct}% off. "
         f"Then {tax_pct}% tax is added. What's the final price?"
@@ -635,7 +637,7 @@ def generate_discount_tax_total() -> dict[str, Any]:
         "composed": True,
         "steps": [
             {
-                "expert": "percentage",
+                "expert": ExpertType.PERCENTAGE.value,
                 "trace": [
                     {"op": "init", "var": "original", "value": original},
                     {"op": "init", "var": "rate", "value": discount_pct},
@@ -644,7 +646,7 @@ def generate_discount_tax_total() -> dict[str, Any]:
                 ],
             },
             {
-                "expert": "percentage",
+                "expert": ExpertType.PERCENTAGE.value,
                 "trace": [
                     {"op": "init", "var": "base", "source": "prev.result"},
                     {"op": "init", "var": "rate", "value": tax_pct},
@@ -653,7 +655,7 @@ def generate_discount_tax_total() -> dict[str, Any]:
                 ],
             },
             {
-                "expert": "arithmetic",
+                "expert": ExpertType.ARITHMETIC.value,
                 "trace": [
                     {"op": "init", "var": "tax", "source": "prev.result"},
                     {"op": "init", "var": "discounted", "source": "sub0.result"},
@@ -692,7 +694,7 @@ def generate_comparison_then_total() -> dict[str, Any]:
 
     item_a = random.choice(["shirt", "book", "toy"])
     item_b = random.choice(["jacket", "bag", "game"])
-    name = random.choice(NAMES)
+    name = _vocab.random("names.people")
 
     question = (
         f"A {item_a} costs ${price_a}. A {item_b} costs ${difference} more than the {item_a}. "
@@ -704,7 +706,7 @@ def generate_comparison_then_total() -> dict[str, Any]:
         "composed": True,
         "steps": [
             {
-                "expert": "comparison",
+                "expert": ExpertType.COMPARISON.value,
                 "trace": [
                     {"op": "init", "var": "price_a", "value": price_a},
                     {"op": "init", "var": "difference", "value": difference},
@@ -718,7 +720,7 @@ def generate_comparison_then_total() -> dict[str, Any]:
                 ],
             },
             {
-                "expert": "arithmetic",
+                "expert": ExpertType.ARITHMETIC.value,
                 "trace": [
                     {"op": "init", "var": "price_a", "value": price_a},
                     {"op": "init", "var": "quantity", "value": quantity},
@@ -732,7 +734,7 @@ def generate_comparison_then_total() -> dict[str, Any]:
                 ],
             },
             {
-                "expert": "arithmetic",
+                "expert": ExpertType.ARITHMETIC.value,
                 "trace": [
                     {"op": "init", "var": "cost_a", "source": "prev.result"},
                     {"op": "init", "var": "price_b", "source": "sub0.result"},
@@ -788,7 +790,7 @@ def generate_rate_comparison_total() -> dict[str, Any]:
         "composed": True,
         "steps": [
             {
-                "expert": "rate_equation",
+                "expert": ExpertType.RATE_EQUATION.value,
                 "trace": [
                     {"op": "init", "var": "rate", "value": rate_a},
                     {"op": "init", "var": "time", "value": hours},
@@ -802,7 +804,7 @@ def generate_rate_comparison_total() -> dict[str, Any]:
                 ],
             },
             {
-                "expert": "comparison",
+                "expert": ExpertType.COMPARISON.value,
                 "trace": [
                     {"op": "init", "var": "rate_a", "value": rate_a},
                     {"op": "init", "var": "difference", "value": difference},
@@ -816,7 +818,7 @@ def generate_rate_comparison_total() -> dict[str, Any]:
                 ],
             },
             {
-                "expert": "arithmetic",
+                "expert": ExpertType.ARITHMETIC.value,
                 "trace": [
                     {"op": "init", "var": "output_a", "source": "sub0.result"},
                     {"op": "init", "var": "rate_b", "source": "prev.result"},

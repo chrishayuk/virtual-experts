@@ -1,34 +1,89 @@
 {
   "name": "average_three",
   "description": "Calculate average of three values",
-  "pattern": "average_three",
   "variables": {
-    "val1": {"type": "int", "min": 40, "max": 60},
-    "val2": {"type": "int", "min": 45, "max": 65},
-    "val3": {"type": "int", "min": 50, "max": 70}
+    "val1": {
+      "type": "int",
+      "min": 40,
+      "max": 60
+    },
+    "val2": {
+      "type": "int",
+      "min": 45,
+      "max": 65
+    },
+    "val3": {
+      "type": "int",
+      "min": 50,
+      "max": 70
+    }
   },
+  "trace": [
+    {
+      "op": "init",
+      "var": "val1",
+      "value": "val1"
+    },
+    {
+      "op": "init",
+      "var": "val2",
+      "value": "val2"
+    },
+    {
+      "op": "init",
+      "var": "val3",
+      "value": "val3"
+    },
+    {
+      "op": "compute",
+      "compute_op": "add",
+      "args": [
+        "val1",
+        "val2"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "compute",
+      "compute_op": "add",
+      "args": [
+        "step1",
+        "val3"
+      ],
+      "var": "step2"
+    },
+    {
+      "op": "init",
+      "var": "count",
+      "value": 3
+    },
+    {
+      "op": "compute",
+      "compute_op": "div",
+      "args": [
+        "step2",
+        "count"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
+  ],
+  "answer": "(val1 + val2 + val3) / 3",
+  "pattern": "average_three",
   "vocab": {
-    "person": {"type": "person_with_pronouns"}
+    "person": {
+      "type": "person_with_pronouns"
+    },
+    "activity": {
+      "path": "phrases.skills"
+    }
   },
   "template_vars": {
     "name": "person.name",
-    "subj": "person.subject|capitalize"
-  },
-  "templates": [
-    "${name} took three tests. ${subj} scored ${val1}, ${val2}, and ${val3}. What was the average score?",
-    "${name} ran three races. ${subj} finished in ${val1}, ${val2}, and ${val3} seconds. What is the average time?",
-    "Three boxes weigh ${val1}, ${val2}, and ${val3} pounds. What is their average weight?",
-    "${name} measured temperatures of ${val1}, ${val2}, and ${val3} degrees over three days. What is the average temperature?"
-  ],
-  "trace": [
-    {"op": "init", "var": "val1", "value": "val1"},
-    {"op": "init", "var": "val2", "value": "val2"},
-    {"op": "init", "var": "val3", "value": "val3"},
-    {"op": "compute", "compute_op": "add", "args": ["val1", "val2"], "var": "step1"},
-    {"op": "compute", "compute_op": "add", "args": ["step1", "val3"], "var": "step2"},
-    {"op": "init", "var": "count", "value": 3},
-    {"op": "compute", "compute_op": "div", "args": ["step2", "count"], "var": "result"},
-    {"op": "query", "var": "result"}
-  ],
-  "answer": "(val1 + val2 + val3) / 3"
+    "subject": "person.subject",
+    "activity": "activity"
+  }
 }

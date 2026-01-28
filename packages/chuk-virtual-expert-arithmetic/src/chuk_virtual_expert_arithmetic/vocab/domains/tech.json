@@ -1,0 +1,18 @@
+{
+  "name": "tech",
+  "description": "Computing and technology",
+  "agent_types": ["server", "person"],
+  "agent_templates": {
+    "server": {"pattern": "Server ${letter}", "letters": ["A", "B", "C", "D"]},
+    "node": {"pattern": "Node ${number}", "numbers": [1, 2, 3, 4]},
+    "cpu": {"pattern": "CPU ${number}", "numbers": [1, 2, 3, 4]},
+    "person": {"source": "names.people", "pattern": "${name}"}
+  },
+  "items": ["requests", "queries", "tasks", "jobs", "packets"],
+  "verbs": {"singular": "processes", "plural": "process"},
+  "time_units": [
+    {"singular": "second", "plural": "seconds"},
+    {"singular": "minute", "plural": "minutes"},
+    {"singular": "hour", "plural": "hours"}
+  ]
+}

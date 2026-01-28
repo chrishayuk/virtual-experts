@@ -1,13 +1,22 @@
 {
   "name": "rate_comparison_total",
-  "expert": "arithmetic",
   "description": "Two machines with rate comparison: A produces X/hr, B produces N times A. Total in T hours?",
-  "pattern": "rate_patterns",
-  "variant": "comparison_total",
   "variables": {
-    "rate": {"type": "int", "min": 5, "max": 20},
-    "multiplier": {"type": "int", "min": 2, "max": 4},
-    "hours": {"type": "int", "min": 4, "max": 10}
+    "rate": {
+      "type": "int",
+      "min": 5,
+      "max": 20
+    },
+    "multiplier": {
+      "type": "int",
+      "min": 2,
+      "max": 4
+    },
+    "hours": {
+      "type": "int",
+      "min": 4,
+      "max": 10
+    }
   },
   "derived": {
     "output_a": "rate * hours",
@@ -15,24 +24,77 @@
     "output_b": "rate_b * hours",
     "total": "output_a + output_b"
   },
-  "vocab": {
-    "items": {"path": "items.manufactured"}
-  },
-  "template_vars": {},
-  "templates": [
-    "Machine A produces {rate} {items} per hour. Machine B produces {multiplier} times as many. How many {items} do both machines produce together in {hours} hours?",
-    "Factory A makes {rate} {items} per hour. Factory B makes {multiplier} times as many per hour. What is the combined output after {hours} hours?",
-    "A produces {rate} {items} hourly. B produces {multiplier} times that amount. In {hours} hours, how many {items} are made in total?"
-  ],
   "trace": [
-    {"op": "init", "var": "rate", "value": "rate"},
-    {"op": "init", "var": "hours", "value": "hours"},
-    {"op": "compute", "compute_op": "mul", "args": ["rate", "hours"], "var": "step1"},
-    {"op": "init", "var": "multiplier", "value": "multiplier"},
-    {"op": "compute", "compute_op": "mul", "args": ["rate", "multiplier"], "var": "step2"},
-    {"op": "compute", "compute_op": "mul", "args": ["step2", "hours"], "var": "step3"},
-    {"op": "compute", "compute_op": "add", "args": ["step1", "step3"], "var": "result"},
-    {"op": "query", "var": "result"}
+    {
+      "op": "init",
+      "var": "rate",
+      "value": "rate"
+    },
+    {
+      "op": "init",
+      "var": "hours",
+      "value": "hours"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "rate",
+        "hours"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "init",
+      "var": "multiplier",
+      "value": "multiplier"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "rate",
+        "multiplier"
+      ],
+      "var": "step2"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "step2",
+        "hours"
+      ],
+      "var": "step3"
+    },
+    {
+      "op": "compute",
+      "compute_op": "add",
+      "args": [
+        "step1",
+        "step3"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
   ],
-  "answer": "total"
+  "answer": "total",
+  "pattern": "rate_patterns",
+  "variant": "comparison_total",
+  "vocab": {
+    "agent_pair": {
+      "path": "phrases.agent_pairs"
+    },
+    "item": {
+      "path": "phrases.rate_items"
+    }
+  },
+  "template_vars": {
+    "agent1": "agent_pair.first",
+    "agent2": "agent_pair.second",
+    "items": "item"
+  }
 }

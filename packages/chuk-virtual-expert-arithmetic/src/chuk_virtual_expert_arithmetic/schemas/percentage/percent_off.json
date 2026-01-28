@@ -4,22 +4,54 @@
   "description": "X% off a price, what's the sale price?",
   "pattern": "percentage",
   "variant": "percent_off",
-  "variables": {
-    "price": {"type": "int", "min": 20, "max": 200},
-    "percent": {"type": "choice", "options": [10, 15, 20, 25, 30, 40, 50]}
-  },
   "vocab": {
     "item": {"path": "items.countable_singular"},
-    "store": {"path": "places.stores"}
+    "store_name": {"path": "places.stores"}
   },
   "template_vars": {
-    "a_item": "item|with_article"
+    "a_item": "item|with_article",
+    "store": "store_name"
+  },
+  "variables": {
+    "price": {
+      "type": "int",
+      "min": 20,
+      "max": 200
+    },
+    "percent": {
+      "type": "choice",
+      "options": [
+        10,
+        15,
+        20,
+        25,
+        30,
+        40,
+        50
+      ]
+    }
   },
   "trace": [
-    {"op": "init", "var": "price", "value": "price"},
-    {"op": "init", "var": "rate", "value": "percent"},
-    {"op": "percent_off", "base": "price", "rate": "rate", "var": "result"},
-    {"op": "query", "var": "result"}
+    {
+      "op": "init",
+      "var": "price",
+      "value": "price"
+    },
+    {
+      "op": "init",
+      "var": "rate",
+      "value": "percent"
+    },
+    {
+      "op": "percent_off",
+      "base": "price",
+      "rate": "rate",
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
   ],
   "answer": "price * (100 - percent) / 100"
 }

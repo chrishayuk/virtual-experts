@@ -1,0 +1,16 @@
+{
+  "name": "school",
+  "description": "Education and classroom activities",
+  "agent_types": ["person", "classroom"],
+  "agent_templates": {
+    "person": {"source": "names.people", "pattern": "${name}"},
+    "classroom": {"pattern": "Class ${letter}", "letters": ["A", "B", "C"]}
+  },
+  "items": ["students", "books", "pencils", "worksheets", "problems", "questions"],
+  "verbs": {"singular": "completes", "plural": "complete"},
+  "time_units": [
+    {"singular": "hour", "plural": "hours"},
+    {"singular": "day", "plural": "days"},
+    {"singular": "week", "plural": "weeks"}
+  ]
+}

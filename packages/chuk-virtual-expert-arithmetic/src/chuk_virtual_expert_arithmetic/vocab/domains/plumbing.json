@@ -1,0 +1,17 @@
+{
+  "name": "plumbing",
+  "description": "Water and fluid systems",
+  "agent_types": ["fixture"],
+  "agent_templates": {
+    "fixture": {"pattern": "Faucet ${letter}", "letters": ["A", "B", "C"]},
+    "pump": {"pattern": "Pump ${number}", "numbers": [1, 2, 3]},
+    "pipe": {"pattern": "Pipe ${letter}", "letters": ["A", "B"]},
+    "tank": {"pattern": "Tank ${number}", "numbers": [1, 2]}
+  },
+  "items": ["gallons", "liters", "buckets", "barrels"],
+  "verbs": {"singular": "delivers", "plural": "deliver"},
+  "time_units": [
+    {"singular": "hour", "plural": "hours"},
+    {"singular": "minute", "plural": "minutes"}
+  ]
+}

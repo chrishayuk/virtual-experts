@@ -1,40 +1,108 @@
 {
   "name": "parallel_merge",
   "description": "Production - gifts = remaining (Wendi's chickens pattern)",
-  "pattern": "parallel_merge",
-  "variant": "farm",
   "variables": {
-    "count": {"type": "int", "min": 2, "max": 5},
-    "per_unit": {"type": "int", "min": 10, "max": 30},
-    "gift1": {"type": "int", "min": 5, "max": 20},
-    "gift2": {"type": "int", "min": 5, "max": 20}
+    "count": {
+      "type": "int",
+      "min": 2,
+      "max": 5
+    },
+    "per_unit": {
+      "type": "int",
+      "min": 10,
+      "max": 30
+    },
+    "gift1": {
+      "type": "int",
+      "min": 5,
+      "max": 20
+    },
+    "gift2": {
+      "type": "int",
+      "min": 5,
+      "max": 20
+    }
   },
   "constraints": {
-    "count * per_unit - gift1 - gift2": {"min": 5}
+    "count * per_unit - gift1 - gift2": {
+      "min": 5
+    }
   },
+  "trace": [
+    {
+      "op": "init",
+      "var": "count",
+      "value": "count"
+    },
+    {
+      "op": "init",
+      "var": "per_unit",
+      "value": "per_unit"
+    },
+    {
+      "op": "compute",
+      "compute_op": "mul",
+      "args": [
+        "count",
+        "per_unit"
+      ],
+      "var": "step1"
+    },
+    {
+      "op": "init",
+      "var": "gift1",
+      "value": "gift1"
+    },
+    {
+      "op": "init",
+      "var": "gift2",
+      "value": "gift2"
+    },
+    {
+      "op": "compute",
+      "compute_op": "add",
+      "args": [
+        "gift1",
+        "gift2"
+      ],
+      "var": "step2"
+    },
+    {
+      "op": "compute",
+      "compute_op": "sub",
+      "args": [
+        "step1",
+        "step2"
+      ],
+      "var": "result"
+    },
+    {
+      "op": "query",
+      "var": "result"
+    }
+  ],
+  "answer": "count * per_unit - gift1 - gift2",
+  "pattern": "parallel_merge",
+  "variant": "bakery",
   "vocab": {
-    "person": {"type": "person_with_pronouns"},
-    "animal": {"path": "animals.farm_animals"}
+    "person": {
+      "type": "person_with_pronouns"
+    },
+    "item": {
+      "path": "items.baked_goods"
+    },
+    "recipient1": {
+      "path": "phrases.gift_recipients"
+    },
+    "recipient2": {
+      "path": "phrases.gift_recipients"
+    }
   },
   "template_vars": {
     "name": "person.name",
     "subject": "person.subject",
     "subj": "person.subject|capitalize",
     "his_her": "person.possessive",
-    "him_her": "person.object",
-    "animals": "animal.name",
-    "animal_singular": "animal.singular",
-    "product": "animal.produces"
-  },
-  "trace": [
-    {"op": "init", "var": "count", "value": "count"},
-    {"op": "init", "var": "per_unit", "value": "per_unit"},
-    {"op": "compute", "compute_op": "mul", "args": ["count", "per_unit"], "var": "step1"},
-    {"op": "init", "var": "gift1", "value": "gift1"},
-    {"op": "init", "var": "gift2", "value": "gift2"},
-    {"op": "compute", "compute_op": "add", "args": ["gift1", "gift2"], "var": "step2"},
-    {"op": "compute", "compute_op": "sub", "args": ["step1", "step2"], "var": "result"},
-    {"op": "query", "var": "result"}
-  ],
-  "answer": "count * per_unit - gift1 - gift2"
+    "items": "item"
+  }
 }
