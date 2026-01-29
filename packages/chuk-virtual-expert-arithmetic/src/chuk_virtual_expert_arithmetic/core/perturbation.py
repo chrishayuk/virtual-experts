@@ -10,6 +10,12 @@ Usage:
 from __future__ import annotations
 
 import random
+from typing import TYPE_CHECKING
+
+from chuk_virtual_expert_arithmetic.types import VocabPath
+
+if TYPE_CHECKING:
+    from chuk_virtual_expert_arithmetic.vocab import Vocab
 
 
 class TemplatePerturbator:
@@ -69,6 +75,7 @@ class TemplatePerturbator:
     }
 
     # Common word synonyms for variety
+    # Note: "total" is handled specially via PHRASE_SYNONYMS below
     SYNONYMS = {
         "has": ["owns", "possesses", "holds"],
         "gets": ["receives", "obtains", "acquires"],
@@ -76,19 +83,39 @@ class TemplatePerturbator:
         "buys": ["purchases", "gets", "picks up"],
         "sells": ["trades", "exchanges"],
         "makes": ["creates", "produces", "crafts"],
-        "total": ["altogether", "in all", "combined"],
         "each": ["every", "per", "apiece"],
         "more": ["additional", "extra"],
         "left": ["remaining", "left over"],
     }
 
-    def __init__(self, seed: int | None = None) -> None:
+    # Phrase-level synonyms (applied before word-level)
+    # These replace entire phrases to maintain grammatical correctness
+    # Order matters - longer/more specific phrases should be matched first
+    PHRASE_SYNONYMS = [
+        ("a total of", ["a total of", "a combined", "exactly"]),
+        ("in total", ["altogether", "in all", "combined", "in total"]),
+        ("the total number of", ["the combined total of", "the total count of", "the total number of"]),
+    ]
+
+    def __init__(self, seed: int | None = None, vocab: Vocab | None = None) -> None:
         """Initialize the perturbator.
 
         Args:
             seed: Random seed for reproducibility
+            vocab: Optional vocab instance for messy vocab access
         """
         self._rng = random.Random(seed)
+        self._vocab = vocab
+        self._messy_fillers: list[str] | None = None
+
+    def _get_filler_phrases(self) -> list[str]:
+        """Get filler phrases, preferring messy vocab if available."""
+        if self._vocab is not None and self._messy_fillers is None:
+            messy = self._vocab.get(VocabPath.MESSY_FILLER_STARTERS)
+            if messy:
+                # Add empty strings to weight toward no filler
+                self._messy_fillers = messy + ["", "", ""]
+        return self._messy_fillers if self._messy_fillers else self.FILLER_PHRASES
 
     def perturb(self, query: str, level: float = 0.3) -> str:
         """Apply random perturbations to a generated query.
@@ -115,17 +142,26 @@ class TemplatePerturbator:
         if self._rng.random() < level * 0.5:  # Less aggressive
             result = self._synonym_substitution(result)
 
+        if self._rng.random() < level * 0.4:  # Clause reordering
+            result = self._reorder_clauses(result)
+
         return result
 
     def _add_filler_phrase(self, text: str) -> str:
         """Add a filler phrase to the beginning."""
-        filler = self._rng.choice(self.FILLER_PHRASES)
+        fillers = self._get_filler_phrases()
+        filler = self._rng.choice(fillers)
         if filler and not text[0].isupper():
             return text
         if filler:
             # Lowercase the first letter of original if adding filler
             if text and text[0].isupper():
                 text = text[0].lower() + text[1:]
+            # Ensure filler ends with space
+            if not filler.endswith(" ") and not filler.endswith(":"):
+                filler = filler + " "
+            elif filler.endswith(":"):
+                filler = filler + " "
             return filler + text
         return text
 
@@ -138,8 +174,33 @@ class TemplatePerturbator:
         return text
 
     def _synonym_substitution(self, text: str) -> str:
-        """Replace some words with synonyms."""
-        words = text.split()
+        """Replace some words with synonyms.
+
+        Applies phrase-level replacements first (to avoid breaking phrases
+        like "a total of"), then word-level replacements.
+        """
+        import re
+
+        result = text
+
+        # Apply phrase-level substitutions first (in order - longer phrases first)
+        for phrase, alternatives in self.PHRASE_SYNONYMS:
+            if phrase.lower() in result.lower() and self._rng.random() < 0.3:
+                # Find the phrase and preserve its original capitalization pattern
+                pattern = re.compile(re.escape(phrase), re.IGNORECASE)
+                match = pattern.search(result)
+                if match:
+                    original = match.group()
+                    replacement = self._rng.choice(alternatives)
+                    # Preserve capitalization of first char if original was capitalized
+                    if original[0].isupper() and replacement[0].islower():
+                        replacement = replacement[0].upper() + replacement[1:]
+                    elif original[0].islower() and replacement[0].isupper():
+                        replacement = replacement[0].lower() + replacement[1:]
+                    result = result[:match.start()] + replacement + result[match.end():]
+
+        # Apply word-level substitutions
+        words = result.split()
         result_words = []
 
         for word in words:
@@ -156,6 +217,72 @@ class TemplatePerturbator:
                 result_words.append(word)
 
         return " ".join(result_words)
+
+    def _reorder_clauses(self, text: str) -> str:
+        """Reorder clauses/sentences to scatter information like GSM-8K.
+
+        GSM-8K often puts key information at the end of problems,
+        e.g., "... if the size of Wendi's flock is 20 chickens?"
+
+        This method:
+        1. Splits into sentences
+        2. Moves non-question sentences around
+        3. May move key info to end
+        """
+        import re
+
+        # Split into sentences (keep delimiters)
+        parts = re.split(r"([.!?]+\s*)", text)
+        sentences = []
+        for i in range(0, len(parts) - 1, 2):
+            sentence = parts[i] + (parts[i + 1] if i + 1 < len(parts) else "")
+            if sentence.strip():
+                sentences.append(sentence.strip())
+
+        # Handle trailing question or text
+        if len(parts) % 2 == 1 and parts[-1].strip():
+            sentences.append(parts[-1].strip())
+
+        # Need at least 3 sentences to meaningfully reorder
+        if len(sentences) < 3:
+            return text
+
+        # Identify the question (usually last sentence)
+        question = None
+        statements = []
+        for s in sentences:
+            if "?" in s:
+                question = s
+            else:
+                statements.append(s)
+
+        if not question or len(statements) < 2:
+            return text
+
+        # Reorder strategies
+        strategy = self._rng.choice(["reverse", "move_first_to_end", "shuffle"])
+
+        if strategy == "reverse":
+            # Reverse statement order
+            statements = statements[::-1]
+        elif strategy == "move_first_to_end":
+            # Move first statement to just before question
+            if len(statements) >= 2:
+                first = statements.pop(0)
+                statements.append(first)
+        else:  # shuffle
+            self._rng.shuffle(statements)
+
+        # Reconstruct with question at end
+        result = " ".join(statements)
+        if question:
+            result = result.rstrip() + " " + question
+
+        # Fix capitalization
+        if result and result[0].islower():
+            result = result[0].upper() + result[1:]
+
+        return result
 
     def reseed(self, seed: int | None = None) -> None:
         """Reseed the random number generator."""

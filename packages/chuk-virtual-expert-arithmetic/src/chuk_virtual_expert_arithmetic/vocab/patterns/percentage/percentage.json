@@ -5,17 +5,35 @@
     "At ${store}, ${a_item} that normally costs $${price} is on sale for ${percent}% off. What's the new price?",
     "During the sale at ${store}, ${a_item} priced at $${price} is ${percent}% off. How much does it cost?"
   ],
+  "percent_off_gsm8k": [
+    "${name} walks into ${store} looking for ${a_item}. The original price tag shows $${price}, but there's a storewide sale offering ${percent}% off all items. If ${name} buys the ${item} during the sale, how much will ${subject} actually pay at the register?",
+    "At the ${store} downtown, ${name} finds ${a_item} that ${subject} has been wanting for a while. It's marked at $${price}, but the sign says everything is ${percent}% off this week only. What is the sale price ${name} will pay for the ${item}?",
+    "The ${store} is having their annual clearance event where all items are ${percent}% off the marked price. ${name} spots ${a_item} with a price tag of $${price}. How much money will ${subject} need to pay if ${subject} decides to purchase it during the sale?",
+    "During Black Friday, ${store} offers ${percent}% off everything in the store. ${name} wants to buy ${a_item} that normally sells for $${price}. What will be the final price ${name} pays for this item?"
+  ],
   "percent_increase": [
     "A stock worth $${base} increases by ${percent}%. What is its new value?",
     "An investment of $${base} grows by ${percent}%. What is it worth now?",
     "If something valued at $${base} increases by ${percent}%, what is the new value?",
     "After a ${percent}% increase, what is the value of something that was worth $${base}?"
   ],
+  "percent_increase_gsm8k": [
+    "${name} bought a house for $${base} several years ago. The value of the property has since increased by ${percent}% due to improvements in the neighborhood. What is the current value of ${name}'s house?",
+    "Last year, ${name}'s salary was $${base}. This year, ${subject} received a ${percent}% raise for excellent performance. What is ${name}'s new annual salary after the raise?",
+    "${name} invested $${base} in a small business. After one year, the investment has grown by ${percent}%. How much is ${name}'s investment worth now?",
+    "The price of ${a_item} was $${base} last month. Due to supply chain issues, the price has increased by ${percent}%. What is the new price of the ${item}?"
+  ],
   "tip_calculation": [
     "Your bill at the ${restaurant} is $${bill}. You want to leave a ${percent}% tip. How much is the tip?",
     "After a meal costing $${bill}, you decide to tip ${percent}%. How much tip do you leave?",
     "The total bill at ${restaurant} comes to $${bill}. If you tip ${percent}%, how much is the tip?",
     "At ${restaurant}, your bill is $${bill}. You leave a ${percent}% tip. What is the tip amount?"
+  ],
+  "tip_calculation_gsm8k": [
+    "${name} takes ${his_her} family out to dinner at a nice ${restaurant} to celebrate a special occasion. When the bill arrives, it totals $${bill} for everything they ordered. ${name} wants to leave a ${percent}% tip for the excellent service they received. How much should ${subject} leave as a tip?",
+    "After enjoying a meal at ${restaurant}, ${name} receives the bill which comes to $${bill}. The service was good, so ${subject} decides to tip ${percent}%. What is the amount of the tip ${name} will leave for the server?",
+    "${name} and ${his_her} friends have dinner at ${restaurant}. The total bill for their meal comes to $${bill}. They agree to leave a ${percent}% tip for the waiter. How much money will they leave as a tip?",
+    "At the end of a lovely dinner at ${restaurant}, ${name} looks at the bill and sees it totals $${bill}. ${subj} always tips ${percent}% for good service. How much tip should ${subject} add to the bill?"
   ],
   "simple_percent": [
     "What is ${percent}% of ${whole}?",

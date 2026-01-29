@@ -16,6 +16,8 @@ from __future__ import annotations
 import random
 from typing import Any
 
+from chuk_virtual_expert_arithmetic.core.transforms import pluralize, singularize
+
 
 class DomainSampler:
     """Samples vocabulary from domain bundles for semantic coherence.
@@ -57,22 +59,37 @@ class DomainSampler:
 
         context: dict[str, Any] = {"domain": domain_name}
 
-        # Sample agent
+        # Sample agents (two for pair-based schemas like combined_rate)
         agent_templates = domain.get("agent_templates", {})
         if agent_templates:
             agent_type = self._rng.choice(list(agent_templates.keys()))
             context["agent"] = self._sample_agent(agent_templates[agent_type])
+            context["agent2"] = self._sample_agent(agent_templates[agent_type])
+            # Ensure agent2 is different from agent if possible
+            for _ in range(5):
+                if context["agent2"] != context["agent"]:
+                    break
+                context["agent2"] = self._sample_agent(agent_templates[agent_type])
             context["agent_type"] = agent_type
         else:
-            context["agent"] = self._vocab.person_with_pronouns()["name"]
+            person1 = self._vocab.person_with_pronouns()
+            person2 = self._vocab.person_with_pronouns()
+            context["agent"] = person1["name"]
+            context["agent2"] = person2["name"]
             context["agent_type"] = "person"
 
-        # Sample item
+        # Sample item (supports both string and {singular, plural} formats)
         items = domain.get("items", [])
         if items:
             item = self._rng.choice(items)
-            context["item"] = item
-            context["item_plural"] = self._pluralize(item)
+            if isinstance(item, dict):
+                # New format: {"singular": "brick", "plural": "bricks"}
+                context["item"] = item.get("singular", "item")
+                context["item_plural"] = item.get("plural", pluralize(context["item"]))
+            else:
+                # Legacy format: just a string (assumed plural)
+                context["item"] = singularize(item)
+                context["item_plural"] = item
         else:
             context["item"] = "item"
             context["item_plural"] = "items"
@@ -123,15 +140,6 @@ class DomainSampler:
             "verb": "has",
             "verb_plural": "have",
         }
-
-    def _pluralize(self, word: str) -> str:
-        """Pluralize a word."""
-        if word.endswith(("s", "x", "ch", "sh")):
-            return word + "es"
-        elif word.endswith("y") and len(word) > 1 and word[-2] not in "aeiou":
-            return word[:-1] + "ies"
-        else:
-            return word + "s"
 
     def list_domains(self) -> list[str]:
         """List all available domain names."""

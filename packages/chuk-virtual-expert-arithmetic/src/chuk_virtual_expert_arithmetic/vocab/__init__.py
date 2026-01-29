@@ -83,6 +83,16 @@ class Vocab:
 
             self._cache["domains"] = domains
 
+        # Load messy vocab from messy/ subdirectory (for GSM-8K style diversity)
+        messy_dir = vocab_dir / "messy"
+        if messy_dir.exists():
+            messy = {}
+            for json_file in messy_dir.glob("*.json"):
+                key = json_file.stem
+                with open(json_file) as f:
+                    messy[key] = json.load(f)
+            self._cache["messy"] = messy
+
     def get(self, path: str) -> Any:
         """Get vocabulary by dot-separated path.
 
@@ -173,11 +183,14 @@ class Vocab:
             return ""
 
         # Handle patterns with "templates" key vs direct variant lists
+        # Priority: explicit variant > "templates" key > first available
         if isinstance(pattern_data, dict):
-            if "templates" in pattern_data:
-                templates = pattern_data["templates"]
-            elif variant and variant in pattern_data:
+            if variant and variant in pattern_data:
+                # Explicit variant requested and exists
                 templates = pattern_data[variant]
+            elif "templates" in pattern_data:
+                # Default to "templates" key if no variant specified
+                templates = pattern_data["templates"]
             else:
                 # Pattern has variants directly (no "templates" wrapper)
                 templates = pattern_data.get(variant, []) if variant else []

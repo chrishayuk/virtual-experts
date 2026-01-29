@@ -29,8 +29,10 @@ Usage:
 
 from __future__ import annotations
 
+import asyncio
 import random
 import re
+from collections.abc import AsyncIterator
 from typing import Any
 
 from chuk_virtual_expert.trace_example import TraceExample
@@ -47,43 +49,18 @@ from chuk_virtual_expert.trace_models import (
     TransferStep,
 )
 
+from chuk_virtual_expert_arithmetic.core.domains import DomainSampler
 from chuk_virtual_expert_arithmetic.core.expression import ExpressionError, SafeEvaluator
 from chuk_virtual_expert_arithmetic.core.loader import SchemaLoader
 from chuk_virtual_expert_arithmetic.core.perturbation import TemplatePerturbator
-from chuk_virtual_expert_arithmetic.types import DEFAULT_EXPERT
+from chuk_virtual_expert_arithmetic.core.transforms import pluralize
+from chuk_virtual_expert_arithmetic.types import (
+    DEFAULT_EXPERT,
+    GSM8K_DEPTH_WEIGHTS,
+    WORD_NUMBERS,
+    VocabPath,
+)
 from chuk_virtual_expert_arithmetic.vocab import get_vocab
-
-# Word number mappings
-WORD_NUMBERS = {
-    1: "one",
-    2: "two",
-    3: "three",
-    4: "four",
-    5: "five",
-    6: "six",
-    7: "seven",
-    8: "eight",
-    9: "nine",
-    10: "ten",
-    11: "eleven",
-    12: "twelve",
-    13: "thirteen",
-    14: "fourteen",
-    15: "fifteen",
-    16: "sixteen",
-    17: "seventeen",
-    18: "eighteen",
-    19: "nineteen",
-    20: "twenty",
-    21: "twenty-one",
-    22: "twenty-two",
-    23: "twenty-three",
-    24: "twenty-four",
-    25: "twenty-five",
-    30: "thirty",
-    40: "forty",
-    50: "fifty",
-}
 
 
 class SchemaGenerator:
@@ -93,6 +70,8 @@ class SchemaGenerator:
         self,
         word_number_prob: float = 0.3,
         perturbation_level: float = 0.0,
+        gsm8k_style_prob: float = 0.3,
+        messy_vocab_prob: float = 0.2,
         seed: int | None = None,
     ) -> None:
         """Initialize the generator.
@@ -103,6 +82,11 @@ class SchemaGenerator:
             perturbation_level: Level of template perturbation (0-1). Higher values
                                apply more variations for better GSM-8K generalization.
                                0 = no perturbation (default), 0.3 = moderate, 0.6 = high.
+            gsm8k_style_prob: Probability of using gsm8k_style templates when available
+                              (0-1). These are longer, more narrative templates that match
+                              GSM-8K benchmark style. 0.3 = 30% chance (default).
+            messy_vocab_prob: Probability of using diverse/unusual names and specific items
+                              from the messy vocab layer (0-1). 0.2 = 20% chance (default).
             seed: Random seed for reproducibility.
         """
         self._vocab = get_vocab()
@@ -110,8 +94,12 @@ class SchemaGenerator:
         self._schemas = self._load_schemas()
         self._word_number_prob = word_number_prob
         self._perturbation_level = perturbation_level
+        self._gsm8k_style_prob = gsm8k_style_prob
+        self._messy_vocab_prob = messy_vocab_prob
+        self._rng = random.Random(seed)
         self._evaluator = SafeEvaluator()
-        self._perturbator = TemplatePerturbator(seed=seed)
+        self._perturbator = TemplatePerturbator(seed=seed, vocab=self._vocab)
+        self._domain_sampler = DomainSampler(self._vocab, seed=seed)
 
     def _load_schemas(self) -> dict[str, dict[str, Any]]:
         """Load all schemas using SchemaLoader (handles composition/mixins)."""
@@ -147,6 +135,114 @@ class SchemaGenerator:
     def perturbation_level(self, level: float) -> None:
         """Set perturbation level (0-1)."""
         self._perturbation_level = max(0.0, min(1.0, level))
+
+    @property
+    def gsm8k_style_prob(self) -> float:
+        """Get probability of using gsm8k_style templates."""
+        return self._gsm8k_style_prob
+
+    @gsm8k_style_prob.setter
+    def gsm8k_style_prob(self, prob: float) -> None:
+        """Set gsm8k_style probability (0-1)."""
+        self._gsm8k_style_prob = max(0.0, min(1.0, prob))
+
+    def _get_schemas_by_depth(self) -> dict[int, list[str]]:
+        """Get schemas grouped by their trace depth (compute steps).
+
+        Returns cached result to avoid recomputing.
+        """
+        if not hasattr(self, "_schemas_by_depth"):
+            self._schemas_by_depth: dict[int, list[str]] = {}
+            for name, schema in self._schemas.items():
+                depth = self._estimate_depth(schema)
+                if depth not in self._schemas_by_depth:
+                    self._schemas_by_depth[depth] = []
+                self._schemas_by_depth[depth].append(name)
+        return self._schemas_by_depth
+
+    def _estimate_depth(self, schema: dict[str, Any]) -> int:
+        """Estimate the reasoning depth of a schema.
+
+        Counts compute operations in the trace as the primary measure.
+        """
+        trace = schema.get("trace", [])
+        compute_steps = sum(1 for step in trace if step.get("op") == "compute")
+        return max(1, compute_steps)  # Minimum depth of 1
+
+    def generate_with_target_depth(
+        self, target_depth: int | None = None, use_gsm8k_distribution: bool = False
+    ) -> TraceExample:
+        """Generate a problem with a target trace depth.
+
+        Args:
+            target_depth: Specific depth to target, or None to use GSM-8K distribution
+            use_gsm8k_distribution: If True and target_depth is None, sample depth
+                                    from GSM-8K-like distribution
+
+        Returns:
+            TraceExample with approximately the target depth
+        """
+        if target_depth is None and use_gsm8k_distribution:
+            # Sample from GSM-8K distribution
+            depths = list(GSM8K_DEPTH_WEIGHTS.keys())
+            weights = list(GSM8K_DEPTH_WEIGHTS.values())
+            target_depth = self._rng.choices(depths, weights=weights, k=1)[0]
+
+        if target_depth is not None:
+            schemas_by_depth = self._get_schemas_by_depth()
+            # Find schemas at target depth, or closest available
+            for depth_offset in range(6):  # Try exact, then nearby depths
+                for d in [target_depth, target_depth - depth_offset, target_depth + depth_offset]:
+                    if d in schemas_by_depth and schemas_by_depth[d]:
+                        schema_name = self._rng.choice(schemas_by_depth[d])
+                        return self.generate(schema_name)
+
+        # Fallback to random schema
+        return self.generate(self._rng.choice(self.schema_names))
+
+    def generate_batch_gsm8k_distribution(self, n: int) -> list[TraceExample]:
+        """Generate n problems with GSM-8K-like trace depth distribution.
+
+        Args:
+            n: Number of problems to generate
+
+        Returns:
+            List of TraceExamples with varied depths matching GSM-8K
+        """
+        return [self.generate_with_target_depth(use_gsm8k_distribution=True) for _ in range(n)]
+
+    def _get_variant_for_pattern(self, pattern: str, schema_variant: str | None) -> str | None:
+        """Select pattern variant, possibly choosing gsm8k_style.
+
+        With probability gsm8k_style_prob, try to use a gsm8k_style variant
+        if available. This works for:
+        - Patterns with "gsm8k_style" key (no schema variant)
+        - Patterns with "{variant}_gsm8k" key (when schema specifies a variant)
+
+        Args:
+            pattern: Pattern name
+            schema_variant: Variant specified in schema (if any)
+
+        Returns:
+            Variant name to use, or None for default
+        """
+        # Check if we should try gsm8k_style
+        if self._gsm8k_style_prob > 0 and self._rng.random() < self._gsm8k_style_prob:
+            pattern_data = self._vocab.get(f"patterns.{pattern}")
+            if pattern_data and isinstance(pattern_data, dict):
+                if schema_variant:
+                    # Schema specifies a variant like "times_more"
+                    # Check for "times_more_gsm8k" variant
+                    gsm8k_variant = f"{schema_variant}_gsm8k"
+                    if gsm8k_variant in pattern_data:
+                        return gsm8k_variant
+                else:
+                    # No schema variant - check for "gsm8k_style" key
+                    if "gsm8k_style" in pattern_data:
+                        return "gsm8k_style"
+
+        # Fall back to schema variant (or None)
+        return schema_variant
 
     def generate(self, schema_name: str) -> TraceExample:
         """Generate a problem from a schema.
@@ -223,7 +319,8 @@ class SchemaGenerator:
 
         # Generate question from pattern
         pattern = schema["pattern"]
-        variant = schema.get("variant")
+        schema_variant = schema.get("variant")
+        variant = self._get_variant_for_pattern(pattern, schema_variant)
         question = self._vocab.pattern(pattern, variant, **template_vars)
 
         # Apply word number substitution
@@ -371,37 +468,122 @@ class SchemaGenerator:
         return variables
 
     def _sample_vocab(self, vocab_specs: dict[str, dict[str, Any]]) -> dict[str, Any]:
-        """Sample vocabulary items."""
+        """Sample vocabulary items.
+
+        Supports vocab spec types:
+        - person_with_pronouns: Full person object with pronouns
+        - domain_context: Semantically coherent domain bundle (agent, item, verb, etc.)
+        - choice: Random selection from values list
+        - path: Direct vocab path sampling
+
+        Also supports distinct_from to ensure unique values across related items.
+        """
         items: dict[str, Any] = {}
 
         for name, spec in vocab_specs.items():
             if spec.get("type") == "person_with_pronouns":
-                items[name] = self._vocab.person_with_pronouns()
+                # With messy_vocab_prob, use diverse/unusual names
+                if self._messy_vocab_prob > 0 and self._rng.random() < self._messy_vocab_prob:
+                    items[name] = self._sample_diverse_person()
+                else:
+                    items[name] = self._vocab.person_with_pronouns()
+            elif spec.get("type") == "domain_context":
+                # Sample coherent vocabulary from a domain
+                domain_name = spec.get("domain")
+                if not domain_name or domain_name == "random":
+                    domain_name = self._domain_sampler.random_domain()
+                context = self._domain_sampler.sample(domain_name)
+                items[name] = context
             elif spec.get("type") == "choice":
                 # Handle choice type in vocab (e.g., growth_word, mult_word)
                 values = spec.get("values", [])
+                # Apply distinct_from exclusion
+                exclude = self._get_exclude_values(spec, items)
+                if exclude:
+                    values = [v for v in values if v not in exclude]
                 items[name] = random.choice(values) if values else ""
             elif "path" in spec:
                 path = spec["path"]
                 if "sample" in spec:
                     items[name] = self._vocab.sample(path, spec["sample"])
                 else:
-                    value = self._vocab.random(path)
+                    # Apply distinct_from exclusion
+                    exclude = self._get_exclude_values(spec, items)
+                    value = self._sample_with_exclusion(path, exclude)
                     items[name] = value
                     # Auto-add plural form for countable_singular items
                     if "countable_singular" in path and isinstance(value, str):
-                        items[f"{name}_plural"] = self._pluralize(value)
+                        items[f"{name}_plural"] = pluralize(value)
 
         return items
 
-    def _pluralize(self, word: str) -> str:
-        """Pluralize a word correctly."""
-        if word.endswith(("s", "x", "ch", "sh")):
-            return word + "es"
-        elif word.endswith("y") and len(word) > 1 and word[-2] not in "aeiou":
-            return word[:-1] + "ies"
+    def _get_exclude_values(
+        self, spec: dict[str, Any], items: dict[str, Any]
+    ) -> set[Any]:
+        """Get values to exclude based on distinct_from spec.
+
+        Args:
+            spec: Vocab spec with optional distinct_from field
+            items: Already sampled items
+
+        Returns:
+            Set of values to exclude
+        """
+        exclude: set[Any] = set()
+        distinct_from = spec.get("distinct_from", [])
+        for ref_name in distinct_from:
+            if ref_name in items:
+                exclude.add(items[ref_name])
+        return exclude
+
+    def _sample_with_exclusion(self, path: str, exclude: set[Any]) -> Any:
+        """Sample from a vocab path, excluding certain values.
+
+        Args:
+            path: Vocab path to sample from
+            exclude: Values to exclude
+
+        Returns:
+            Sampled value not in exclude set
+        """
+        all_items = self._vocab.get(path)
+        if not all_items or not isinstance(all_items, list):
+            return self._vocab.random(path)
+
+        if exclude:
+            available = [item for item in all_items if item not in exclude]
+            if available:
+                return self._rng.choice(available)
+
+        # Fallback to random choice if no exclusions or all excluded
+        return self._rng.choice(all_items) if all_items else None
+
+    def _sample_diverse_person(self) -> dict[str, str]:
+        """Sample a person with diverse/unusual name from messy vocab.
+
+        Returns person dict compatible with person_with_pronouns().
+        """
+        # Randomly pick male or female diverse names
+        if self._rng.random() < 0.5:
+            names = self._vocab.get(VocabPath.MESSY_NAMES_DIVERSE_MALE) or []
+            pronouns = self._vocab.get(VocabPath.NAMES_PRONOUNS_MALE) or {}
         else:
-            return word + "s"
+            names = self._vocab.get(VocabPath.MESSY_NAMES_DIVERSE_FEMALE) or []
+            pronouns = self._vocab.get(VocabPath.NAMES_PRONOUNS_FEMALE) or {}
+
+        # Fall back to regular names if messy vocab not available
+        if not names:
+            return self._vocab.person_with_pronouns()
+
+        name = self._rng.choice(names)
+        return {
+            "name": name,
+            "subject": pronouns.get("subject", "they"),
+            "object": pronouns.get("object", "them"),
+            "possessive": pronouns.get("possessive", "their"),
+            "reflexive": pronouns.get("reflexive", "themselves"),
+            "verb_s": "" if pronouns.get("subject") == "they" else "s",
+        }
 
     def _build_template_vars(
         self,
@@ -618,6 +800,126 @@ class SchemaGenerator:
         # Match standalone numbers (not part of larger numbers or decimals)
         # This pattern matches numbers not preceded by digits, dots, or $
         return re.sub(r"(?<![0-9.$])\b(\d+)\b(?![0-9.])", maybe_convert, text)
+
+    # =========================================================================
+    # ASYNC METHODS
+    # =========================================================================
+
+    async def generate_async(self, schema_name: str | None = None) -> TraceExample:
+        """Async version of generate().
+
+        The generation itself is CPU-bound, but this allows integration
+        with async code and enables parallel batch generation.
+
+        Args:
+            schema_name: Name of schema to use, or None for random selection.
+
+        Returns:
+            Generated TraceExample.
+        """
+        # Select schema name if not provided
+        if schema_name is None:
+            schema_name = self._rng.choice(self.schema_names)
+
+        # Run the synchronous generate in a thread pool to avoid blocking
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, self.generate, schema_name)
+
+    async def generate_batch_async(
+        self,
+        n: int = 10,
+        schema_names: list[str] | None = None,
+        concurrency: int = 10,
+    ) -> list[TraceExample]:
+        """Generate multiple problems asynchronously with concurrency control.
+
+        Args:
+            n: Number of problems to generate.
+            schema_names: List of schema names to sample from, or None for all.
+            concurrency: Maximum number of concurrent generations.
+
+        Returns:
+            List of generated TraceExamples.
+        """
+        semaphore = asyncio.Semaphore(concurrency)
+
+        async def bounded_generate(schema: str | None) -> TraceExample:
+            async with semaphore:
+                return await self.generate_async(schema)
+
+        # Determine schemas to use
+        if schema_names is None:
+            schema_names = self.schema_names
+
+        # Generate tasks
+        tasks = [
+            bounded_generate(self._rng.choice(schema_names)) for _ in range(n)
+        ]
+
+        return await asyncio.gather(*tasks)
+
+    async def generate_balanced_async(
+        self,
+        n: int = 20,
+        concurrency: int = 10,
+    ) -> list[TraceExample]:
+        """Generate balanced problems asynchronously across expert types.
+
+        Args:
+            n: Approximate number of problems to generate.
+            concurrency: Maximum number of concurrent generations.
+
+        Returns:
+            List of generated TraceExamples balanced across expert types.
+        """
+        # Group schemas by expert type
+        schemas_by_expert: dict[str, list[str]] = {}
+        for name, schema in self._schemas.items():
+            expert = schema.get("expert", DEFAULT_EXPERT)
+            if expert not in schemas_by_expert:
+                schemas_by_expert[expert] = []
+            schemas_by_expert[expert].append(name)
+
+        # Generate from each expert type
+        experts = list(schemas_by_expert.keys())
+        per_expert = max(1, n // len(experts))
+
+        semaphore = asyncio.Semaphore(concurrency)
+
+        async def bounded_generate(schema: str) -> TraceExample:
+            async with semaphore:
+                return await self.generate_async(schema)
+
+        tasks = []
+        for expert in experts:
+            schemas = schemas_by_expert[expert]
+            for _ in range(per_expert):
+                tasks.append(bounded_generate(self._rng.choice(schemas)))
+
+        return await asyncio.gather(*tasks)
+
+    async def generate_stream_async(
+        self,
+        n: int = 10,
+        schema_names: list[str] | None = None,
+    ) -> AsyncIterator[TraceExample]:
+        """Generate problems as an async stream.
+
+        Yields problems as they're generated rather than waiting for all.
+
+        Args:
+            n: Number of problems to generate.
+            schema_names: List of schema names to sample from, or None for all.
+
+        Yields:
+            Generated TraceExamples one at a time.
+        """
+        if schema_names is None:
+            schema_names = self.schema_names
+
+        for _ in range(n):
+            schema = self._rng.choice(schema_names)
+            yield await self.generate_async(schema)
 
 
 # Convenience function

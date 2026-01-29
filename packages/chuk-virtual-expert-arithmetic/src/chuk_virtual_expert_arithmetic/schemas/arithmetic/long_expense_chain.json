@@ -110,10 +110,12 @@
       "path": "phrases.expense_categories"
     },
     "cat2": {
-      "path": "phrases.expense_categories"
+      "path": "phrases.expense_categories",
+      "distinct_from": ["cat1"]
     },
     "cat3": {
-      "path": "phrases.expense_categories"
+      "path": "phrases.expense_categories",
+      "distinct_from": ["cat1", "cat2"]
     }
   },
   "template_vars": {

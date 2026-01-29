@@ -3,12 +3,18 @@
   "description": "Athletics and competition",
   "agent_types": ["team", "person"],
   "agent_templates": {
-    "team": {"pattern": "Team ${letter}", "letters": ["A", "B", "C"]},
-    "player": {"pattern": "Player ${number}", "numbers": [1, 2, 3]},
+    "team": {"pattern": "Team ${letter}", "letters": ["A", "B"]},
+    "player": {"pattern": "Player ${number}", "numbers": [1, 2]},
     "runner": {"pattern": "Runner ${number}", "numbers": [1, 2]},
     "person": {"source": "names.people", "pattern": "${name}"}
   },
-  "items": ["points", "goals", "laps", "baskets", "runs"],
+  "items": [
+    {"singular": "point", "plural": "points"},
+    {"singular": "goal", "plural": "goals"},
+    {"singular": "lap", "plural": "laps"},
+    {"singular": "basket", "plural": "baskets"},
+    {"singular": "run", "plural": "runs"}
+  ],
   "verbs": {"singular": "scores", "plural": "score"},
   "time_units": [
     {"singular": "quarter", "plural": "quarters"},

@@ -1,0 +1,36 @@
+{
+  "diverse_male": [
+    "Bartholomew", "Maximilian", "Wolfgang", "Reginald", "Archibald",
+    "Muhammad", "Abdullah", "Rashid", "Tariq", "Omar",
+    "Wei", "Jianwei", "Xiaoming", "Hiroshi", "Takeshi",
+    "Dmitri", "Aleksandr", "Nikolai", "Vladimir", "Sergei",
+    "Giuseppe", "Francesco", "Alessandro", "Matteo", "Lorenzo",
+    "Santiago", "Alejandro", "Fernando", "Rodrigo", "Joaquin",
+    "Kwame", "Oluwaseun", "Chinedu", "Kofi", "Amadou",
+    "Rajesh", "Vikram", "Sanjay", "Pradeep", "Arjun",
+    "Pierre", "Jean-Luc", "Francois", "Guillaume", "Antoine",
+    "Bjorn", "Magnus", "Lars", "Sven", "Erik"
+  ],
+  "diverse_female": [
+    "Guadalupe", "Esperanza", "Marisol", "Xiomara", "Yolanda",
+    "Mei-Ling", "Xiaoli", "Yuki", "Sakura", "Keiko",
+    "Fatima", "Aisha", "Zahra", "Layla", "Nadia",
+    "Svetlana", "Anastasia", "Natasha", "Tatiana", "Olga",
+    "Francesca", "Giulia", "Valentina", "Chiara", "Alessia",
+    "Ingrid", "Astrid", "Freya", "Sigrid", "Helga",
+    "Priya", "Ananya", "Deepika", "Kavitha", "Lakshmi",
+    "Amara", "Zainab", "Adaeze", "Chiamaka", "Folashade",
+    "Monique", "Colette", "Genevieve", "Marguerite", "Delphine",
+    "Esmeralda", "Concepcion", "Dolores", "Mercedes", "Pilar"
+  ],
+  "compound_names": [
+    "Mary-Jane", "Anne-Marie", "Jean-Pierre", "Li Wei", "Kim Soo",
+    "John-Paul", "Billy-Bob", "Mary-Lou", "Betty-Sue", "Bobby-Joe",
+    "Maria-Elena", "Jose-Luis", "Ana-Sofia", "Carlos-Alberto", "Juan-Carlos"
+  ],
+  "uncommon_spellings": [
+    "Jaymes", "Emilee", "Ashleigh", "Kristofer", "Stefanie",
+    "Michaela", "Rachael", "Mathew", "Jenifer", "Brittney",
+    "Caitlyn", "Katelynn", "Madisyn", "Jaxon", "Brayden"
+  ]
+}

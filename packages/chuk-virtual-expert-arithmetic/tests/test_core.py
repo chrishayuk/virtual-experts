@@ -600,9 +600,13 @@ class TestDomainSampler:
 
         assert context["domain"] == "kitchen"
         assert "agent" in context
+        assert "agent2" in context  # Now returns two agents
         assert "item" in context
+        assert "item_plural" in context
         assert context["verb"] == "bakes"
-        assert context["item"] in ["cookies", "loaves", "cakes", "muffins", "pies", "batches"]
+        # Items now singular in context["item"], plural in context["item_plural"]
+        assert context["item"] in ["cookie", "loaf", "cake", "muffin", "pie", "batch"]
+        assert context["item_plural"] in ["cookies", "loaves", "cakes", "muffins", "pies", "batches"]
 
     def test_sample_farm(self, sampler: DomainSampler) -> None:
         """Test sampling from farm domain."""

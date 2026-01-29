@@ -1,0 +1,50 @@
+{
+  "name": "chained_comparison",
+  "description": "Multi-entity multiplicative chain: A = mult2 × B, B = mult1 × C, find total",
+  "variables": {
+    "base": {
+      "type": "int",
+      "min": 5,
+      "max": 25
+    },
+    "mult1": {
+      "type": "int",
+      "min": 2,
+      "max": 5
+    },
+    "mult2": {
+      "type": "int",
+      "min": 2,
+      "max": 4
+    }
+  },
+  "derived": {
+    "middle": "base * mult1",
+    "top": "base * mult1 * mult2"
+  },
+  "trace": [
+    {"op": "init", "var": "base", "value": "base"},
+    {"op": "init", "var": "mult1", "value": "mult1"},
+    {"op": "init", "var": "mult2", "value": "mult2"},
+    {"op": "compute", "compute_op": "mul", "args": ["base", "mult1"], "var": "middle"},
+    {"op": "compute", "compute_op": "mul", "args": ["middle", "mult2"], "var": "top"},
+    {"op": "compute", "compute_op": "add", "args": ["base", "middle"], "var": "step1"},
+    {"op": "compute", "compute_op": "add", "args": ["step1", "top"], "var": "result"},
+    {"op": "query", "var": "result"}
+  ],
+  "answer": "base + base * mult1 + base * mult1 * mult2",
+  "pattern": "chained_comparison",
+  "mixins": ["person_vocab"],
+  "vocab": {
+    "person1": {"type": "person_with_pronouns"},
+    "person2": {"type": "person_with_pronouns"},
+    "person3": {"type": "person_with_pronouns"},
+    "item": {"path": "items.countable_singular"}
+  },
+  "template_vars": {
+    "name1": "person1.name",
+    "name2": "person2.name",
+    "name3": "person3.name",
+    "items": "item|pluralize"
+  }
+}

@@ -6,5 +6,12 @@
     "If ${agent1} ${verbs} ${rate1} ${item} per ${time_unit} and ${agent2} ${verbs} ${rate2} per ${time_unit}, how many ${item} after ${time} ${time_units}?",
     "${agent1} and ${agent2} each ${verb} ${item}. ${agent1} ${verbs} ${rate1} per ${time_unit}, ${agent2} ${verbs} ${rate2} per ${time_unit}. Total ${item} after ${time} ${time_units}?",
     "Running together for ${time} ${time_units}: ${agent1} ${verbs} ${rate1} ${item} per ${time_unit}, ${agent2} ${verbs} ${rate2} per ${time_unit}. Total ${item}?"
+  ],
+  "gsm8k_style": [
+    "${agent1} ${verbs} ${rate1} ${item} every ${time_unit} when operating at full capacity. Meanwhile, ${agent2} ${verbs} ${rate2} ${item} per ${time_unit} at its standard operating speed. If both ${verb} continuously for ${time} ${time_units} without any breaks, how many ${item} will they ${verb} together in total?",
+    "${agent1} can ${verb} ${rate1} ${item} each ${time_unit}, while ${agent2} is capable of ${verbs.replace('s', '')}ing ${rate2} ${item} in the same time period. The manager decides to run both for ${time} ${time_units} straight. What is the total number of ${item} that will be ${verb}d by the end of this period?",
+    "${agent1} works at a steady pace, ${verbs.replace('s', '')}ing exactly ${rate1} ${item} per ${time_unit}. ${agent2} is slightly different, ${verbs.replace('s', '')}ing ${rate2} ${item} per ${time_unit}. Both are scheduled to operate for ${time} ${time_units} today. How many ${item} in total will be ${verb}d when the ${time} ${time_units} are complete?",
+    "${agent1} and ${agent2} are both running in parallel. ${agent1} ${verbs} ${rate1} ${item} every ${time_unit}, and ${agent2} ${verbs} ${rate2} ${item} every ${time_unit}. They both run for a total of ${time} ${time_units}. What is the combined output of ${item}?",
+    "${agent1} ${verbs} ${rate1} ${item} per ${time_unit} while ${agent2} ${verbs} ${rate2} ${item} per ${time_unit}. Both are used for ${time} ${time_units} to meet the daily quota. How many ${item} are ${verb}d in total during this time?"
   ]
 }

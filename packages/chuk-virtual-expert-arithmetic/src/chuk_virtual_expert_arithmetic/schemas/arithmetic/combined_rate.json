@@ -60,26 +60,18 @@
   "answer": "(rate1 + rate2) * time",
   "pattern": "combined_rate",
   "vocab": {
-    "agent_pair": {
-      "path": "phrases.agent_pairs"
-    },
-    "item": {
-      "path": "phrases.rate_items"
-    },
-    "production": {
-      "path": "phrases.production"
-    },
-    "time_unit_pair": {
-      "path": "phrases.time_unit_pairs"
+    "domain": {
+      "type": "domain_context",
+      "domain": "random"
     }
   },
   "template_vars": {
-    "agent1": "agent_pair.first",
-    "agent2": "agent_pair.second",
-    "verb": "production.verb",
-    "verbs": "production.continuous",
-    "item": "item",
-    "time_unit": "time_unit_pair.singular",
-    "time_units": "time_unit_pair.plural"
+    "agent1": "domain.agent",
+    "agent2": "domain.agent2",
+    "verb": "domain.verb_plural",
+    "verbs": "domain.verb",
+    "item": "domain.item_plural",
+    "time_unit": "domain.time_unit",
+    "time_units": "domain.time_unit_plural"
   }
 }

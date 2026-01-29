@@ -11,8 +11,10 @@ This module provides the foundational building blocks:
 - DomainSampler: Domain-first vocabulary sampling
 - TemplatePerturbator: GSM-8K generalization via perturbation
 - NumericDiversifier: Numeric diversity for training
+- TemplateAnalyzer: Analyze template regularity and compare to GSM-8K
 """
 
+from chuk_virtual_expert_arithmetic.core.analyzer import TemplateAnalyzer
 from chuk_virtual_expert_arithmetic.core.composer import CompositionError, SchemaComposer
 from chuk_virtual_expert_arithmetic.core.constraints import ConstraintValidator
 from chuk_virtual_expert_arithmetic.core.contracts import (
@@ -84,4 +86,6 @@ __all__ = [
     # Perturbation & diversity (GSM-8K generalization)
     "TemplatePerturbator",
     "NumericDiversifier",
+    # Analysis
+    "TemplateAnalyzer",
 ]

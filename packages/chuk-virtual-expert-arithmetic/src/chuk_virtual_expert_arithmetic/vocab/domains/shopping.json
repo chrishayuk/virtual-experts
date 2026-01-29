@@ -5,7 +5,16 @@
   "agent_templates": {
     "person": {"source": "names.people", "pattern": "${name}"}
   },
-  "items": ["apples", "oranges", "books", "pencils", "notebooks", "toys", "shirts", "socks"],
+  "items": [
+    {"singular": "apple", "plural": "apples"},
+    {"singular": "orange", "plural": "oranges"},
+    {"singular": "book", "plural": "books"},
+    {"singular": "pencil", "plural": "pencils"},
+    {"singular": "notebook", "plural": "notebooks"},
+    {"singular": "toy", "plural": "toys"},
+    {"singular": "shirt", "plural": "shirts"},
+    {"singular": "sock", "plural": "socks"}
+  ],
   "priced_items": [
     {"item": "apple", "plural": "apples", "price_range": [1, 3]},
     {"item": "orange", "plural": "oranges", "price_range": [1, 2]},

@@ -4,6 +4,7 @@
   "description": "Distance = speed x time (travel)",
   "pattern": "rate_equation",
   "variant": "distance_speed_time",
+  "mixins": ["person_vocab"],
   "vocab": {
     "vehicle": {"path": "items.vehicles"}
   },

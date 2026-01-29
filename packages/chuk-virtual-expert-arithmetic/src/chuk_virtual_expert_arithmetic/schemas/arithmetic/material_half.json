@@ -51,10 +51,10 @@
       "path": "items.countable_singular"
     },
     "material1": {
-      "path": "phrases.batch_words"
+      "path": "materials.fabrics"
     },
     "material2": {
-      "path": "phrases.batch_words"
+      "path": "materials.fabrics"
     }
   },
   "template_vars": {

@@ -3,13 +3,19 @@
   "description": "Movement and transportation",
   "agent_types": ["vehicle", "person"],
   "agent_templates": {
-    "vehicle": {"pattern": "Car ${letter}", "letters": ["A", "B", "C"]},
-    "train": {"pattern": "Train ${number}", "numbers": [1, 2, 3]},
+    "vehicle": {"pattern": "Car ${letter}", "letters": ["A", "B"]},
+    "train": {"pattern": "Train ${number}", "numbers": [1, 2]},
     "bike": {"pattern": "Bike ${number}", "numbers": [1, 2]},
     "person": {"source": "names.people", "pattern": "${name}"}
   },
   "vehicles": ["car", "bus", "train", "bike", "truck", "van"],
-  "items": ["miles", "kilometers", "laps", "meters", "blocks"],
+  "items": [
+    {"singular": "mile", "plural": "miles"},
+    {"singular": "kilometer", "plural": "kilometers"},
+    {"singular": "lap", "plural": "laps"},
+    {"singular": "meter", "plural": "meters"},
+    {"singular": "block", "plural": "blocks"}
+  ],
   "verbs": {"singular": "travels", "plural": "travel"},
   "time_units": [
     {"singular": "hour", "plural": "hours"},

@@ -11,5 +11,10 @@
   "stores": [
     "downtown store", "main branch", "north location",
     "flagship store", "outlet", "warehouse", "corner shop", "electronics store"
+  ],
+  "restaurants": [
+    "Italian bistro", "steakhouse", "seafood restaurant", "sushi bar",
+    "Chinese restaurant", "Mexican cantina", "French cafe", "Thai restaurant",
+    "pizza parlor", "diner", "burger joint", "barbecue place", "Indian restaurant"
   ]
 }

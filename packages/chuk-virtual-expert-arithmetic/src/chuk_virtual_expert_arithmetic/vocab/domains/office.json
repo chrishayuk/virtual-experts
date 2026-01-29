@@ -3,12 +3,18 @@
   "description": "Office and document work",
   "agent_types": ["equipment", "person"],
   "agent_templates": {
-    "equipment": {"pattern": "Printer ${letter}", "letters": ["A", "B", "C"]},
-    "copier": {"pattern": "Copier ${number}", "numbers": [1, 2, 3]},
+    "equipment": {"pattern": "Printer ${letter}", "letters": ["A", "B"]},
+    "copier": {"pattern": "Copier ${number}", "numbers": [1, 2]},
     "scanner": {"pattern": "Scanner ${letter}", "letters": ["A", "B"]},
     "person": {"source": "names.people", "pattern": "${name}"}
   },
-  "items": ["pages", "documents", "reports", "emails", "copies"],
+  "items": [
+    {"singular": "page", "plural": "pages"},
+    {"singular": "document", "plural": "documents"},
+    {"singular": "report", "plural": "reports"},
+    {"singular": "email", "plural": "emails"},
+    {"singular": "copy", "plural": "copies"}
+  ],
   "verbs": {"singular": "processes", "plural": "process"},
   "time_units": [
     {"singular": "hour", "plural": "hours"},

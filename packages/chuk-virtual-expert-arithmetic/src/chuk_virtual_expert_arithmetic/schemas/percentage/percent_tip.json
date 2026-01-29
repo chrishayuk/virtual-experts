@@ -4,6 +4,7 @@
   "description": "Calculate tip on a bill",
   "pattern": "percentage",
   "variant": "tip_calculation",
+  "mixins": ["person_vocab"],
   "vocab": {
     "restaurant_name": {"path": "places.restaurants"}
   },

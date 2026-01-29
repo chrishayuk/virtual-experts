@@ -4,9 +4,16 @@
   "agent_types": ["person", "classroom"],
   "agent_templates": {
     "person": {"source": "names.people", "pattern": "${name}"},
-    "classroom": {"pattern": "Class ${letter}", "letters": ["A", "B", "C"]}
+    "classroom": {"pattern": "Class ${letter}", "letters": ["A", "B"]}
   },
-  "items": ["students", "books", "pencils", "worksheets", "problems", "questions"],
+  "items": [
+    {"singular": "student", "plural": "students"},
+    {"singular": "book", "plural": "books"},
+    {"singular": "pencil", "plural": "pencils"},
+    {"singular": "worksheet", "plural": "worksheets"},
+    {"singular": "problem", "plural": "problems"},
+    {"singular": "question", "plural": "questions"}
+  ],
   "verbs": {"singular": "completes", "plural": "complete"},
   "time_units": [
     {"singular": "hour", "plural": "hours"},

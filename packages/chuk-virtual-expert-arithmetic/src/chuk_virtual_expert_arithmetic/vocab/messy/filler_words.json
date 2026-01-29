@@ -1,0 +1,79 @@
+{
+  "sentence_starters": [
+    "As it turns out,",
+    "Interestingly,",
+    "Now,",
+    "Here's the situation:",
+    "Consider this:",
+    "So,",
+    "Well,",
+    "Actually,",
+    "You see,",
+    "It so happens that",
+    "Believe it or not,",
+    "In fact,",
+    "As a matter of fact,",
+    "To be honest,",
+    "Surprisingly,"
+  ],
+  "mid_sentence_fillers": [
+    "actually",
+    "basically",
+    "essentially",
+    "in fact",
+    "as expected",
+    "of course",
+    "naturally",
+    "obviously",
+    "clearly",
+    "interestingly enough",
+    "as it happens",
+    "as you might expect"
+  ],
+  "time_expressions": [
+    "the other day",
+    "last weekend",
+    "just yesterday",
+    "a few days ago",
+    "earlier this week",
+    "recently",
+    "not too long ago",
+    "this past Monday",
+    "over the weekend",
+    "during the holidays"
+  ],
+  "place_elaborations": [
+    "right around the corner",
+    "just down the street",
+    "at the new place that just opened",
+    "at their favorite spot",
+    "at the one near the park",
+    "at the big one on Main Street"
+  ],
+  "quantity_expressions": [
+    "a whole bunch of",
+    "quite a few",
+    "a good number of",
+    "several",
+    "a handful of",
+    "a fair amount of"
+  ],
+  "reason_phrases": [
+    "because it was on sale",
+    "since they were running low",
+    "to stock up for the week",
+    "for an upcoming event",
+    "as a special treat",
+    "just for fun",
+    "to prepare for the party",
+    "for the big celebration"
+  ],
+  "descriptive_additions": [
+    "which everyone loves",
+    "that are always popular",
+    "known for their quality",
+    "that come highly recommended",
+    "famous in the neighborhood",
+    "that are hard to find elsewhere"
+  ]
+}

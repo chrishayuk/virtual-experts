@@ -4,9 +4,15 @@
   "agent_types": ["person"],
   "agent_templates": {
     "person": {"source": "names.people", "pattern": "${name}"},
-    "student": {"pattern": "Student ${letter}", "letters": ["A", "B", "C"]}
+    "student": {"pattern": "Student ${letter}", "letters": ["A", "B"]}
   },
-  "items": ["pages", "chapters", "books", "articles", "problems"],
+  "items": [
+    {"singular": "page", "plural": "pages"},
+    {"singular": "chapter", "plural": "chapters"},
+    {"singular": "book", "plural": "books"},
+    {"singular": "article", "plural": "articles"},
+    {"singular": "problem", "plural": "problems"}
+  ],
   "verbs": {"singular": "reads", "plural": "read"},
   "time_units": [
     {"singular": "hour", "plural": "hours"},

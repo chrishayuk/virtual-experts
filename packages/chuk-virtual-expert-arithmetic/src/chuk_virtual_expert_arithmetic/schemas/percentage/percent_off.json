@@ -4,6 +4,7 @@
   "description": "X% off a price, what's the sale price?",
   "pattern": "percentage",
   "variant": "percent_off",
+  "mixins": ["person_vocab"],
   "vocab": {
     "item": {"path": "items.countable_singular"},
     "store_name": {"path": "places.stores"}

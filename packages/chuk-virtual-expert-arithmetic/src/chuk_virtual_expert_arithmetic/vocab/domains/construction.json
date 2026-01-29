@@ -3,11 +3,17 @@
   "description": "Building and construction",
   "agent_types": ["crew", "person"],
   "agent_templates": {
-    "crew": {"pattern": "Crew ${letter}", "letters": ["A", "B", "C"]},
-    "worker": {"pattern": "Worker ${number}", "numbers": [1, 2, 3]},
+    "crew": {"pattern": "Crew ${letter}", "letters": ["A", "B"]},
+    "worker": {"pattern": "Worker ${number}", "numbers": [1, 2]},
     "person": {"source": "names.people", "pattern": "${name}"}
   },
-  "items": ["bricks", "tiles", "walls", "square feet", "rooms"],
+  "items": [
+    {"singular": "brick", "plural": "bricks"},
+    {"singular": "tile", "plural": "tiles"},
+    {"singular": "wall", "plural": "walls"},
+    {"singular": "square foot", "plural": "square feet"},
+    {"singular": "room", "plural": "rooms"}
+  ],
   "verbs": {"singular": "completes", "plural": "complete"},
   "time_units": [
     {"singular": "hour", "plural": "hours"},

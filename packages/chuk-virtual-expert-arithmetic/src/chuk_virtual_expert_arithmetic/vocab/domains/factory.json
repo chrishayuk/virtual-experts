@@ -3,12 +3,19 @@
   "description": "Manufacturing and production",
   "agent_types": ["machine", "line"],
   "agent_templates": {
-    "machine": {"pattern": "Machine ${letter}", "letters": ["A", "B", "C", "D"]},
-    "line": {"pattern": "Line ${number}", "numbers": [1, 2, 3, 4]},
-    "robot": {"pattern": "Robot ${letter}", "letters": ["A", "B", "C"]},
-    "station": {"pattern": "Station ${number}", "numbers": [1, 2, 3]}
+    "machine": {"pattern": "Machine ${letter}", "letters": ["A", "B"]},
+    "line": {"pattern": "Line ${number}", "numbers": [1, 2]},
+    "robot": {"pattern": "Robot ${letter}", "letters": ["A", "B"]},
+    "station": {"pattern": "Station ${number}", "numbers": [1, 2]}
   },
-  "items": ["widgets", "parts", "units", "products", "components", "devices"],
+  "items": [
+    {"singular": "widget", "plural": "widgets"},
+    {"singular": "part", "plural": "parts"},
+    {"singular": "unit", "plural": "units"},
+    {"singular": "product", "plural": "products"},
+    {"singular": "component", "plural": "components"},
+    {"singular": "device", "plural": "devices"}
+  ],
   "verbs": {"singular": "produces", "plural": "produce"},
   "time_units": [
     {"singular": "hour", "plural": "hours"},

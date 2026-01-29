@@ -1,0 +1,16 @@
+{
+  "templates": [
+    "${name1} has ${mult2} times as many ${items} as ${name2}. ${name2} has ${mult1} times as many ${items} as ${name3}. How many ${items} do ${name1}, ${name2}, and ${name3} have together if ${name3} has ${base} ${items}?",
+    "${name1} owns ${mult2} times the number of ${items} that ${name2} owns. ${name2} owns ${mult1} times as many ${items} as ${name3}. If ${name3} has ${base} ${items}, how many ${items} do all three have in total?",
+    "In a collection, ${name1} has ${mult2} times as many ${items} as ${name2}, and ${name2} has ${mult1} times as many as ${name3}. Given that ${name3} has ${base} ${items}, what is the combined total for all three?",
+    "${name3} has ${base} ${items}. ${name2} has ${mult1} times that many. ${name1} has ${mult2} times as many as ${name2}. How many ${items} do they have altogether?",
+    "The ratio of ${items} between ${name1}, ${name2}, and ${name3} works like this: ${name1} has ${mult2} times what ${name2} has, and ${name2} has ${mult1} times what ${name3} has. If ${name3} starts with ${base} ${items}, what's the grand total?"
+  ],
+  "gsm8k_style": [
+    "${name1}, ${name2}, and ${name3} all raise ${items} on their farms. ${name1} has ${mult2} times as many ${items} as ${name2} because ${subject1} has been farming longer. ${name2}, in turn, has ${mult1} times as many ${items} as ${name3}, who just started raising ${items} this year. If ${name3} currently has ${base} ${items}, how many ${items} do all three farmers have combined?",
+    "At the county fair, ${name1}, ${name2}, and ${name3} entered their ${items} in a competition. The judges noted that ${name1} brought ${mult2} times as many ${items} as ${name2}. ${name2} brought ${mult1} times as many ${items} as ${name3}, who entered ${base} ${items}. How many ${items} were entered in total by all three participants?",
+    "${name3} has a small collection of ${base} ${items}. ${name3}'s friend ${name2} has been collecting longer and has ${mult1} times as many ${items}. Meanwhile, ${name1}, who has been collecting the longest, has ${mult2} times as many ${items} as ${name2}. If we count all the ${items} owned by these three collectors, what is the total?",
+    "Three friends were comparing how many ${items} they each had. ${name3}, who just started, has ${base} ${items}. ${name2} has ${mult1} times as many ${items} as ${name3} does. ${name1}, the most experienced collector, has ${mult2} times as many ${items} as ${name2}. When you add up all the ${items} that ${name1}, ${name2}, and ${name3} have, what is the grand total?",
+    "On a nature walk, ${name1}, ${name2}, and ${name3} decided to count the ${items} they spotted. ${name1} found ${mult2} times as many ${items} as ${name2} found. ${name2} found ${mult1} times as many ${items} as ${name3}, who only found ${base} ${items}. Altogether, how many ${items} did the three friends find during their walk?"
+  ]
+}

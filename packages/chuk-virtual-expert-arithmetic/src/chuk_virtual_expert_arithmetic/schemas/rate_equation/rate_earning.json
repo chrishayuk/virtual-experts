@@ -11,6 +11,7 @@
     "name": "person.name",
     "subject": "person.subject",
     "his_her": "person.possessive",
+    "him_her": "person.object",
     "time_unit": "hour",
     "time_unit_plural": "hours"
   },

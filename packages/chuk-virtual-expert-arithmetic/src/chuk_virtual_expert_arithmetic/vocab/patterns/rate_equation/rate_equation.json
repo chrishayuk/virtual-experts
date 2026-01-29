@@ -5,11 +5,23 @@
     "${subj} ${produce_verb} ${rate} ${items} each ${time_unit}. After ${time} ${time_unit_plural}, how many ${items} will there be?",
     "At a rate of ${rate} ${items} per ${time_unit}, how many ${items} are produced in ${time} ${time_unit_plural}?"
   ],
+  "rate_time_quantity_gsm8k": [
+    "${a_producer} at the factory ${produce_verb} ${rate} ${items} per ${time_unit} when running at full capacity. The factory manager needs to fulfill a large order and runs the machine for ${time} ${time_unit_plural} straight. How many ${items} will be produced by the end of this production run?",
+    "In ${name}'s workshop, ${a_producer} ${produce_verb} exactly ${rate} ${items} every ${time_unit}. ${name} needs to know how many ${items} ${subject} will have after running it for ${time} ${time_unit_plural}. What is the total number of ${items} produced?",
+    "The new ${producer} that the company purchased ${produce_verb} ${rate} ${items} each ${time_unit}. If it operates continuously for ${time} ${time_unit_plural}, how many ${items} will it have made?",
+    "${name} installed ${a_producer} that ${produce_verb} ${rate} ${items} per ${time_unit}. ${subj} plans to run it for ${time} ${time_unit_plural} to meet the weekly quota. How many ${items} will be ready by then?"
+  ],
   "distance_speed_time": [
     "${a_vehicle} travels at ${speed} ${distance_unit} per ${time_unit}. How far does it go in ${time} ${time_unit_plural}?",
     "Moving at ${speed} ${distance_unit}/${time_unit}, ${a_vehicle} travels for ${time} ${time_unit_plural}. What distance does it cover?",
     "If ${a_vehicle} maintains a speed of ${speed} ${distance_unit} per ${time_unit}, how many ${distance_unit} does it travel in ${time} ${time_unit_plural}?",
     "At ${speed} ${distance_unit} per ${time_unit}, what distance will ${a_vehicle} cover in ${time} ${time_unit_plural}?"
+  ],
+  "distance_speed_time_gsm8k": [
+    "${name} is taking a road trip and ${his_her} ${vehicle} cruises at a steady ${speed} ${distance_unit} per ${time_unit} on the highway. If ${subject} drives for ${time} ${time_unit_plural} without stopping, how many ${distance_unit} will ${subject} have traveled?",
+    "${a_vehicle} is making a delivery and travels at an average speed of ${speed} ${distance_unit} per ${time_unit}. The journey takes ${time} ${time_unit_plural}. What is the total distance covered during this delivery?",
+    "On ${his_her} way to visit family, ${name}'s ${vehicle} maintains a speed of ${speed} ${distance_unit} per ${time_unit}. If the trip takes ${time} ${time_unit_plural}, how far is the destination from ${his_her} starting point?",
+    "${name} set ${his_her} cruise control to ${speed} ${distance_unit} per ${time_unit}. After driving for ${time} ${time_unit_plural}, ${subject} finally arrived. How many ${distance_unit} did ${name} drive in total?"
   ],
   "consumption_rate": [
     "${a_consumer} uses ${rate} ${unit_plural} of ${resource} per ${time_unit}. How many ${unit_plural} will it use in ${time} ${time_unit_plural}?",
@@ -17,10 +29,22 @@
     "${a_consumer} burns through ${rate} ${unit_plural} of ${resource} each ${time_unit}. What is the total usage over ${time} ${time_unit_plural}?",
     "At a rate of ${rate} ${unit_plural} per ${time_unit}, how much ${resource} does ${a_consumer} use in ${time} ${time_unit_plural}?"
   ],
+  "consumption_rate_gsm8k": [
+    "${name} has ${a_consumer} that uses ${rate} ${unit_plural} of ${resource} per ${time_unit} when it's running. ${subj} needs to calculate how much ${resource} to budget for the next ${time} ${time_unit_plural}. How many ${unit_plural} of ${resource} will be consumed during this period?",
+    "The ${consumer} in ${name}'s house consumes ${rate} ${unit_plural} of ${resource} every ${time_unit}. ${subj} wants to know the total usage over the next ${time} ${time_unit_plural} to plan ${his_her} expenses. What is the total consumption?",
+    "${name} noticed that ${his_her} ${consumer} uses ${rate} ${unit_plural} of ${resource} each ${time_unit}. If it runs for ${time} ${time_unit_plural}, how much ${resource} will it have used in total?",
+    "According to the utility meter, ${a_consumer} uses ${rate} ${unit_plural} of ${resource} per ${time_unit}. Over the course of ${time} ${time_unit_plural}, how many ${unit_plural} of ${resource} will be consumed?"
+  ],
   "earning_rate": [
     "${name} earns $${rate} per ${time_unit} at ${his_her} job. How much does ${subject} make in ${time} ${time_unit_plural}?",
     "Working at $${rate} per ${time_unit}, ${name} puts in ${time} ${time_unit_plural}. What are ${his_her} total earnings?",
     "If ${name} makes $${rate} every ${time_unit}, how much will ${subject} earn after ${time} ${time_unit_plural}?",
     "${name} charges $${rate} for each ${time_unit} of work. After ${time} ${time_unit_plural}, how much does ${subject} earn?"
+  ],
+  "earning_rate_gsm8k": [
+    "${name} works as a ${job} and gets paid $${rate} per ${time_unit}. This week, ${subject} is scheduled to work ${time} ${time_unit_plural}. Assuming ${subject} works all ${his_her} scheduled ${time_unit_plural}, how much money will ${name} earn this week?",
+    "At ${his_her} part-time job at the ${workplace}, ${name} earns $${rate} for every ${time_unit} ${subject} works. If ${subject} works ${time} ${time_unit_plural} this month, what will be ${his_her} total earnings?",
+    "${name} recently started a new job that pays $${rate} per ${time_unit}. ${subj} worked ${time} ${time_unit_plural} during ${his_her} first pay period. How much did ${name} earn during this time?",
+    "As a freelancer, ${name} charges clients $${rate} for each ${time_unit} of work. A new client hired ${him_her} for a project that took ${time} ${time_unit_plural} to complete. What is the total amount ${name} will bill the client?"
   ]
 }

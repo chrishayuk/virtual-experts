@@ -5,11 +5,23 @@
     "${name2} owns ${base} ${items}. ${name1} owns ${multiplier} times as many. What is the difference between their collections?",
     "If ${name1} has ${multiplier} times as many ${items} as ${name2}, and ${name2} has ${base}, how many more ${items} does ${name1} have?"
   ],
+  "times_more_gsm8k": [
+    "${name1} and ${name2} both collect ${items} as a hobby. ${name1} has been collecting for longer and has managed to accumulate ${multiplier} times as many ${items} as ${name2}. If ${name2} currently has ${base} ${items} in ${his_her2} collection, how many more ${items} does ${name1} have compared to ${name2}?",
+    "At the local collectors' club, ${name1} is known for having an impressive collection of ${items}. In fact, ${subject1} has ${multiplier} times as many ${items} as ${name2}, who is a newer member. ${name2} has ${base} ${items} so far. What is the difference between the number of ${items} ${name1} has and the number ${name2} has?",
+    "${name2} has been saving up ${items} and currently has ${base} of them. ${name2}'s friend ${name1} has been at it much longer and has ${multiplier} times as many ${items}. How many more ${items} does ${name1} have than ${name2}?",
+    "During a friendly competition, ${name1} and ${name2} compared their collections of ${items}. It turned out that ${name1} has ${multiplier} times as many ${items} as ${name2}. Given that ${name2} has ${base} ${items}, how many more ${items} does ${name1} have?"
+  ],
   "sum_and_difference": [
     "${name1} and ${name2} have ${total} ${items} together. ${name1} has ${diff} more than ${name2}. How many ${items} does ${name1} have?",
     "Between ${name1} and ${name2}, there are ${total} ${items} in total. If ${name1} has ${diff} more than ${name2}, how many does ${name1} have?",
     "The combined collection of ${name1} and ${name2} is ${total} ${items}. ${name1}'s collection is ${diff} larger than ${name2}'s. How many ${items} does ${name1} have?",
     "Together, ${name1} and ${name2} own ${total} ${items}. ${name1} has ${diff} more. What is ${name1}'s count?"
+  ],
+  "sum_and_difference_gsm8k": [
+    "${name1} and ${name2} decided to pool their ${items} together for a project. When they counted everything, they found they had ${total} ${items} in total. ${name1} noticed that ${subject1} had ${diff} more ${items} than ${name2} did. Based on this information, how many ${items} does ${name1} have?",
+    "For the school fair, ${name1} and ${name2} combined their ${items}. The total count came to ${total} ${items}. Since ${name1} had been collecting longer, ${subject1} had ${diff} more ${items} than ${name2}. How many ${items} did ${name1} contribute to the total?",
+    "When ${name1} and ${name2} compared notes, they realized that together they owned ${total} ${items}. They also figured out that ${name1} had exactly ${diff} more ${items} than ${name2}. What is the number of ${items} that ${name1} owns?",
+    "${name1} and ${name2} are neighbors who both enjoy collecting ${items}. Between the two of them, they have ${total} ${items}. ${name1} has ${diff} more than ${name2}. How many ${items} does ${name1} have in ${his_her1} collection?"
   ],
   "more_less": [
     "${name1} has ${more} more ${items} than ${name2}. ${name2} has ${base} ${items}. How many ${items} do they have together?",
@@ -17,10 +29,22 @@
     "${name2} owns ${base} ${items}. ${name1} owns ${more} more than ${name2}. How many ${items} do they have in total?",
     "If ${name2} has ${base} ${items} and ${name1} has ${more} more, what is the total number of ${items} between them?"
   ],
+  "more_less_gsm8k": [
+    "${name1} and ${name2} were comparing their collections of ${items} after school. ${name2} counted ${his_her2} ${items} and found ${subject2} had ${base} of them. ${name1} counted ${his_her1} collection and discovered ${subject1} had ${more} more ${items} than ${name2}. If they decided to combine all their ${items}, how many would they have together?",
+    "At the hobby store, ${name2} bought ${base} ${items} to add to ${his_her2} collection. ${name2}'s friend ${name1} has been collecting for longer and has ${more} more ${items} than ${name2}. What is the total number of ${items} between the two friends?",
+    "${name2} has exactly ${base} ${items} that ${subject2} keeps neatly organized. ${name1}, who lives next door, has ${more} more ${items} than ${name2} does. How many ${items} do ${name1} and ${name2} have combined?",
+    "During a playdate, ${name2} showed off ${his_her2} ${base} ${items}. ${name1} then revealed that ${subject1} owns ${more} more ${items} than ${name2}. Together, how many ${items} do the two friends have?"
+  ],
   "half_as_many": [
     "${name1} has half as many ${items} as ${name2}. ${name2} has ${base} ${items}. How many more ${items} does ${name2} have than ${name1}?",
     "With only half the ${items} that ${name2} has, ${name1} has fewer. ${name2} has ${base}. What is the difference?",
     "${name2} owns ${base} ${items}. ${name1} owns half as many. How many more does ${name2} have?",
     "If ${name1} has half of what ${name2} has, and ${name2} has ${base} ${items}, how many more ${items} does ${name2} have?"
+  ],
+  "half_as_many_gsm8k": [
+    "${name2} has been collecting ${items} for several years and now has ${base} of them displayed in ${his_her2} room. ${name1}, who just started collecting recently, has only half as many ${items} as ${name2}. How many more ${items} does ${name2} have compared to ${name1}?",
+    "When comparing collections, ${name1} realized that ${subject1} has exactly half as many ${items} as ${name2}. Since ${name2} has ${base} ${items} in ${his_her2} collection, what is the difference between ${name2}'s collection and ${name1}'s collection?",
+    "${name2} proudly showed off ${his_her2} collection of ${base} ${items}. ${name1} admitted that ${subject1} only has half as many ${items}. How many more ${items} does ${name2} have than ${name1}?",
+    "At the collectors' meetup, ${name2} had ${base} ${items} to show. ${name1}, being newer to the hobby, had half as many ${items} as ${name2}. By how many ${items} does ${name2}'s collection exceed ${name1}'s collection?"
   ]
 }

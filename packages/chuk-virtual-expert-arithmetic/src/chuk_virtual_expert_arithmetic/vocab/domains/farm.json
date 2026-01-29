@@ -3,11 +3,17 @@
   "description": "Agriculture and farming",
   "agent_types": ["equipment", "person"],
   "agent_templates": {
-    "equipment": {"pattern": "Tractor ${letter}", "letters": ["A", "B", "C"]},
+    "equipment": {"pattern": "Tractor ${letter}", "letters": ["A", "B"]},
     "harvester": {"pattern": "Harvester ${number}", "numbers": [1, 2]},
     "person": {"source": "names.people", "pattern": "${name}"}
   },
-  "items": ["bales", "bushels", "rows", "acres", "crops"],
+  "items": [
+    {"singular": "bale", "plural": "bales"},
+    {"singular": "bushel", "plural": "bushels"},
+    {"singular": "row", "plural": "rows"},
+    {"singular": "acre", "plural": "acres"},
+    {"singular": "crop", "plural": "crops"}
+  ],
   "verbs": {"singular": "harvests", "plural": "harvest"},
   "time_units": [
     {"singular": "hour", "plural": "hours"},

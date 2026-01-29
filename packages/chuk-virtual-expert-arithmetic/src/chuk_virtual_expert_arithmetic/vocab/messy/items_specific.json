@@ -1,0 +1,49 @@
+{
+  "specific_countable": [
+    {"singular": "limited edition trading card", "plural": "limited edition trading cards"},
+    {"singular": "hand-painted ceramic figurine", "plural": "hand-painted ceramic figurines"},
+    {"singular": "vintage comic book from the 1980s", "plural": "vintage comic books from the 1980s"},
+    {"singular": "organic free-range egg", "plural": "organic free-range eggs"},
+    {"singular": "artisanal sourdough loaf", "plural": "artisanal sourdough loaves"},
+    {"singular": "antique brass doorknob", "plural": "antique brass doorknobs"},
+    {"singular": "handcrafted leather wallet", "plural": "handcrafted leather wallets"},
+    {"singular": "collectible baseball card", "plural": "collectible baseball cards"},
+    {"singular": "imported Italian marble tile", "plural": "imported Italian marble tiles"},
+    {"singular": "rare first-edition book", "plural": "rare first-edition books"},
+    {"singular": "handmade chocolate truffle", "plural": "handmade chocolate truffles"},
+    {"singular": "vintage vinyl record", "plural": "vintage vinyl records"},
+    {"singular": "antique silver spoon", "plural": "antique silver spoons"},
+    {"singular": "commemorative gold coin", "plural": "commemorative gold coins"},
+    {"singular": "custom-made wooden toy", "plural": "custom-made wooden toys"}
+  ],
+  "specific_produce": [
+    {"singular": "heirloom tomato", "plural": "heirloom tomatoes"},
+    {"singular": "organic Granny Smith apple", "plural": "organic Granny Smith apples"},
+    {"singular": "fresh-picked strawberry", "plural": "fresh-picked strawberries"},
+    {"singular": "locally grown zucchini", "plural": "locally grown zucchinis"},
+    {"singular": "farm-fresh brown egg", "plural": "farm-fresh brown eggs"},
+    {"singular": "vine-ripened cherry tomato", "plural": "vine-ripened cherry tomatoes"}
+  ],
+  "specific_baked": [
+    {"singular": "double chocolate chip cookie", "plural": "double chocolate chip cookies"},
+    {"singular": "blueberry cream cheese muffin", "plural": "blueberry cream cheese muffins"},
+    {"singular": "red velvet cupcake with cream cheese frosting", "plural": "red velvet cupcakes with cream cheese frosting"},
+    {"singular": "cinnamon raisin bagel", "plural": "cinnamon raisin bagels"},
+    {"singular": "freshly baked croissant", "plural": "freshly baked croissants"},
+    {"singular": "homemade apple pie slice", "plural": "homemade apple pie slices"}
+  ],
+  "specific_toys": [
+    {"singular": "remote-controlled toy car", "plural": "remote-controlled toy cars"},
+    {"singular": "vintage action figure", "plural": "vintage action figures"},
+    {"singular": "collectible stuffed animal", "plural": "collectible stuffed animals"},
+    {"singular": "wooden building block", "plural": "wooden building blocks"},
+    {"singular": "glow-in-the-dark bouncy ball", "plural": "glow-in-the-dark bouncy balls"}
+  ],
+  "specific_office": [
+    {"singular": "mechanical pencil with 0.5mm lead", "plural": "mechanical pencils with 0.5mm lead"},
+    {"singular": "extra-fine point permanent marker", "plural": "extra-fine point permanent markers"},
+    {"singular": "three-ring binder", "plural": "three-ring binders"},
+    {"singular": "college-ruled spiral notebook", "plural": "college-ruled spiral notebooks"},
+    {"singular": "multi-colored sticky note pad", "plural": "multi-colored sticky note pads"}
+  ]
+}
