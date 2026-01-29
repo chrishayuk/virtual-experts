@@ -1,9 +1,9 @@
 {
   "simple_fraction": [
     "Of the ${total} students in ${name}'s class at school, 1/2 of them are girls. How many girls are in the class?",
-    "${name} has ${total} ${items} in ${his_her} collection. ${subj} decides to give 1/4 of them to ${his_her} friend as a gift. How many ${items} does ${name} give away?",
-    "There are ${total} ${items} in a basket on the kitchen counter. If ${name} takes 1/3 of them for a snack, how many ${items} does ${subject} take?",
-    "A large pizza has ${total} slices in total. ${name} eats 1/4 of the pizza for dinner. How many slices does ${subject} eat?",
+    "${name} has ${total} ${items} in ${his_her} collection. ${subj} decide${verb_s} to give 1/4 of them to ${his_her} friend as a gift. How many ${items} does ${name} give away?",
+    "There are ${total} ${items} in a basket on the kitchen counter. If ${name} takes 1/3 of them for a snack, how many ${items} ${does_do} ${subject} take?",
+    "A large pizza has ${total} slices in total. ${name} eats 1/4 of the pizza for dinner. How many slices ${does_do} ${subject} eat?",
     "${name} had ${total} ${items} saved up from various purchases. ${subj} sold 1/2 of them at a garage sale last weekend. How many ${items} did ${subject} sell?"
   ],
   "fraction_remaining": [
@@ -14,7 +14,7 @@
   ],
   "fraction_compare": [
     "${name1} has ${total} ${items} in ${his_her1} collection. ${name2} has 1/2 as many ${items} as ${name1} because ${subject2} started collecting more recently. How many ${items} does ${name2} have?",
-    "If ${name1} has ${total} ${items} and ${name2} has 1/3 as many because ${subject2} prefers quality over quantity, how many ${items} do they have together?",
+    "If ${name1} has ${total} ${items} and ${name2} has 1/3 as many because ${subject2} prefer${verb_s2} quality over quantity, how many ${items} do they have together?",
     "${name1} earned $${total} from ${his_her1} summer job. ${name2} earned 1/4 as much because ${subject2} worked fewer hours. How much did ${name2} earn?",
     "${name1} collected ${total} ${items} over the summer vacation. ${name2} collected 1/2 as many, and ${name3} collected 1/4 as many as ${name1}. How many ${items} did they collect in total?"
   ]

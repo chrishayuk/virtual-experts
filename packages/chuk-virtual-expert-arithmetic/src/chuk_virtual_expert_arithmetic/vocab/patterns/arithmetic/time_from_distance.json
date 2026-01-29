@@ -1,6 +1,6 @@
 {
   "templates": [
-    "${name} needs to travel ${distance} miles. ${subj} travels at ${speed} miles per hour. How many hours will the trip take?",
+    "${name} needs to travel ${distance} miles. ${subj} travel${verb_s} at ${speed} miles per hour. How many hours will the trip take?",
     "The distance to the store is ${distance} km. ${name} walks at ${speed} km per hour. How long does it take?",
     "A ${distance} mile journey at ${speed} miles per hour. What is the travel time in hours?",
     "${name} drives ${distance} miles at a speed of ${speed} mph. How many hours is the drive?",

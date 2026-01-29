@@ -2,20 +2,20 @@
   "two_people": [
     "${name1} and ${name2} are good friends who both enjoy collecting ${items} as a hobby. ${name1} has ${base} ${items} in ${his_her1} collection, and ${name2} has half as many ${items} in ${his_her2} collection. If they decide to combine their collections, how many ${items} will they have together?",
     "${name1} has been collecting ${items} for several years and now has ${base} ${items}. ${name2}, who started the same hobby more recently, has twice as many ${items} as ${name1}. How many ${items} do they have in total between the two of them?",
-    "${name1} owns ${base} ${items} that ${subject1} has accumulated over the years. ${his_her1} friend ${name2} owns half that number because ${subject2} just started collecting. If they combine their ${items}, how many will they have altogether?",
-    "If ${name1} has ${base} ${items} in ${his_her1} collection and ${name2} has twice as many ${items} because ${subject2} has been collecting longer, what is the total number of ${items} they have combined?",
+    "${name1} owns ${base} ${items} that ${subject1} ${has_have1} accumulated over the years. ${his_her1} friend ${name2} owns half that number because ${subject2} just started collecting. If they combine their ${items}, how many will they have altogether?",
+    "If ${name1} has ${base} ${items} in ${his_her1} collection and ${name2} has twice as many ${items} because ${subject2} ${has_have2} been collecting longer, what is the total number of ${items} they have combined?",
     "${name1} has been saving money for a vacation and saved $${base} so far. ${name2} has been saving too, but only has half as much as ${name1}. How much money do they have together for their trip?",
     "${name1} earned $${base} last month from ${his_her1} part-time job. ${name2} worked more hours and earned twice as much. What are their combined earnings from last month?"
   ],
   "three_people": [
-    "${name1} has ${base} ${items} in ${his_her1} collection. ${name2} has twice as many ${items} as ${name1} because ${subject2} has been collecting longer, and ${name3} has half as many as ${name2}. How many ${items} do all three friends have altogether?",
-    "${name1} collected ${base} ${items} during the summer break. ${name2} collected half as many as ${name1} because ${subject2} was busy with other activities, and ${name3} collected twice as many as ${name2}. What is the total number of ${items} all three collected?",
+    "${name1} has ${base} ${items} in ${his_her1} collection. ${name2} has twice as many ${items} as ${name1} because ${subject2} ${has_have2} been collecting longer, and ${name3} has half as many as ${name2}. How many ${items} do all three friends have altogether?",
+    "${name1} collected ${base} ${items} during the summer break. ${name2} collected half as many as ${name1} because ${subject2} ${was_were2} busy with other activities, and ${name3} collected twice as many as ${name2}. What is the total number of ${items} all three collected?",
     "In a competition at school, ${name1} scored ${base} points. ${name2} scored twice as many points as ${name1} because ${subject2} practiced more, and ${name3} scored half of what ${name2} scored. How many points did they score in total as a team?",
     "${name1} has ${base} ${items} that ${subject1} bought at a store. ${name2} has twice as many ${items}, and ${name3} has half as many as ${name1}. How many ${items} do all three of them have combined?"
   ],
   "fraction_of": [
     "Of the ${total} ${items} in the storage room, half of them belong to ${name1}. The rest of the ${items} belong to ${name2}. How many ${items} does ${name2} have?",
-    "${name1} has ${total} ${items} that ${subj1} bought for a project. ${subj1} decides to give half of them to ${name2} to help with the project. How many ${items} does ${name1} have left after giving some away?",
+    "${name1} has ${total} ${items} that ${subj1} bought for a project. ${subj1} decide${verb_s1} to give half of them to ${name2} to help with the project. How many ${items} does ${name1} have left after giving some away?",
     "There are ${total} ${items} stored in a large box in the garage. ${name1} takes half of them for a project, and ${name2} takes half of what's left. How many ${items} remain in the box?",
     "${name1} spent the weekend baking and made ${total} ${items}. ${subj1} generously gave half to ${his_her1} neighbors and half of the remainder to friends. How many ${items} does ${name1} have left?"
   ]

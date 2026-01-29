@@ -1,14 +1,14 @@
 {
   "half_that_much": [
-    "A ${item} takes ${amount} bolts of ${material1} and half that much ${material2}. How many bolts in total does it take?",
-    "Making a ${item} requires ${amount} yards of ${material1} and half that amount of ${material2}. How many yards of material are needed in total?",
-    "To build a ${item}, you need ${amount} units of ${material1} and half as much ${material2}. What is the total amount of material needed?",
+    "A project requires ${amount} bolts of ${material1} and half that much ${material2}. How many bolts in total does it take?",
+    "For a craft, you need ${amount} yards of ${material1} and half that amount of ${material2}. How many yards of material are needed in total?",
+    "A design uses ${amount} units of ${material1} and half as much ${material2}. What is the total amount of material needed?",
     "A craft project uses ${amount} pieces of ${material1} and half that much ${material2}. How many pieces of material are used altogether?",
-    "The recipe calls for ${amount} cups of ${material1} and half that amount of ${material2}. How many cups of ingredients are needed in total?"
+    "The pattern calls for ${amount} strips of ${material1} and half that amount of ${material2}. How many strips of material are needed in total?"
   ],
   "twice_that_much": [
-    "A ${item} takes ${amount} bolts of ${material1} and twice that much ${material2}. How many bolts in total does it take?",
-    "Making a ${item} requires ${amount} yards of ${material1} and twice that amount of ${material2}. How many yards of material are needed in total?",
-    "To build a ${item}, you need ${amount} units of ${material1} and twice as much ${material2}. What is the total amount of material needed?"
+    "A project requires ${amount} bolts of ${material1} and twice that much ${material2}. How many bolts in total does it take?",
+    "For a craft, you need ${amount} yards of ${material1} and twice that amount of ${material2}. How many yards of material are needed in total?",
+    "A design uses ${amount} units of ${material1} and twice as much ${material2}. What is the total amount of material needed?"
   ]
 }

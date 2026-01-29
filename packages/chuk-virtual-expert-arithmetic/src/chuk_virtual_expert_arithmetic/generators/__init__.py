@@ -161,6 +161,9 @@ class TraceGenerator:
         self,
         seed: int | None = None,
         perturbation_level: float = 0.0,
+        word_number_prob: float = 0.3,
+        gsm8k_style_prob: float = 0.3,
+        messy_vocab_prob: float = 0.2,
     ) -> None:
         """Initialize the generator.
 
@@ -169,6 +172,12 @@ class TraceGenerator:
             perturbation_level: Level of template perturbation (0-1). Higher values
                                apply more variations for better GSM-8K generalization.
                                0 = no perturbation (default), 0.3 = moderate, 0.6 = high.
+            word_number_prob: Probability of converting numbers to word form (0-1).
+                             GSM-8K uses word numbers ~30% of the time. Default 0.3.
+            gsm8k_style_prob: Probability of using longer narrative GSM-8K-style
+                             templates when available (0-1). Default 0.3.
+            messy_vocab_prob: Probability of using diverse/unusual names and items
+                             from the messy vocab layer (0-1). Default 0.2.
         """
         import random
 
@@ -176,6 +185,9 @@ class TraceGenerator:
         self._perturbation_level = perturbation_level
         self._schema_gen = SchemaGenerator(
             perturbation_level=perturbation_level,
+            word_number_prob=word_number_prob,
+            gsm8k_style_prob=gsm8k_style_prob,
+            messy_vocab_prob=messy_vocab_prob,
             seed=seed,
         )
 

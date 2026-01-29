@@ -1,17 +1,17 @@
 {
   "decimal_weekly": [
-    "${name} takes care of ${count} dogs. Each dog takes ${rate_decimal} hours a day to walk and take care of their business. How many hours a week does ${subject} spend taking care of dogs?",
-    "${name} has ${count} plants in ${possessive} garden that need daily attention. Each plant needs ${rate_decimal} cups of water per day to stay healthy. How many cups of water does ${subject} use in a week?",
-    "Every day, ${name} walks ${count} dogs in the neighborhood as a part-time job. Each walk takes ${rate_decimal} hours to complete properly. How many hours does ${subject} spend walking dogs each week?",
+    "${name} takes care of ${count} dogs. Each dog takes ${rate_decimal} hours a day to walk and take care of their business. How many hours a week ${does_do} ${subject} spend taking care of dogs?",
+    "${name} has ${count} plants in ${possessive} garden that need daily attention. Each plant needs ${rate_decimal} cups of water per day to stay healthy. How many cups of water ${does_do} ${subject} use in a week?",
+    "Every day, ${name} walks ${count} dogs in the neighborhood as a part-time job. Each walk takes ${rate_decimal} hours to complete properly. How many hours ${does_do} ${subject} spend walking dogs each week?",
     "A dedicated teacher grades ${count} student papers each day. Each paper takes ${rate_decimal} hours to grade thoroughly with feedback. If the teacher works ${days} days a week, how many hours total does grading take?",
-    "${name} exercises ${count} times a day to stay in shape for the upcoming marathon. Each session lasts ${rate_decimal} hours and includes both cardio and strength training. How many hours does ${subject} exercise in ${days} days?",
-    "${name} is a professional dog walker who takes care of ${count} dogs every single day. It takes ${rate_decimal} hours to properly walk and care for each dog. How many hours does ${subject} spend on dog walking per week?",
-    "At the community garden, ${name} tends to ${count} vegetable plots. Each plot requires ${rate_decimal} hours of maintenance per day including watering and weeding. How many hours a week does ${subject} spend at the garden?"
+    "${name} exercises ${count} times a day to stay in shape for the upcoming marathon. Each session lasts ${rate_decimal} hours and includes both cardio and strength training. How many hours ${does_do} ${subject} exercise in ${days} days?",
+    "${name} is a professional dog walker who takes care of ${count} dogs every single day. It takes ${rate_decimal} hours to properly walk and care for each dog. How many hours ${does_do} ${subject} spend on dog walking per week?",
+    "At the community garden, ${name} tends to ${count} vegetable plots. Each plot requires ${rate_decimal} hours of maintenance per day including watering and weeding. How many hours a week ${does_do} ${subject} spend at the garden?"
   ],
   "simple_rate": [
-    "${name} can complete ${count} tasks per hour when ${subject} is focused and working efficiently. Working for ${rate_decimal} hours today, how many tasks can ${subject} complete?",
+    "${name} can complete ${count} tasks per hour when ${subject} ${is_are} focused and working efficiently. Working for ${rate_decimal} hours today, how many tasks can ${subject} complete?",
     "A machine at the factory produces ${count} items per minute when running at full capacity. How many items does it produce in ${rate_decimal} minutes?",
-    "${name} types at a speed of ${count} words per minute. If ${subject} types for ${rate_decimal} minutes without stopping, how many words will ${subject} have typed?",
+    "${name} types at a speed of ${count} words per minute. If ${subject} type${verb_s} for ${rate_decimal} minutes without stopping, how many words will ${subject} have typed?",
     "The bakery oven can bake ${count} cookies per batch. If ${name} runs the oven for ${rate_decimal} batches, how many cookies will be ready?"
   ],
   "comparison_total": [

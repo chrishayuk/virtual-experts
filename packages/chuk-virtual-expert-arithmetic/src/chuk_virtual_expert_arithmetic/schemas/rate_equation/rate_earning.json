@@ -5,15 +5,20 @@
   "pattern": "rate_equation",
   "variant": "earning_rate",
   "vocab": {
-    "person": {"type": "person_with_pronouns"}
+    "person": {"type": "person_with_pronouns"},
+    "job_name": {"path": "places.jobs"},
+    "workplace_name": {"path": "places.workplaces"}
   },
   "template_vars": {
     "name": "person.name",
     "subject": "person.subject",
+    "subj": "person.subject|capitalize",
     "his_her": "person.possessive",
     "him_her": "person.object",
     "time_unit": "hour",
-    "time_unit_plural": "hours"
+    "time_unit_plural": "hours",
+    "job": "job_name",
+    "workplace": "workplace_name"
   },
   "variables": {
     "rate": {

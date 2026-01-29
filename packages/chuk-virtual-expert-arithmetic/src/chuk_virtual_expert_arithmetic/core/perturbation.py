@@ -48,29 +48,21 @@ class TemplatePerturbator:
     ]
 
     # Question form variations
+    # Note: Only include variations that preserve question grammar.
+    # Avoid "Calculate how many" or "Determine how many" as they break
+    # when followed by helper verbs (e.g., "does X have" → "X has").
     QUESTION_STARTERS = {
         "How many": [
             "How many",
-            "What is the total number of",
-            "Find the number of",
-            "Calculate how many",
-            "Determine how many",
-            "What's the count of",
+            "How many total",
         ],
         "How much": [
             "How much",
-            "What is the total amount of",
-            "Find the amount of",
-            "Calculate the total",
-            "What's the total",
+            "What amount of",
         ],
         "What is": [
             "What is",
             "What's",
-            "Find",
-            "Calculate",
-            "Determine",
-            "Figure out",
         ],
     }
 

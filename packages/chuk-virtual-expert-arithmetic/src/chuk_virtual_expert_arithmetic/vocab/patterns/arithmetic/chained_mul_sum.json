@@ -15,7 +15,7 @@
     "${name1} has ${count1} ${items} that ${subject1} collected over the years. ${name2} has ${factor1} times as many ${items} as ${name1}. ${name3} has ${factor2} times as many as ${name2}. How many ${items} do the three of them have altogether?",
     "${name1} collected ${count1} ${items} over the summer vacation. ${name2} collected ${factor1} times as many as ${name1} because ${subject2} had more free time, and ${name3} collected ${factor2} times as many as ${name2}. What is the total number of ${items} they collected?",
     "In a competition at school, ${name1} won ${count1} ${items} as prizes. ${name2} won ${factor1} times as many as ${name1} because ${subject2} competed more, and ${name3} won ${factor2} times as many as ${name2}. How many ${items} did they win in total?",
-    "${name1} owns ${count1} ${items}. ${his_her1} friend ${name2} owns ${factor1} times that many because ${subject2} has been collecting longer. Their friend ${name3} owns ${factor2} times what ${name2} has. Together, how many ${items} do they own?"
+    "${name1} owns ${count1} ${items}. ${his_her1} friend ${name2} owns ${factor1} times that many because ${subject2} ${has_have2} been collecting longer. Their friend ${name3} owns ${factor2} times what ${name2} has. Together, how many ${items} do they own?"
   ],
   "inverted": [
     "${place3} has ${factor2} times as many ${animals} as ${place2}. ${place2} has ${factor1} times as many ${animals} as ${place1}. How many ${animals} do ${place3}, ${place2}, and ${place1} have together if ${place1} has ${count1} ${animals}?",

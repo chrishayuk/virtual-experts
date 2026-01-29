@@ -47,18 +47,15 @@
   "pattern": "material_patterns",
   "variant": "half_that_much",
   "vocab": {
-    "item": {
-      "path": "items.countable_singular"
-    },
     "material1": {
       "path": "materials.fabrics"
     },
     "material2": {
-      "path": "materials.fabrics"
+      "path": "materials.fabrics",
+      "distinct_from": ["material1"]
     }
   },
   "template_vars": {
-    "item": "item",
     "material1": "material1",
     "material2": "material2"
   }

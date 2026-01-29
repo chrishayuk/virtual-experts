@@ -2,16 +2,16 @@
   "shopping_spree": [
     "${name} went shopping at the mall with $${start} to spend. At the first store, ${subject} spent $${cost1} on ${item1} that ${subject} had been wanting. At the second store, ${subject} bought ${item2} for $${cost2}. At the third store, ${subject} found ${item3} on sale for $${cost3}. After all this shopping, how much money does ${name} have left?",
     "For the holiday season, ${name} had $${start} budgeted to spend on gifts for family and friends. ${subj} bought ${item1} for $${cost1}, ${item2} for $${cost2}, and ${item3} for $${cost3} at various stores. How much of ${his_her} holiday budget remains after these purchases?",
-    "${name} received $${start} for ${his_her} birthday from relatives. ${subj} was excited and went to the mall where ${subject} bought ${item1} ($${cost1}), ${item2} ($${cost2}), and ${item3} ($${cost3}). What is the total amount ${name} spent on these items, and how much does ${subject} have left?"
+    "${name} received $${start} for ${his_her} birthday from relatives. ${subj} ${was_were} excited and went to the mall where ${subject} bought ${item1} ($${cost1}), ${item2} ($${cost2}), and ${item3} ($${cost3}). What is the total amount ${name} spent on these items, and how much ${does_do} ${subject} have left?"
   ],
   "earning_and_spending": [
-    "${name} works at a retail store after school and earns $${rate} per hour. ${subj} worked ${hours} hours last week during ${his_her} shifts. If ${subject} spent $${spent} on ${expense}, how much does ${subject} have left from ${his_her} weekly earnings?",
-    "${name} earns $${rate} for each lawn ${subject} mows in the neighborhood. After mowing ${count} lawns over the weekend, ${subject} decided to buy ${item} for $${spent}. How much money does ${name} have left from ${his_her} lawn mowing earnings?",
-    "Last week, ${name} babysat for a neighbor for ${hours} hours at $${rate} per hour. ${subj} then decided to spend half of ${his_her} earnings on ${item} that ${subject} had been saving for. How much money does ${subject} have left?"
+    "${name} works at a retail store after school and earns $${rate} per hour. ${subj} worked ${hours} hours last week during ${his_her} shifts. If ${subject} spent $${spent} on ${expense}, how much ${does_do} ${subject} have left from ${his_her} weekly earnings?",
+    "${name} earns $${rate} for each lawn ${subject} mow${verb_s} in the neighborhood. After mowing ${count} lawns over the weekend, ${subject} decided to buy ${item} for $${spent}. How much money does ${name} have left from ${his_her} lawn mowing earnings?",
+    "Last week, ${name} babysat for a neighbor for ${hours} hours at $${rate} per hour. ${subj} then decided to spend half of ${his_her} earnings on ${item} that ${subject} had been saving for. How much money ${does_do} ${subject} have left?"
   ],
   "production_distribution": [
     "A local bakery makes ${total} ${items} fresh each day. They sell ${sold} ${items} to customers who come into the shop and donate ${donated} to a local shelter for those in need. The remaining ${items} are packaged into boxes of ${per_box} each. How many boxes can they fill with the remaining ${items}?",
-    "${name}'s family farm produces ${total} eggs per day from their chickens. ${subj} keeps ${kept} eggs for ${his_her} family to eat and sells the rest at the farmers market for $${price} per dozen. How many dozens does ${subject} sell, and how much money does ${subject} make?",
+    "${name}'s family farm produces ${total} eggs per day from their chickens. ${subj} keep${verb_s} ${kept} eggs for ${his_her} family to eat and sell${verb_s} the rest at the farmers market for $${price} per dozen. How many dozens ${does_do} ${subject} sell, and how much money ${does_do} ${subject} make?",
     "A factory produces ${total} ${items} per shift at full capacity. After quality control rejects ${rejected} defective items that don't meet standards, the rest are packed into boxes of ${per_box} for shipping. How many full boxes can be shipped to customers?"
   ]
 }

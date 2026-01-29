@@ -1,7 +1,7 @@
 {
   "templates": [
     "${name} started with $${start} in savings. ${subj} spent $${exp1} on ${cat1}, $${exp2} on ${cat2}, and $${exp3} on ${cat3}. Then ${subject} invested what was left and multiplied ${his_her} money ${multiplier} times through smart investments. How much does ${name} have now?",
-    "After receiving $${start} as a gift, ${name} went shopping. ${subj} bought ${cat1} for $${exp1}, ${cat2} for $${exp2}, and ${cat3} for $${exp3}. ${subj} then invested the rest and it grew to ${multiplier} times its value. How much money does ${subject} have now?",
+    "After receiving $${start} as a gift, ${name} went shopping. ${subj} bought ${cat1} for $${exp1}, ${cat2} for $${exp2}, and ${cat3} for $${exp3}. ${subj} then invested the rest and it grew to ${multiplier} times its value. How much money ${does_do} ${subject} have now?",
     "${name} had saved up $${start} from ${his_her} part-time job. ${subj} spent $${exp1} on ${cat1}, then $${exp2} on ${cat2}, and finally $${exp3} on ${cat3}. ${subj} invested the remaining money and it grew ${multiplier}-fold. What is ${name}'s total now?",
     "With $${start} to spend, ${name} first paid $${exp1} for ${cat1}. Then ${subject} spent $${exp2} on ${cat2} and $${exp3} on ${cat3}. ${subj} invested the remainder and it multiplied ${multiplier} times. How much does ${name} have in the end?"
   ]

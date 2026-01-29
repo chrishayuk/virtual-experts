@@ -4,6 +4,15 @@
   "description": "X% increase on a value",
   "pattern": "percentage",
   "variant": "percent_increase",
+  "mixins": ["person_vocab"],
+  "vocab": {
+    "item": {"path": "items.countable_singular"},
+    "store_name": {"path": "places.stores"}
+  },
+  "template_vars": {
+    "a_item": "item|with_article",
+    "store": "store_name"
+  },
   "variables": {
     "base": {
       "type": "int",

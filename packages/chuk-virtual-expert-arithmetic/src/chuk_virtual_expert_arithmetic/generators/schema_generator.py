@@ -302,7 +302,13 @@ class SchemaGenerator:
                         template_vars["his_her"] = value.get("possessive")
                         template_vars["him_her"] = value.get("object")
                         template_vars["reflexive"] = value.get("reflexive")
-                        template_vars["verb_s"] = value.get("verb_s", "s")
+                        verb_s = value.get("verb_s", "s")
+                        template_vars["verb_s"] = verb_s
+                        # Add conjugated helper verbs
+                        template_vars["has_have"] = "has" if verb_s == "s" else "have"
+                        template_vars["does_do"] = "does" if verb_s == "s" else "do"
+                        template_vars["is_are"] = "is" if verb_s == "s" else "are"
+                        template_vars["was_were"] = "was" if verb_s == "s" else "were"
                     elif key.startswith("person"):
                         # person1, person2, etc.
                         suffix = key[6:]  # "1", "2", etc.
@@ -310,6 +316,14 @@ class SchemaGenerator:
                         template_vars[f"subject{suffix}"] = value.get("subject")
                         template_vars[f"subj{suffix}"] = value.get("subject", "").capitalize()
                         template_vars[f"his_her{suffix}"] = value.get("possessive")
+                        template_vars[f"him_her{suffix}"] = value.get("object")
+                        template_vars[f"reflexive{suffix}"] = value.get("reflexive")
+                        v_s = value.get("verb_s", "s")
+                        template_vars[f"verb_s{suffix}"] = v_s
+                        template_vars[f"has_have{suffix}"] = "has" if v_s == "s" else "have"
+                        template_vars[f"does_do{suffix}"] = "does" if v_s == "s" else "do"
+                        template_vars[f"is_are{suffix}"] = "is" if v_s == "s" else "are"
+                        template_vars[f"was_were{suffix}"] = "was" if v_s == "s" else "were"
             elif isinstance(value, list):
                 # Handle sampled lists
                 for i, item in enumerate(value):

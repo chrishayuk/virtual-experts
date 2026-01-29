@@ -1,20 +1,20 @@
 {
   "farm": [
-    "${name} owns a small family farm with ${count} ${animals} that ${subject} raises with great care and attention. Each ${animal_singular} produces ${per_unit} ${product} per day. ${name} gives ${gift1} ${product} to ${his_her} neighbors and ${gift2} ${product} to friends. How many ${product} does ${name} have left?",
+    "${name} owns a small family farm with ${count} ${animals} that ${subject} raise${verb_s} with great care and attention. Each ${animal_singular} produces ${per_unit} ${product} per day. ${name} gives ${gift1} ${product} to ${his_her} neighbors and ${gift2} ${product} to friends. How many ${product} does ${name} have left?",
     "On ${name}'s family farm that has been in the family for generations, there are ${count} ${animals} that each produce ${per_unit} ${product} daily. After giving away ${gift1} ${product} to neighbors and ${gift2} to friends, how many ${product} remain?",
-    "${name} lovingly raises ${count} ${animals} on ${his_her} property in the countryside. Each one produces ${per_unit} ${product} every day. ${subj} donates ${gift1} ${product} to a local shelter and gives ${gift2} to ${his_her} family. How many ${product} does ${subject} have left?",
-    "There are ${count} ${animals} on ${name}'s farm, and each one produces ${per_unit} ${product} daily. ${name} shares ${gift1} with neighbors and ${gift2} with coworkers. How many ${product} does ${subject} keep for ${him_her}self?"
+    "${name} lovingly raises ${count} ${animals} on ${his_her} property in the countryside. Each one produces ${per_unit} ${product} every day. ${subj} donate${verb_s} ${gift1} ${product} to a local shelter and give${verb_s} ${gift2} to ${his_her} family. How many ${product} ${does_do} ${subject} have left?",
+    "There are ${count} ${animals} on ${name}'s farm, and each one produces ${per_unit} ${product} daily. ${name} shares ${gift1} with neighbors and ${gift2} with coworkers. How many ${product} ${does_do} ${subject} keep for ${him_her}self?"
   ],
   "orchard": [
-    "${name} owns a beautiful orchard with ${count} ${fruit} trees that ${subject} planted years ago when ${subject} first bought the property. Each tree produces ${per_unit} ${fruits}. ${subj} donates ${gift1} ${fruits} to a food bank and gives ${gift2} to neighbors. How many ${fruits} does ${name} have left?",
+    "${name} owns a beautiful orchard with ${count} ${fruit} trees that ${subject} planted years ago when ${subject} first bought the property. Each tree produces ${per_unit} ${fruits}. ${subj} donate${verb_s} ${gift1} ${fruits} to a food bank and give${verb_s} ${gift2} to neighbors. How many ${fruits} does ${name} have left?",
     "In ${name}'s orchard at the edge of town that ${subject} inherited from ${his_her} grandparents, there are ${count} trees that each yield ${per_unit} ${fruits}. After donating ${gift1} to charity and giving ${gift2} to friends, how many ${fruits} remain?",
-    "${name} harvested ${fruits} from ${his_her} ${count} trees, getting ${per_unit} from each tree. ${subj} gave ${gift1} to the local school and ${gift2} to family members. How many ${fruits} does ${subject} have left for ${him_her}self?",
-    "Each of the ${count} trees in ${name}'s orchard produces ${per_unit} ${fruits} during harvest season. ${name} donates ${gift1} ${fruits} and gives away another ${gift2} to people in need. How many ${fruits} does ${subject} keep?"
+    "${name} harvested ${fruits} from ${his_her} ${count} trees, getting ${per_unit} from each tree. ${subj} gave ${gift1} to the local school and ${gift2} to family members. How many ${fruits} ${does_do} ${subject} have left for ${him_her}self?",
+    "Each of the ${count} trees in ${name}'s orchard produces ${per_unit} ${fruits} during harvest season. ${name} donates ${gift1} ${fruits} and gives away another ${gift2} to people in need. How many ${fruits} ${does_do} ${subject} keep?"
   ],
   "bakery": [
-    "${name} spent the entire morning baking ${count} batches of delicious ${items}, with ${per_unit} ${items} in each batch. ${subj} gives ${gift1} to ${recipient1} and ${gift2} to ${recipient2}. How many ${items} does ${name} have left?",
+    "${name} spent the entire morning baking ${count} batches of delicious ${items}, with ${per_unit} ${items} in each batch. ${subj} give${verb_s} ${gift1} to ${recipient1} and ${gift2} to ${recipient2}. How many ${items} does ${name} have left?",
     "For a charity bake sale this weekend, ${name} made ${count} batches of ${items}, ${per_unit} in each batch. After giving ${gift1} to ${recipient1} and ${gift2} to ${recipient2}, how many ${items} are left for the sale?",
-    "${name} woke up early and spent the morning baking to share with others. ${subj} made ${count} trays of ${items} with ${per_unit} on each tray. ${subj} gave ${gift1} to ${recipient1} and ${gift2} to ${recipient2}. How many ${items} does ${subject} have remaining?",
-    "After baking ${count} batches of ${per_unit} ${items} each for the neighborhood party, ${name} gave ${gift1} to ${recipient1} and ${gift2} to ${recipient2}. How many ${items} does ${subject} have left?"
+    "${name} woke up early and spent the morning baking to share with others. ${subj} made ${count} trays of ${items} with ${per_unit} on each tray. ${subj} gave ${gift1} to ${recipient1} and ${gift2} to ${recipient2}. How many ${items} ${does_do} ${subject} have remaining?",
+    "After baking ${count} batches of ${per_unit} ${items} each for the neighborhood party, ${name} gave ${gift1} to ${recipient1} and ${gift2} to ${recipient2}. How many ${items} ${does_do} ${subject} have left?"
   ]
 }

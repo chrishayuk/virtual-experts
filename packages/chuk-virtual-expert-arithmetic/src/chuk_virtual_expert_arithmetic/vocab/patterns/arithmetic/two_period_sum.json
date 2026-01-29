@@ -1,11 +1,11 @@
 {
   "templates": [
     "${name} eats ${rate1} ${item_plural} a day for ${time1} days and then ${rate2} ${item_plural} a day for ${time2} days. How many ${item_plural} total?",
-    "For the first ${time1} hours, ${name} earns $${rate1} per hour. For the next ${time2} hours, ${subj} earns $${rate2} per hour. Total earnings?",
+    "For the first ${time1} hours, ${name} earns $${rate1} per hour. For the next ${time2} hours, ${subj} earn${verb_s} $${rate2} per hour. Total earnings?",
     "${name} worked ${time1} hours at $${rate1}/hour, then ${time2} hours at $${rate2}/hour. How much did ${name} earn in total?",
-    "${name} reads ${rate1} pages per day for ${time1} days. Then ${subj} speeds up and reads ${rate2} pages per day for the next ${time2} days. How many pages did ${subj} read altogether?",
-    "During the morning shift, ${name} makes $${rate1} per hour for ${time1} hours. During the evening shift, ${subj} makes $${rate2} per hour for ${time2} hours. What are ${name}'s total earnings?",
-    "${name} drives at ${rate1} mph for ${time1} hours on the highway, then at ${rate2} mph for ${time2} hours in the city. How many miles does ${subj} travel in total?",
-    "In the first phase, ${name} completes ${rate1} tasks per hour for ${time1} hours. In the second phase, ${subj} completes ${rate2} tasks per hour for ${time2} hours. How many tasks did ${subj} complete total?"
+    "${name} reads ${rate1} pages per day for ${time1} days. Then ${subj} speed${verb_s} up and read${verb_s} ${rate2} pages per day for the next ${time2} days. How many pages did ${subj} read altogether?",
+    "During the morning shift, ${name} makes $${rate1} per hour for ${time1} hours. During the evening shift, ${subj} make${verb_s} $${rate2} per hour for ${time2} hours. What are ${name}'s total earnings?",
+    "${name} drives at ${rate1} mph for ${time1} hours on the highway, then at ${rate2} mph for ${time2} hours in the city. How many miles ${does_do} ${subject} travel in total?",
+    "In the first phase, ${name} completes ${rate1} tasks per hour for ${time1} hours. In the second phase, ${subj} complete${verb_s} ${rate2} tasks per hour for ${time2} hours. How many tasks did ${subj} complete total?"
   ]
 }

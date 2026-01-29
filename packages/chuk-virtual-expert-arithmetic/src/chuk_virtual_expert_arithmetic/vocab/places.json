@@ -16,5 +16,16 @@
     "Italian bistro", "steakhouse", "seafood restaurant", "sushi bar",
     "Chinese restaurant", "Mexican cantina", "French cafe", "Thai restaurant",
     "pizza parlor", "diner", "burger joint", "barbecue place", "Indian restaurant"
+  ],
+  "jobs": [
+    "freelance writer", "tutor", "cashier", "barista", "delivery driver",
+    "dog walker", "lifeguard", "babysitter", "landscaper", "house painter",
+    "photographer", "web designer", "personal trainer", "carpenter",
+    "plumber", "electrician", "chef", "mechanic"
+  ],
+  "workplaces": [
+    "local café", "grocery store", "bookshop", "library", "community center",
+    "movie theater", "pet store", "hardware store", "bakery", "gym",
+    "car wash", "ice cream shop", "garden center", "clothing store"
   ]
 }

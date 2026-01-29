@@ -1,24 +1,24 @@
 {
   "weekly_sprints": [
-    "${name} decides to run ${sprints_per_session} sprints ${sessions_per_week} times a week. ${subject} runs ${meters_per_sprint} meters each sprint. How many total meters does ${subject} run a week?",
+    "${name} decides to run ${sprints_per_session} sprints ${sessions_per_week} times a week. ${subject} run${verb_s} ${meters_per_sprint} meters each sprint. How many total meters ${does_do} ${subject} run a week?",
     "${name} does ${sprints_per_session} sprints ${sessions_per_week} times weekly. Each sprint is ${meters_per_sprint} meters. What's the total distance per week?",
     "Every week, ${name} runs ${sprints_per_session} sprints ${sessions_per_week} times. Each sprint covers ${meters_per_sprint} meters. How many meters in total?",
     "${name} practices sprinting ${sessions_per_week} times a week, doing ${sprints_per_session} sprints each time. If each sprint is ${meters_per_sprint} meters, what is the weekly total?"
   ],
   "repeated_value": [
-    "${name} decides to run ${count} sprints ${count} times a week. ${subject} runs ${meters} meters each sprint. How many total meters does ${subject} run a week?",
+    "${name} decides to run ${count} sprints ${count} times a week. ${subject} run${verb_s} ${meters} meters each sprint. How many total meters ${does_do} ${subject} run a week?",
     "${name} does ${count} sprints ${count} times weekly. Each sprint is ${meters} meters. What's the total distance per week?",
-    "Every week, ${name} practices sprinting ${count} times, doing ${count} sprints each session. If each sprint covers ${meters} meters, what is ${subject} weekly total?",
+    "Every week, ${name} practices sprinting ${count} times, doing ${count} sprints each session. If each sprint covers ${meters} meters, what is ${his_her} weekly total?",
     "${name} runs ${count} sprints ${count} days a week. Each sprint is ${meters} meters. What is the total weekly distance?"
   ],
   "weekly_laps": [
-    "${name} swims ${laps_per_session} laps ${sessions_per_week} times a week. Each lap is ${meters_per_lap} meters. How many meters does ${subject} swim weekly?",
+    "${name} swims ${laps_per_session} laps ${sessions_per_week} times a week. Each lap is ${meters_per_lap} meters. How many meters ${does_do} ${subject} swim weekly?",
     "Every week, ${name} goes to the pool ${sessions_per_week} times and swims ${laps_per_session} laps each visit. If a lap is ${meters_per_lap} meters, what's the total distance?"
   ],
   "gsm8k_style": [
-    "${name} decides to run ${sprints_per_session} sprints ${sessions_per_week} times a week. ${subj} runs ${meters_per_sprint} meters each sprint. How many total meters does ${subject} run a week?",
-    "${name} is training for a race and plans to do ${sprints_per_session} sprints ${sessions_per_week} times weekly. Each sprint covers ${meters_per_sprint} meters. What is the total distance ${subject} covers per week?",
-    "To stay in shape, ${name} jogs ${sprints_per_session} laps around the track ${sessions_per_week} days a week. Each lap is ${meters_per_sprint} meters. How many meters does ${subject} jog weekly?",
-    "${name} goes to the gym ${sessions_per_week} times a week. During each visit, ${subject} does ${sprints_per_session} sets of exercises that burn ${meters_per_sprint} calories each. How many calories does ${subject} burn per week at the gym?"
+    "${name} decides to run ${sprints_per_session} sprints ${sessions_per_week} times a week. ${subj} run${verb_s} ${meters_per_sprint} meters each sprint. How many total meters ${does_do} ${subject} run a week?",
+    "${name} is training for a race and plans to do ${sprints_per_session} sprints ${sessions_per_week} times weekly. Each sprint covers ${meters_per_sprint} meters. What is the total distance ${subject} cover${verb_s} per week?",
+    "To stay in shape, ${name} jogs ${sprints_per_session} laps around the track ${sessions_per_week} days a week. Each lap is ${meters_per_sprint} meters. How many meters ${does_do} ${subject} jog weekly?",
+    "${name} goes to the gym ${sessions_per_week} times a week. During each visit, ${subject} ${does_do} ${sprints_per_session} sets of exercises that burn ${meters_per_sprint} calories each. How many calories ${does_do} ${subject} burn per week at the gym?"
   ]
 }

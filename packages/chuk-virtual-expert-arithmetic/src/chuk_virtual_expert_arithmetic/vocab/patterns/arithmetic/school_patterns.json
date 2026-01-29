@@ -1,19 +1,19 @@
 {
   "supplies": [
-    "${name} is a teacher preparing for the new school year. ${subj} has ${students} students in ${possessive} class and needs to give each student ${items_per} ${item}. ${subj} also wants to keep ${extra} extra ${item} in case some get lost. How many ${item} does ${subject} need to buy in total?",
+    "${name} is a teacher preparing for the new school year. ${subj} ${has_have} ${students} students in ${possessive} class and needs to give each student ${items_per} ${item}. ${subj} also wants to keep ${extra} extra ${item} in case some get lost. How many ${item} ${does_do} ${subject} need to buy in total?",
     "The art teacher needs to distribute ${item} to all ${students} students in the class. Each student will receive ${items_per} ${item} for the project. The teacher also orders ${extra} additional ${item} as spares. What is the total number of ${item} needed?",
     "For the science fair, ${name} needs to prepare kits for ${students} participating students. Each kit requires ${items_per} ${item}. ${subj} also sets aside ${extra} extra ${item} for demonstrations. How many ${item} are needed altogether?",
     "The school librarian is organizing a reading program for ${students} students. Each student will receive ${items_per} ${item}. The librarian also keeps ${extra} ${item} for the library collection. What is the total number of ${item} required?",
-    "${name} is organizing a class activity that involves ${students} children. Each child needs ${items_per} ${item} to participate. To be safe, ${name} prepares ${extra} more ${item} than strictly necessary. How many ${item} does ${subject} prepare?"
+    "${name} is organizing a class activity that involves ${students} children. Each child needs ${items_per} ${item} to participate. To be safe, ${name} prepares ${extra} more ${item} than strictly necessary. How many ${item} ${does_do} ${subject} prepare?"
   ],
   "reading": [
-    "${name} needs to read ${students} pages for ${possessive} book report. If ${subject} reads ${items_per} pages each day, and then reads an additional ${extra} pages on the weekend, how many pages will ${subject} have read after a week plus the weekend bonus?",
-    "The reading assignment requires students to read ${students} chapters. Each chapter has ${items_per} pages. If ${name} also reads ${extra} pages of supplementary material, how many total pages does ${subject} read?",
+    "${name} needs to read ${students} pages for ${possessive} book report. If ${subject} read${verb_s} ${items_per} pages each day, and then read${verb_s} an additional ${extra} pages on the weekend, how many pages will ${subject} have read after a week plus the weekend bonus?",
+    "The reading assignment requires students to read ${students} chapters. Each chapter has ${items_per} pages. If ${name} also reads ${extra} pages of supplementary material, how many total pages ${does_do} ${subject} read?",
     "A class of ${students} students each needs to write ${items_per} sentences for homework. The teacher assigns ${extra} bonus sentences for extra credit. If one student completes everything, how many sentences does that student write?"
   ],
   "class_activities": [
     "The school is hosting a field trip with ${students} students attending. Each student pays ${items_per} dollars for the entrance fee. The school also collects an additional ${extra} dollars for snacks. What is the total amount collected?",
-    "${name} is grading tests for ${possessive} class of ${students} students. Each test has ${items_per} questions. ${subj} also grades ${extra} bonus questions. How many questions does ${subject} grade in total?",
-    "For the class party, ${name} buys snacks for ${students} students. Each student gets ${items_per} snacks. ${subj} buys ${extra} additional snacks for the teachers. How many snacks are bought altogether?"
+    "${name} is grading tests for ${possessive} class of ${students} students. Each test has ${items_per} questions. ${subj} also grade${verb_s} ${extra} bonus questions. How many questions ${does_do} ${subject} grade in total?",
+    "For the class party, ${name} buys snacks for ${students} students. Each student gets ${items_per} snacks. ${subj} buy${verb_s} ${extra} additional snacks for the teachers. How many snacks are bought altogether?"
   ]
 }

@@ -1,39 +1,39 @@
 {
   "simple_transfer": [
-    "${name1} has ${initial} ${items} that ${subject1} has been collecting for a while. ${name1} ${give_verb} ${transfer} of them to ${name2} as a gift. How many ${items} does ${name1} have now?",
-    "${name1} started the day with ${initial} ${items}. Later, ${subject1} ${give_verb} ${transfer} to ${name2}. How many ${items} does ${name1} have left?",
-    "After counting ${his_her1} collection, ${name1} has ${initial} ${items}. ${subj1} ${give_verb} ${transfer} to ${name2}. How many ${items} does ${name1} still have?",
-    "${name1} owns ${initial} ${items}. ${subj1} decides to ${give_verb} ${transfer} to ${name2}. How many ${items} does ${name1} have remaining?"
+    "${name1} has ${initial} ${items} that ${subject1} ${has_have1} been collecting for a while. ${name1} gives ${transfer} of them to ${name2} as a gift. How many ${items} does ${name1} have now?",
+    "${name1} started the day with ${initial} ${items}. Later, ${subject1} give${verb_s1} ${transfer} to ${name2}. How many ${items} does ${name1} have left?",
+    "After counting ${his_her1} collection, ${name1} has ${initial} ${items}. ${subj1} give${verb_s1} ${transfer} to ${name2}. How many ${items} does ${name1} still have?",
+    "${name1} owns ${initial} ${items}. ${subj1} decide${verb_s1} to give ${transfer} to ${name2}. How many ${items} does ${name1} have remaining?"
   ],
   "simple_transfer_gsm8k": [
-    "${name1} has been saving ${items} for months and has accumulated ${initial} of them in ${his_her1} collection. One day, ${subject1} decides to ${give_verb} ${transfer} of ${his_her1} ${items} to ${name2} as a birthday present. After giving this generous gift, how many ${items} does ${name1} have left in ${his_her1} collection?",
-    "For ${his_her1} hobby, ${name1} has gathered ${initial} ${items} over the past year. When ${name2} mentioned wanting to start the same hobby, ${name1} kindly ${give_verb} ${transfer} ${items} to help ${name2} get started. How many ${items} does ${name1} still have?",
-    "${name1} counted ${his_her1} ${items} this morning and found ${subject1} had ${initial}. Later in the day, ${subject1} met ${name2} and ${give_verb} ${transfer} ${items} to ${him_her2}. What is the number of ${items} ${name1} has now?",
-    "At the beginning of the week, ${name1} had ${initial} ${items} stored in ${his_her1} room. ${subj1} ${give_verb} ${transfer} of them to ${name2} who needed them for a project. How many ${items} remain with ${name1}?"
+    "${name1} has been saving ${items} for months and has accumulated ${initial} of them in ${his_her1} collection. One day, ${subject1} decide${verb_s1} to give ${transfer} of ${his_her1} ${items} to ${name2} as a birthday present. After giving this generous gift, how many ${items} does ${name1} have left in ${his_her1} collection?",
+    "For ${his_her1} hobby, ${name1} has gathered ${initial} ${items} over the past year. When ${name2} mentioned wanting to start the same hobby, ${name1} kindly gives ${transfer} ${items} to help ${name2} get started. How many ${items} does ${name1} still have?",
+    "${name1} counted ${his_her1} ${items} this morning and found ${subject1} had ${initial}. Later in the day, ${subject1} met ${name2} and give${verb_s1} ${transfer} ${items} to ${him_her2}. What is the number of ${items} ${name1} has now?",
+    "At the beginning of the week, ${name1} had ${initial} ${items} stored in ${his_her1} room. ${subj1} give${verb_s1} ${transfer} of them to ${name2} who needed them for a project. How many ${items} remain with ${name1}?"
   ],
   "consume_sequence": [
-    "${name} has ${initial} ${items} in ${his_her} ${container}. ${subj} ${eat_verb1} ${consume1} in the morning and then ${eat_verb2} ${consume2} in the afternoon. How many ${items} does ${name} have left?",
-    "There are ${initial} ${items} on ${name}'s ${container}. ${subj} ${eat_verb1} ${consume1} before lunch and ${eat_verb2} ${consume2} after dinner. How many ${items} remain?",
-    "${name} bought ${initial} ${items} from the store. ${subj} ${eat_verb1} ${consume1} yesterday and ${eat_verb2} ${consume2} today. How many ${items} does ${subject} have now?",
-    "Starting with ${initial} ${items}, ${name} ${eat_verb1} ${consume1} and later ${eat_verb2} ${consume2}. How many ${items} are left?"
+    "${name} has ${initial} ${items} in ${his_her} ${container}. ${subj} ${eat_verb1}${verb_s} ${consume1} in the morning and then ${eat_verb2}${verb_s} ${consume2} in the afternoon. How many ${items} does ${name} have left?",
+    "There are ${initial} ${items} on ${name}'s ${container}. ${subj} ${eat_verb1}${verb_s} ${consume1} before lunch and ${eat_verb2}${verb_s} ${consume2} after dinner. How many ${items} remain?",
+    "${name} bought ${initial} ${items} from the store. ${subj} ${eat_verb1}${verb_s} ${consume1} yesterday and ${eat_verb2}${verb_s} ${consume2} today. How many ${items} ${does_do} ${subject} have now?",
+    "Starting with ${initial} ${items}, ${name} uses ${consume1} and later uses ${consume2} more. How many ${items} are left?"
   ],
   "consume_sequence_gsm8k": [
-    "${name} went to the grocery store and bought ${initial} ${items}, which ${subject} placed in ${his_her} ${container} when ${subject} got home. The next morning, ${subject} ${eat_verb1} ${consume1} of them for breakfast. Later that afternoon, feeling a bit hungry, ${subject} ${eat_verb2} ${consume2} more as a snack. How many ${items} does ${name} have left in the ${container}?",
-    "After visiting the farmers market, ${name} came home with ${initial} fresh ${items}. ${subj} ${eat_verb1} ${consume1} right away because they looked so good, then ${eat_verb2} ${consume2} more after dinner. How many ${items} remain for ${name} to enjoy later?",
-    "${name} received ${initial} ${items} as a gift from ${his_her} grandmother. Over the course of two days, ${subject} ${eat_verb1} ${consume1} on the first day and ${eat_verb2} ${consume2} on the second day. How many ${items} does ${name} still have?",
-    "There were ${initial} ${items} in ${name}'s ${container} after the shopping trip. ${subj} couldn't resist and ${eat_verb1} ${consume1} in the morning. By evening, ${subject} had ${eat_verb2} ${consume2} more. What is the number of ${items} remaining?"
+    "${name} went to the grocery store and bought ${initial} ${items}, which ${subject} placed in ${his_her} ${container} when ${subject} got home. The next morning, ${subject} ${eat_verb1}${verb_s} ${consume1} of them for breakfast. Later that afternoon, feeling a bit hungry, ${subject} ${eat_verb2}${verb_s} ${consume2} more as a snack. How many ${items} does ${name} have left in the ${container}?",
+    "After visiting the farmers market, ${name} came home with ${initial} fresh ${items}. ${subj} ${eat_verb1}${verb_s} ${consume1} right away because they looked so good, then ${eat_verb2}${verb_s} ${consume2} more after dinner. How many ${items} remain for ${name} to enjoy later?",
+    "${name} received ${initial} ${items} as a gift from ${his_her} grandmother. Over the course of two days, ${subject} ${eat_verb1}${verb_s} ${consume1} on the first day and ${eat_verb2}${verb_s} ${consume2} on the second day. How many ${items} does ${name} still have?",
+    "There were ${initial} ${items} in ${name}'s ${container} after the shopping trip. ${subj} couldn't resist and ${eat_verb1}${verb_s} ${consume1} in the morning. By evening, ${subject} had ${eat_verb2}${verb_s} ${consume2} more. What is the number of ${items} remaining?"
   ],
   "consume_then_multiply": [
-    "${name} has ${initial} ${items} that ${subject} collected. ${subj} ${eat_verb1} ${consume1} for a snack and ${eat_verb2} ${consume2} as a treat. ${subj} sells the rest for $${price} each at the market. How much money does ${name} make?",
-    "After gathering ${initial} ${items}, ${name} ${eat_verb1} ${consume1} and ${eat_verb2} ${consume2}. ${subj} then sells the remaining ${items} for $${price} each. What is ${name}'s total earnings?",
-    "${name} started with ${initial} ${items}. After eating ${consume1} and giving away ${consume2}, ${subject} sells each remaining one for $${price}. How much does ${name} earn?",
-    "With ${initial} ${items}, ${name} ${eat_verb1} ${consume1} and ${eat_verb2} ${consume2}. The rest are sold at $${price} each. How much money does ${subject} get?"
+    "${name} has ${initial} ${items} that ${subject} collected. ${subj} ${eat_verb1}${verb_s} ${consume1} for a snack and ${eat_verb2}${verb_s} away ${consume2} as a treat. ${subj} sell${verb_s} the rest for $${price} each at the market. How much money does ${name} make?",
+    "After gathering ${initial} ${items}, ${name} uses ${consume1} and gives away ${consume2}. ${subj} then sell${verb_s} the remaining ${items} for $${price} each. What is ${name}'s total earnings?",
+    "${name} started with ${initial} ${items}. After eating ${consume1} and giving away ${consume2}, ${subject} sell${verb_s} each remaining one for $${price}. How much does ${name} earn?",
+    "With ${initial} ${items}, ${name} uses ${consume1} and gives away ${consume2}. The rest are sold at $${price} each. How much money ${does_do} ${subject} get?"
   ],
   "consume_then_multiply_gsm8k": [
-    "${name} spent the morning picking ${items} and gathered ${initial} of them. After all that work, ${subject} was hungry and ${eat_verb1} ${consume1} right away. Later, ${subject} ${eat_verb2} ${consume2} more while taking a break. ${subj} decided to sell whatever was left at the local market for $${price} each. How much money did ${name} make from selling the ${items}?",
-    "From ${his_her} garden, ${name} harvested ${initial} ${items} this week. ${subj} ${eat_verb1} ${consume1} for breakfast one morning and ${eat_verb2} ${consume2} for a snack another day. The rest ${subject} took to the farmers market and sold for $${price} per ${item_singular}. What were ${name}'s total earnings?",
-    "${name} collected ${initial} ${items} during ${his_her} trip to the countryside. ${subj} kept ${consume1} to ${eat_verb1} and ${consume2} to ${eat_verb2} later. ${subj} sold all the remaining ${items} to a local vendor for $${price} each. How much did ${name} earn from this sale?",
-    "After a productive day, ${name} had ${initial} ${items}. ${subj} ${eat_verb1} ${consume1} that evening and ${eat_verb2} ${consume2} the next morning. ${subj} then sold the rest at a roadside stand for $${price} apiece. What was ${name}'s total income from selling the ${items}?"
+    "${name} spent the morning picking ${items} and gathered ${initial} of them. After all that work, ${subject} ${was_were} hungry and ${eat_verb1}${verb_s} ${consume1} right away. Later, ${subject} ${eat_verb2}${verb_s} ${consume2} more while taking a break. ${subj} decided to sell whatever was left at the local market for $${price} each. How much money did ${name} make from selling the ${items}?",
+    "From ${his_her} garden, ${name} harvested ${initial} ${items} this week. ${subj} ${eat_verb1}${verb_s} ${consume1} for breakfast one morning and ${eat_verb2}${verb_s} ${consume2} for a snack another day. The rest ${subject} took to the farmers market and sold for $${price} per ${item_singular}. What were ${name}'s total earnings?",
+    "${name} collected ${initial} ${items} during ${his_her} trip to the countryside. ${subj} kept ${consume1} to ${eat_verb1}${verb_s} and ${consume2} to ${eat_verb2}${verb_s} later. ${subj} sold all the remaining ${items} to a local vendor for $${price} each. How much did ${name} earn from this sale?",
+    "After a productive day, ${name} had ${initial} ${items}. ${subj} ${eat_verb1}${verb_s} ${consume1} that evening and ${eat_verb2}${verb_s} ${consume2} the next morning. ${subj} then sold the rest at a roadside stand for $${price} apiece. What was ${name}'s total income from selling the ${items}?"
   ],
   "bidirectional_transfer": [
     "${name1} has ${initial1} ${items} and ${name2} has ${initial2}. ${name1} ${give_verb1} ${transfer1} to ${name2}. Then ${name2} ${give_verb2} ${transfer2} back to ${name1}. How many ${items} does ${name1} have now?",
@@ -48,15 +48,15 @@
     "At the swap meet, ${name1} brought ${initial1} ${items} and ${name2} brought ${initial2}. ${name1} ${give_verb1} ${transfer1} to ${name2} in exchange for something else. ${name2} then ${give_verb2} ${transfer2} ${items} back to ${name1} as a bonus. How many ${items} does ${name1} have at the end of the swap?"
   ],
   "find_and_lose": [
-    "${name} has ${initial} ${items}. While walking in the park, ${subject} ${find_verb} ${found} more. Unfortunately, ${subject} later ${lose_verb} ${lost}. How many ${items} does ${name} have now?",
-    "Starting with ${initial} ${items}, ${name} ${find_verb} ${found} additional ones. But then ${subject} ${lose_verb} ${lost}. How many ${items} does ${name} end up with?",
-    "${name} counted ${initial} ${items} this morning. ${subj} ${find_verb} ${found} more during the day but ${lose_verb} ${lost}. How many ${items} does ${subject} have?",
-    "After having ${initial} ${items}, ${name} ${find_verb} ${found} and then ${lose_verb} ${lost}. What is ${name}'s total now?"
+    "${name} has ${initial} ${items}. While walking in the park, ${subject} ${find_verb}${verb_s} ${found} more. Unfortunately, ${subject} later ${lose_verb}${verb_s} ${lost}. How many ${items} does ${name} have now?",
+    "Starting with ${initial} ${items}, ${name} finds ${found} additional ones. But then ${subject} ${lose_verb}${verb_s} ${lost}. How many ${items} does ${name} end up with?",
+    "${name} counted ${initial} ${items} this morning. ${subj} ${find_verb}${verb_s} ${found} more during the day but ${lose_verb}${verb_s} ${lost}. How many ${items} ${does_do} ${subject} have?",
+    "After having ${initial} ${items}, ${name} finds ${found} more and then loses ${lost}. What is ${name}'s total now?"
   ],
   "find_and_lose_gsm8k": [
-    "${name} started the day with ${initial} ${items} that ${subject} had been saving. While ${subject} was walking through the park on ${his_her} way to work, ${subject} ${find_verb} ${found} more ${items} lying on a bench. Later in the afternoon, ${subject} accidentally ${lose_verb} ${lost} of ${his_her} ${items} when ${his_her} bag got a hole in it. How many ${items} does ${name} have at the end of the day?",
-    "${name} carefully counted ${his_her} ${items} in the morning and had ${initial}. During a walk around the neighborhood, ${subject} ${find_verb} ${found} more that someone had left behind. Unfortunately, on the way home, ${subject} ${lose_verb} ${lost} when ${subject} wasn't paying attention. What is the final number of ${items} ${name} has?",
-    "With ${initial} ${items} in ${his_her} pocket, ${name} headed out for the day. ${subj} was lucky and ${find_verb} ${found} more ${items} near the playground. But ${his_her} luck turned when ${subject} ${lose_verb} ${lost} somewhere along the way. How many ${items} does ${name} have now?",
-    "${name} had exactly ${initial} ${items} when ${subject} left home. ${subj} ${find_verb} ${found} additional ones while exploring the neighborhood. Sadly, ${subject} ${lose_verb} ${lost} of them later when they fell out of ${his_her} pocket. After this eventful day, how many ${items} does ${name} have?"
+    "${name} started the day with ${initial} ${items} that ${subject} had been saving. While ${subject} ${was_were} walking through the park on ${his_her} way to work, ${subject} ${find_verb}${verb_s} ${found} more ${items} lying on a bench. Later in the afternoon, ${subject} accidentally ${lose_verb}${verb_s} ${lost} of ${his_her} ${items} when ${his_her} bag got a hole in it. How many ${items} does ${name} have at the end of the day?",
+    "${name} carefully counted ${his_her} ${items} in the morning and had ${initial}. During a walk around the neighborhood, ${subject} ${find_verb}${verb_s} ${found} more that someone had left behind. Unfortunately, on the way home, ${subject} ${lose_verb}${verb_s} ${lost} when ${subject} wasn't paying attention. What is the final number of ${items} ${name} has?",
+    "With ${initial} ${items} in ${his_her} pocket, ${name} headed out for the day. ${subj} ${was_were} lucky and ${find_verb}${verb_s} ${found} more ${items} near the playground. But ${his_her} luck turned when ${subject} ${lose_verb}${verb_s} ${lost} somewhere along the way. How many ${items} does ${name} have now?",
+    "${name} had exactly ${initial} ${items} when ${subject} left home. ${subj} ${find_verb}${verb_s} ${found} additional ones while exploring the neighborhood. Sadly, ${subject} ${lose_verb}${verb_s} ${lost} of them later when they fell out of ${his_her} pocket. After this eventful day, how many ${items} does ${name} have?"
   ]
 }

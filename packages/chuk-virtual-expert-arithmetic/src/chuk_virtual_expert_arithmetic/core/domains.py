@@ -70,6 +70,14 @@ class DomainSampler:
                 if context["agent2"] != context["agent"]:
                     break
                 context["agent2"] = self._sample_agent(agent_templates[agent_type])
+            # If still the same, try other agent types
+            if context["agent2"] == context["agent"]:
+                other_types = [t for t in agent_templates if t != agent_type]
+                for alt_type in other_types:
+                    candidate = self._sample_agent(agent_templates[alt_type])
+                    if candidate != context["agent"]:
+                        context["agent2"] = candidate
+                        break
             context["agent_type"] = agent_type
         else:
             person1 = self._vocab.person_with_pronouns()

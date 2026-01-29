@@ -2,20 +2,20 @@
   "activity_daily": [
     "${name} is training for an upcoming marathon and ${verb} every day without fail to stay fit. Each day, ${subject} ${verb} ${sessions} laps around the park, and each lap is ${per_session} ${units} long. After ${days} days of dedicated training, how many ${units} has ${name} ${verb_past} in total?",
     "For exercise and to stay healthy, ${name} ${verb} ${sessions} times per day, covering ${per_session} ${units} each time. How many ${units} will ${subject} have ${verb_past} after ${days} days of this routine?",
-    "${name} has a daily ${activity} routine to improve ${his_her} health and fitness. ${subj} ${verb} ${sessions} rounds of ${per_session} ${units} each. After doing this consistently for ${days} days, how many total ${units} has ${subject} covered?",
-    "Every day without fail, ${name} ${verb} ${sessions} sets of ${per_session} ${units} each as part of ${his_her} training program. If ${subject} keeps this up for ${days} days, how many ${units} will ${subject} have ${verb_past} altogether?"
+    "${name} has a daily ${activity} routine to improve ${his_her} health and fitness. ${subj} ${verb} ${sessions} rounds of ${per_session} ${units} each. After doing this consistently for ${days} days, how many total ${units} ${has_have} ${subject} covered?",
+    "Every day without fail, ${name} ${verb} ${sessions} sets of ${per_session} ${units} each as part of ${his_her} training program. If ${subject} keep${verb_s} this up for ${days} days, how many ${units} will ${subject} have ${verb_past} altogether?"
   ],
   "care_weekly": [
-    "${name} volunteers at an animal shelter where ${subject} takes care of ${count} ${things} that need attention. Each ${thing_singular} requires ${hours} hours of care per day. How many hours does ${name} spend caring for the ${things} in one week?",
-    "${name} has ${count} ${things} at home that ${subject} looks after with great care and dedication. Each one needs ${hours} hours of attention every day. How many hours per week does ${name} spend on ${his_her} ${things}?",
-    "As a dedicated caretaker at the local sanctuary, ${name} is responsible for ${count} ${things} that depend on ${him_her}. ${subj} spends ${hours} hours daily on each one. What is the total number of hours ${subject} works in a week?",
+    "${name} volunteers at an animal shelter where ${subject} take${verb_s} care of ${count} ${things} that need attention. Each ${thing_singular} requires ${hours} hours of care per day. How many hours does ${name} spend caring for the ${things} in one week?",
+    "${name} has ${count} ${things} at home that ${subject} look${verb_s} after with great care and dedication. Each one needs ${hours} hours of attention every day. How many hours per week does ${name} spend on ${his_her} ${things}?",
+    "As a dedicated caretaker at the local sanctuary, ${name} is responsible for ${count} ${things} that depend on ${him_her}. ${subj} spend${verb_s} ${hours} hours daily on each one. What is the total number of hours ${subject} work${verb_s} in a week?",
     "${name} recently adopted ${count} ${things} from a rescue center and wants to give them the best care possible. Each ${thing_singular} needs ${hours} hours of daily care. How many hours does ${name} spend on them over the course of a week?"
   ],
   "practice": [
-    "${name} is learning to play ${skill} and is determined to become really good at it. ${subj} practices ${sessions} times every day, with each practice session lasting ${per_session} minutes. After ${days} days of dedicated practice, how many minutes has ${name} spent practicing?",
-    "To improve at ${skill}, ${name} practices ${sessions} times daily for ${per_session} minutes each session because ${subject} wants to get better. How many total minutes of practice will ${subject} have after ${days} days?",
-    "${name} takes ${skill} lessons from a professional teacher every week and practices ${sessions} times a day at home. Each practice is ${per_session} minutes long. After ${days} days of this routine, how many minutes has ${subject} practiced in total?",
-    "Every day, ${name} dedicates time to ${skill} practice because ${subject} dreams of performing on stage someday. ${subj} ${does_do} ${sessions} sessions of ${per_session} minutes each. How many minutes will ${subject} have practiced after ${days} days?"
+    "${name} is learning to play ${skill} and is determined to become really good at it. ${subj} practice${verb_s} ${sessions} times every day, with each practice session lasting ${per_session} minutes. After ${days} days of dedicated practice, how many minutes has ${name} spent practicing?",
+    "To improve at ${skill}, ${name} practices ${sessions} times daily for ${per_session} minutes each session because ${subject} want${verb_s} to get better. How many total minutes of practice will ${subject} have after ${days} days?",
+    "${name} takes ${skill} lessons from a professional teacher every week and practices ${sessions} times a day at home. Each practice is ${per_session} minutes long. After ${days} days of this routine, how many minutes ${has_have} ${subject} practiced in total?",
+    "Every day, ${name} dedicates time to ${skill} practice because ${subject} dream${verb_s} of performing on stage someday. ${subj} ${does_do} ${sessions} sessions of ${per_session} minutes each. How many minutes will ${subject} have practiced after ${days} days?"
   ],
   "work_output": [
     "${name}'s ${worker} produces ${items} in batches throughout the day at ${his_her} facility. It makes ${sessions} batches per day, with ${per_session} ${items} in each batch. How many ${items} will it produce in ${days} days?",

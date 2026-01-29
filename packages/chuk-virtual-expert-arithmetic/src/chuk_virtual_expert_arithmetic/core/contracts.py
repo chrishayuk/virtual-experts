@@ -157,7 +157,11 @@ class ContractValidator:
                     # These are auto-generated
                     if name == "person":
                         provided.update(
-                            ["name", "subject", "subj", "his_her", "him_her", "reflexive"]
+                            [
+                                "name", "subject", "subj", "his_her",
+                                "him_her", "reflexive", "verb_s",
+                                "has_have", "does_do", "is_are", "was_were",
+                            ]
                         )
                     else:
                         # personN variants
@@ -169,6 +173,13 @@ class ContractValidator:
                                     f"subject{suffix}",
                                     f"subj{suffix}",
                                     f"his_her{suffix}",
+                                    f"him_her{suffix}",
+                                    f"reflexive{suffix}",
+                                    f"verb_s{suffix}",
+                                    f"has_have{suffix}",
+                                    f"does_do{suffix}",
+                                    f"is_are{suffix}",
+                                    f"was_were{suffix}",
                                 ]
                             )
 

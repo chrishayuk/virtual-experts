@@ -15,8 +15,9 @@
     "his_her": "person.possessive",
     "items": "item|pluralize",
     "initial": "start",
-    "eat_verb1": "uses",
-    "eat_verb2": "gives away"
+    "eat_verb1": "use",
+    "eat_verb2": "give",
+    "item_singular": "item"
   },
   "variables": {
     "start": {

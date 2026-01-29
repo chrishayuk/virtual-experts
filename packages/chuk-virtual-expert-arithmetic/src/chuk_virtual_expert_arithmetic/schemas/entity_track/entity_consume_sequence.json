@@ -17,8 +17,8 @@
     "items": "item|pluralize",
     "initial": "start",
     "container": "container_type",
-    "eat_verb1": "uses",
-    "eat_verb2": "uses"
+    "eat_verb1": "use",
+    "eat_verb2": "use"
   },
   "variables": {
     "start": {

@@ -15,8 +15,8 @@
     "his_her": "person.possessive",
     "items": "item|pluralize",
     "initial": "start",
-    "find_verb": "finds",
-    "lose_verb": "loses"
+    "find_verb": "find",
+    "lose_verb": "lose"
   },
   "variables": {
     "start": {
