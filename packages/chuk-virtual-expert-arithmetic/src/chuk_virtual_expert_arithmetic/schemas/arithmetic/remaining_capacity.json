@@ -18,6 +18,11 @@
       "max": 20
     }
   },
+  "constraints": {
+    "limit - base": {
+      "min": 20
+    }
+  },
   "trace": [
     {
       "op": "init",

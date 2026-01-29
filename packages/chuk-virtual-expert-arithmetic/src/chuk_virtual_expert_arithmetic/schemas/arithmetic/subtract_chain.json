@@ -35,6 +35,11 @@
       "max": 20
     }
   },
+  "constraints": {
+    "start - sub1 - sub2 - sub3": {
+      "min": 0
+    }
+  },
   "trace": [
     {
       "op": "init",

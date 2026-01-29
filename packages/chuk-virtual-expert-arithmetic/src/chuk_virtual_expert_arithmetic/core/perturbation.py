@@ -162,6 +162,13 @@ class TemplatePerturbator:
         for original, variations in self.QUESTION_STARTERS.items():
             if original in text:
                 replacement = self._rng.choice(variations)
+                # Avoid doubling words when replacement extends the original
+                # e.g., "How many total" already in text + replacing "How many" → "How many total"
+                idx = text.index(original)
+                after = text[idx + len(original):]
+                extra = replacement[len(original):]  # what the replacement adds
+                if extra and after.lstrip().lower().startswith(extra.strip().lower()):
+                    continue  # skip this replacement — would create doubled word
                 return text.replace(original, replacement, 1)
         return text
 
